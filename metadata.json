@@ -1,0 +1,8 @@
+{
+  "name": "Portfólio Kemily Diniz — Estratégia, Dados & IA",
+  "description": "Portfólio autoral de Kemily Diniz: atuação estratégica na interseção entre Comunicação, Estratégia de Negócios, Dados e Inteligência Artificial.",
+  "requestFramePermissions": [],
+  "majorCapabilities": [
+    "MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"
+  ]
+}

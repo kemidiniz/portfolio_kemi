@@ -1,0 +1,90 @@
+@import "tailwindcss";
+
+@custom-variant dark (&:where(.dark, .dark *));
+
+@layer base {
+  :root {
+    --font-sans: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    --font-display: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+
+    /* High-Impact Light Mode Palette */
+    --color-bg-base: #F8F7F4;
+    --color-surface: #FFFFFF;
+    --color-surface-hover: #F2EFE9;
+    --color-text-main: #141416;
+    --color-text-muted: #4B4B54;
+    --color-border: #DCD9D0;
+    --color-accent: #C83E62;
+    --color-accent-dark: #A82447;
+    --color-accent-soft: rgba(200, 62, 98, 0.08);
+  }
+
+  .dark {
+    /* High-Impact Dark Mode Palette */
+    --color-bg-base: #0B0B0E;
+    --color-surface: #141419;
+    --color-surface-hover: #1D1D24;
+    --color-text-main: #F4F4F7;
+    --color-text-muted: #9E9EAA;
+    --color-border: #282832;
+    --color-accent: #E04870;
+    --color-accent-dark: #C83E62;
+    --color-accent-soft: rgba(224, 72, 112, 0.16);
+  }
+
+  html {
+    scroll-behavior: smooth;
+  }
+
+  html.dark {
+    color-scheme: dark;
+  }
+
+  html:not(.dark) {
+    color-scheme: light;
+  }
+
+  body {
+    background-color: var(--color-bg-base);
+    color: var(--color-text-main);
+    font-family: var(--font-sans);
+    letter-spacing: normal;
+    transition: background-color 0.25s ease, color 0.25s ease;
+  }
+
+  h1, h2, h3, .font-display {
+    font-family: var(--font-display);
+    letter-spacing: -0.01em;
+    font-stretch: normal;
+  }
+}
+
+/* Subtle glow utility for high impact */
+.glow-accent {
+  box-shadow: 0 0 25px -5px rgba(200, 62, 98, 0.25);
+}
+
+.dark .glow-accent {
+  box-shadow: 0 0 35px -5px rgba(224, 72, 112, 0.35);
+}
+
+/* Print optimizations for printable curriculum */
+@media print {
+  body {
+    background: white !important;
+    color: #111827 !important;
+  }
+  .no-print {
+    display: none !important;
+  }
+  .print-only {
+    display: block !important;
+  }
+  .print-page {
+    box-shadow: none !important;
+    border: none !important;
+    padding: 0 !important;
+    width: 100% !important;
+    max-width: 100% !important;
+  }
+}
