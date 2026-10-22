@@ -1,6 +1,15 @@
-import React, { useState } from 'react';
-import { Mail, Linkedin, MessageSquare, Copy, Check, ArrowUpRight, FileText, Download } from 'lucide-react';
-import { PortfolioData } from '../data/portfolioData';
+import React, { useState } from "react";
+import {
+  Mail,
+  Linkedin,
+  MessageSquare,
+  Copy,
+  Check,
+  ArrowUpRight,
+  FileText,
+  Download,
+} from "lucide-react";
+import { PortfolioData } from "../data/portfolioData";
 
 interface ContactProps {
   data: PortfolioData;
@@ -20,7 +29,6 @@ export const Contact: React.FC<ContactProps> = ({ data, onOpenResume }) => {
   return (
     <section id="contato" className="py-8 md:py-12">
       <div className="w-full max-w-[1600px] mx-auto px-4 sm:px-8 lg:px-14 xl:px-20">
-        
         {/* Section Header */}
         <div className="max-w-2xl mb-10">
           <div className="inline-flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-[#C83E62] dark:text-[#E04870] mb-2">
@@ -32,13 +40,14 @@ export const Contact: React.FC<ContactProps> = ({ data, onOpenResume }) => {
             Canais de Contato
           </h2>
           <p className="mt-2 text-base text-[#4B4B54] dark:text-[#9E9EAA] leading-relaxed font-normal">
-            Entre em contato diretamente comigo pelos canais oficiais para oportunidades, consultorias, trocas sobre estratégias de dados ou projetos de inteligência artificial.
+            Entre em contato diretamente comigo pelos canais oficiais para
+            oportunidades, consultorias, trocas sobre estratégias de dados ou
+            projetos de inteligência artificial.
           </p>
         </div>
 
         {/* High-Impact Direct Contact Cards Grid */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-10">
-          
           {/* E-mail Card */}
           <div className="p-7 rounded-2xl bg-white dark:bg-[#141419] border-2 border-[#DCD9D0] dark:border-[#282832] hover:border-[#C83E62] dark:hover:border-[#E04870] transition-all shadow-sm hover:shadow-md flex flex-col justify-between group">
             <div>
@@ -51,8 +60,12 @@ export const Contact: React.FC<ContactProps> = ({ data, onOpenResume }) => {
                   className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold rounded-lg border border-[#DCD9D0] dark:border-[#282832] text-[#4B4B54] dark:text-[#9E9EAA] hover:text-[#C83E62] dark:hover:text-[#E04870] transition-colors cursor-pointer"
                   title="Copiar e-mail"
                 >
-                  {copiedEmail ? <Check className="w-3.5 h-3.5 text-emerald-600" /> : <Copy className="w-3.5 h-3.5" />}
-                  <span>{copiedEmail ? 'Copiado!' : 'Copiar'}</span>
+                  {copiedEmail ? (
+                    <Check className="w-3.5 h-3.5 text-emerald-600" />
+                  ) : (
+                    <Copy className="w-3.5 h-3.5" />
+                  )}
+                  <span>{copiedEmail ? "Copiado!" : "Copiar"}</span>
                 </button>
               </div>
 
@@ -63,13 +76,14 @@ export const Contact: React.FC<ContactProps> = ({ data, onOpenResume }) => {
                 {personal.email}
               </h3>
               <p className="text-xs text-[#4B4B54] dark:text-[#9E9EAA] mt-2 font-normal">
-                Canal principal para convites, propostas formais e parcerias corporativas.
+                Canal principal para convites, propostas formais e parcerias
+                corporativas.
               </p>
             </div>
 
             <div className="pt-6 mt-6 border-t border-[#DCD9D0] dark:border-[#282832]">
               <a
-                href={`mailto:${personal.email}?subject=Contato%20via%20Portf%C3%B3lio%20Kemily%20Diniz`}
+                href={`mailto:${personal.email}?subject=${encodeURIComponent(`Contato via ${personal.brandTitle}`)}`}
                 className="inline-flex items-center gap-2 text-sm font-bold text-[#C83E62] dark:text-[#E04870] hover:underline"
               >
                 <span>Escrever e-mail agora</span>
@@ -100,7 +114,8 @@ export const Contact: React.FC<ContactProps> = ({ data, onOpenResume }) => {
                 {personal.linkedinDisplay}
               </p>
               <p className="text-xs text-[#4B4B54] dark:text-[#9E9EAA] mt-1 font-normal">
-                Acompanhe meus artigos, posts sobre tendências de dados e conexões.
+                Acompanhe meus artigos, posts sobre tendências de dados e
+                conexões.
               </p>
             </div>
 
@@ -152,7 +167,6 @@ export const Contact: React.FC<ContactProps> = ({ data, onOpenResume }) => {
               </a>
             </div>
           </div>
-
         </div>
 
         {/* Bottom Curriculum Callout Banner */}
@@ -166,7 +180,8 @@ export const Contact: React.FC<ContactProps> = ({ data, onOpenResume }) => {
                 Currículo Profissional Completo
               </h4>
               <p className="text-xs sm:text-sm text-[#4B4B54] dark:text-[#9E9EAA] mt-0.5 font-normal">
-                Visualização formatada para recrutadores, disponível para download direto em PDF ou impressão.
+                Visualização formatada para recrutadores, disponível para
+                download direto em PDF ou impressão.
               </p>
             </div>
           </div>
@@ -179,7 +194,6 @@ export const Contact: React.FC<ContactProps> = ({ data, onOpenResume }) => {
             <span>Visualizar e Baixar Currículo</span>
           </button>
         </div>
-
       </div>
     </section>
   );
