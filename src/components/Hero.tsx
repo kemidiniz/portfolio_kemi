@@ -1,88 +1,101 @@
-import { ArrowUpRight, Download, Linkedin, Mail } from "lucide-react";
+import {
+  ArrowRight,
+  ArrowUpRight,
+  Download,
+  Linkedin,
+  Mail,
+  MapPin,
+  MessageCircle,
+} from "lucide-react";
 import type { PortfolioData } from "../data/portfolioData";
 import type { TabType } from "./Header";
 export function Hero({
   data,
   onOpenResume,
   onNavigateToTab,
+  onOpenAbout,
 }: {
   data: PortfolioData;
   onOpenResume: () => void;
   onNavigateToTab: (tab: TabType) => void;
+  onOpenAbout: () => void;
 }) {
   const { personal } = data;
+  const highlight = personal.headline.lastIndexOf("Dados");
+  const currentExperience = data.experiences[0];
   return (
-    <section className="editorial-hero">
-      <div className="hero-intro">
-        <div className="editorial-kicker">
-          <span className="kicker-line" />
-          PORTFÓLIO PROFISSIONAL ·{" "}
-          {personal.nickname.toLocaleUpperCase("pt-BR")}
-        </div>
-        <div className="hero-grid">
-          <div className="hero-copy">
-            <p className="hero-hello">Olá, eu sou {personal.name}.</p>
-            <h1>
-              {personal.headline}
-              <span className="headline-period">.</span>
-            </h1>
-            <p className="hero-description">{personal.subtitle}</p>
-            <div className="hero-actions">
-              <button
-                className="editorial-primary"
-                onClick={() => onNavigateToTab("projetos")}
-              >
-                Explore meus projetos <ArrowUpRight size={19} />
-              </button>
-              <button className="editorial-secondary" onClick={onOpenResume}>
-                <Download size={16} />
-                Meu currículo
-              </button>
-            </div>
-            <div className="hero-links">
-              <a href={personal.linkedin} target="_blank" rel="noreferrer">
-                <Linkedin size={15} />
-                LinkedIn
-              </a>
-              <a href={`mailto:${personal.email}`}>
-                <Mail size={15} />
-                <span>Entre em contato</span>
-              </a>
-            </div>
+    <section className="profile-hero" aria-label="Apresentação">
+      <div className="profile-grid">
+        <div className="profile-copy">
+          <div className="profile-status">
+            <span className="status-dot" />
+            {personal.statusBadge}
           </div>
-          <div className="hero-collage">
-            <div className="collage-outline" />
-            <span className="collage-note">um pouco de quem sou</span>
-            <figure className="portrait-paper">
-              <span className="paper-tape" aria-hidden="true" />
-              <img
-                src={personal.avatarUrl}
-                alt={`Retrato de ${personal.name}`}
-              />
-              <figcaption>
-                <span>{personal.nickname}, em constante movimento.</span>
-                <span aria-hidden="true">✳︎</span>
-              </figcaption>
-            </figure>
-            <div className="availability-note">
-              <span className="availability-dot" />
-              {personal.statusBadge}
-            </div>
-            <span className="collage-index">01 / SOBRE MIM</span>
+          <p className="profile-greeting">Olá, sou {personal.name}.</p>
+          <h1>
+            {highlight > 0 ? (
+              <>
+                {personal.headline.slice(0, highlight)}
+                <span>{personal.headline.slice(highlight)}</span>
+              </>
+            ) : (
+              personal.headline
+            )}
+          </h1>
+          <p className="profile-description">{personal.subtitle}</p>
+          <div className="profile-actions">
+            <button
+              className="primary-button"
+              onClick={() => onNavigateToTab("projetos")}
+            >
+              Ver projetos <ArrowUpRight size={18} />
+            </button>
+            <button className="secondary-button" onClick={onOpenResume}>
+              <Download size={16} />
+              Baixar currículo
+            </button>
           </div>
+          <div className="profile-links">
+            <a href={personal.linkedin} target="_blank" rel="noreferrer">
+              <Linkedin size={15} />
+              LinkedIn
+            </a>
+            <a href={`mailto:${personal.email}`}>
+              <Mail size={15} />
+              E-mail
+            </a>
+            <a href={personal.whatsapp} target="_blank" rel="noreferrer">
+              <MessageCircle size={15} />
+              WhatsApp
+            </a>
+          </div>
+          <button className="profile-about-link" onClick={onOpenAbout}>
+            Conheça minha história <ArrowRight size={15} />
+          </button>
         </div>
-        <div className="hero-bottom-line">
-          <span>{personal.location}</span>
-          <span>
-            Conectando pessoas, ideias e possibilidades{" "}
-            <ArrowUpRight size={14} />
-          </span>
-        </div>
+        <figure className="profile-portrait">
+          <img
+            src={personal.avatarUrl}
+            alt={`Retrato de ${personal.name}`}
+            fetchPriority="high"
+          />
+          <figcaption>
+            <span className="portrait-location">
+              <MapPin size={13} />
+              {personal.location}
+            </span>
+            <strong>{personal.name}</strong>
+            {currentExperience && (
+              <span>
+                {currentExperience.role} · {currentExperience.company}
+              </span>
+            )}
+          </figcaption>
+        </figure>
       </div>
-      <div className="editorial-metrics">
+      <div className="profile-metrics" aria-label="Destaques da trajetória">
         {personal.metrics.map((metric, index) => (
-          <div key={index}>
-            <span className="metric-index">/ 0{index + 1}</span>
+          <div className="metric-card" key={index}>
             <strong>{metric.value}</strong>
             <span>{metric.label}</span>
             <small>{metric.detail}</small>

@@ -83,8 +83,8 @@ test("public portfolio renders on mobile without overflow and requires login", a
     ),
   ).toBe(true);
   await page
-    .getByRole("button", { name: "Projetos", exact: false })
-    .filter({ hasText: "04" })
+    .getByRole("navigation", { name: "Navegação principal" })
+    .getByRole("button", { name: "Projetos", exact: true })
     .click();
   await expect(
     page.getByRole("heading", {
@@ -149,7 +149,7 @@ test("admin publishes personal info and can manage every content section", async
     .click();
   await page.reload();
   await expect(
-    page.getByText("Olá, eu sou Kemily — nova versão.", { exact: true }),
+    page.getByText("Olá, sou Kemily — nova versão.", { exact: true }),
   ).toBeVisible();
 });
 test("conflicting save keeps draft and does not claim success", async ({
@@ -256,4 +256,107 @@ test("invalid links cannot be published and invalid image types are rejected", a
       exact: true,
     }),
   ).toBeVisible();
+});
+
+test("header navigation replaces content and biography opens on demand", async ({
+  page,
+}) => {
+  await setup(page);
+  await page.goto("/");
+  const navigation = page.getByRole("navigation", {
+    name: "Navegação principal",
+  });
+  await expect(
+    page.getByRole("heading", { name: "Quem Sou Eu", exact: true }),
+  ).toHaveCount(0);
+  await page.getByRole("button", { name: "Conheça minha história" }).click();
+  await expect(
+    page.getByRole("heading", { name: "Quem Sou Eu", exact: true }),
+  ).toBeVisible();
+  await expect(page.getByRole("heading", { level: 1 })).toHaveCount(0);
+  await page.getByRole("button", { name: "Voltar à apresentação" }).click();
+  await expect(page.getByRole("heading", { level: 1 })).toBeVisible();
+  const sections = [
+    ["Experiência", "Experiência Corporativa"],
+    ["Formação & IA", "Formação Acadêmica & Imersão em IA"],
+    ["Projetos", "Projetos"],
+    ["Certificações", "Certificações & Habilidades Técnicas"],
+    ["Contato", "Canais de Contato"],
+  ];
+  for (const [label, heading] of sections) {
+    await navigation.getByRole("button", { name: label, exact: true }).click();
+    await expect(
+      navigation.getByRole("button", { name: label, exact: true }),
+    ).toHaveAttribute("aria-current", "page");
+    await expect(
+      page.getByRole("heading", { name: heading, exact: true }),
+    ).toBeVisible();
+    await expect(page.getByRole("heading", { level: 1 })).toHaveCount(0);
+  }
+  await navigation
+    .getByRole("button", { name: "Sobre mim", exact: true })
+    .click();
+  await expect(page.getByRole("heading", { level: 1 })).toBeVisible();
+  await expect(
+    page.getByRole("heading", { name: "Canais de Contato", exact: true }),
+  ).toHaveCount(0);
+});
+
+test("night mode persists and applies to other sections and admin login", async ({
+  page,
+}) => {
+  await setup(page);
+  await page.emulateMedia({ colorScheme: "light" });
+  await page.goto("/");
+  const light = await page
+    .locator(".portfolio-site")
+    .evaluate((el) => getComputedStyle(el).backgroundColor);
+  await page
+    .getByRole("button", { name: "Ativar modo escuro", exact: true })
+    .click();
+  await expect(page.locator("html")).toHaveClass(/\bdark\b/);
+  await expect(page.locator(".portfolio-site")).toHaveCSS(
+    "background-color",
+    "rgb(20, 18, 22)",
+  );
+  const dark = await page
+    .locator(".portfolio-site")
+    .evaluate((el) => getComputedStyle(el).backgroundColor);
+  expect(dark).not.toEqual(light);
+  await page
+    .getByRole("navigation", { name: "Navegação principal" })
+    .getByRole("button", { name: "Contato", exact: true })
+    .click();
+  await expect(page.locator("html")).toHaveClass(/\bdark\b/);
+  await page.getByRole("button", { name: "Área admin", exact: true }).click();
+  const shell = await page
+    .getByRole("dialog")
+    .evaluate((el) => getComputedStyle(el).backgroundColor);
+  expect(shell).not.toBe("rgb(255, 253, 250)");
+  await page.reload();
+  await expect(
+    page.getByRole("button", { name: "Ativar modo claro", exact: true }),
+  ).toBeVisible();
+  await page
+    .getByRole("button", { name: "Ativar modo claro", exact: true })
+    .click();
+  await expect(page.locator("html")).not.toHaveClass(/\bdark\b/);
+});
+
+test("hover feedback is visible and reduced motion removes transitions", async ({
+  page,
+}) => {
+  await setup(page);
+  await page.goto("/");
+  const metric = page.locator(".metric-card").first();
+  await metric.hover();
+  await expect
+    .poll(() => metric.evaluate((el) => getComputedStyle(el).transform))
+    .not.toBe("none");
+  await page.emulateMedia({ reducedMotion: "reduce" });
+  expect(
+    await metric.evaluate((el) =>
+      parseFloat(getComputedStyle(el).transitionDuration),
+    ),
+  ).toBeLessThan(0.01);
 });

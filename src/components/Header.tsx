@@ -1,5 +1,14 @@
-import React from "react";
-import { Moon, Sun, LockKeyhole, ArrowUpRight } from "lucide-react";
+import {
+  Award,
+  BriefcaseBusiness,
+  FolderKanban,
+  GraduationCap,
+  LockKeyhole,
+  Mail,
+  Moon,
+  Sun,
+  UserRound,
+} from "lucide-react";
 import type { PortfolioData } from "../data/portfolioData";
 export type TabType =
   | "sobre"
@@ -26,19 +35,23 @@ export function Header({
   personal,
   isAdmin,
 }: Props) {
-  const items: { id: TabType; label: string }[] = [
-    { id: "sobre", label: "Sobre mim" },
-    { id: "experiencia", label: "Trajetória" },
-    { id: "formacao-ia", label: "Formação & IA" },
-    { id: "projetos", label: "Projetos" },
-    { id: "certificacoes", label: "Repertório" },
-    { id: "contato", label: "Contato" },
-  ];
+  const items = [
+    { id: "sobre", label: "Sobre mim", icon: UserRound },
+    { id: "experiencia", label: "Experiência", icon: BriefcaseBusiness },
+    { id: "formacao-ia", label: "Formação & IA", icon: GraduationCap },
+    { id: "projetos", label: "Projetos", icon: FolderKanban },
+    { id: "certificacoes", label: "Certificações", icon: Award },
+    { id: "contato", label: "Contato", icon: Mail },
+  ] as const;
   return (
     <header className="site-header">
-      <div className="site-header-top">
-        <button className="site-brand" onClick={() => onSelectTab("sobre")}>
-          <span className="brand-monogram">
+      <div className="site-header-inner">
+        <button
+          className="site-brand"
+          onClick={() => onSelectTab("sobre")}
+          aria-label={`${personal.brandTitle} — início`}
+        >
+          <span className="brand-monogram" aria-hidden="true">
             {personal.name
               .split(" ")
               .filter(Boolean)
@@ -48,46 +61,44 @@ export function Header({
           </span>
           <span>
             <strong>{personal.brandTitle}</strong>
-            <small>ideias, percurso & possibilidades</small>
+            <small>Comunicação, estratégia, dados & IA</small>
           </span>
         </button>
-        <div className="flex items-center gap-2 sm:gap-4">
+        <nav className="site-navigation" aria-label="Navegação principal">
+          {items.map(({ id, label, icon: Icon }) => (
+            <button
+              key={id}
+              type="button"
+              aria-current={activeTab === id ? "page" : undefined}
+              className={activeTab === id ? "active" : ""}
+              onClick={() => onSelectTab(id)}
+            >
+              <Icon size={15} aria-hidden="true" />
+              <span>{label}</span>
+            </button>
+          ))}
+        </nav>
+        <div className="header-actions">
           <button
             className="theme-switch"
+            type="button"
             aria-label={isDarkMode ? "Ativar modo claro" : "Ativar modo escuro"}
+            title={isDarkMode ? "Ativar modo claro" : "Ativar modo escuro"}
+            aria-pressed={isDarkMode}
             onClick={onToggleTheme}
           >
-            {isDarkMode ? <Sun size={17} /> : <Moon size={17} />}
+            {isDarkMode ? <Sun size={18} /> : <Moon size={18} />}
           </button>
           <button
             className="admin-entry"
             aria-label={isAdmin ? "Meu estúdio" : "Área admin"}
             onClick={onOpenCms}
           >
-            <LockKeyhole size={14} />
+            <LockKeyhole size={15} />
             <span>{isAdmin ? "Meu estúdio" : "Área admin"}</span>
-          </button>
-          <button
-            className="header-contact"
-            onClick={() => onSelectTab("contato")}
-          >
-            Vamos conversar <ArrowUpRight size={16} />
           </button>
         </div>
       </div>
-      <nav className="site-navigation" aria-label="Navegação principal">
-        {items.map((item, index) => (
-          <button
-            key={item.id}
-            aria-current={activeTab === item.id ? "page" : undefined}
-            className={activeTab === item.id ? "active" : ""}
-            onClick={() => onSelectTab(item.id)}
-          >
-            <span>0{index + 1}</span>
-            {item.label}
-          </button>
-        ))}
-      </nav>
     </header>
   );
 }
