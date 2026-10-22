@@ -1,6 +1,6 @@
-import React from 'react';
-import { Target, MessageCircle, Cpu, Sparkles } from 'lucide-react';
-import { PortfolioData } from '../data/portfolioData';
+import React from "react";
+import { Target, MessageCircle, Cpu, Sparkles } from "lucide-react";
+import { PortfolioData } from "../data/portfolioData";
 
 interface AboutProps {
   data: PortfolioData;
@@ -10,21 +10,26 @@ export const About: React.FC<AboutProps> = ({ data }) => {
   const { personal } = data;
 
   const valueIcons = [
-    <Target className="w-5 h-5 text-[#C83E62] dark:text-[#E04870]" key="target" />,
-    <MessageCircle className="w-5 h-5 text-[#C83E62] dark:text-[#E04870]" key="message" />,
-    <Cpu className="w-5 h-5 text-[#C83E62] dark:text-[#E04870]" key="cpu" />
+    <Target
+      className="w-5 h-5 text-[#C83E62] dark:text-[#E04870]"
+      key="target"
+    />,
+    <MessageCircle
+      className="w-5 h-5 text-[#C83E62] dark:text-[#E04870]"
+      key="message"
+    />,
+    <Cpu className="w-5 h-5 text-[#C83E62] dark:text-[#E04870]" key="cpu" />,
   ];
 
   return (
     <section id="sobre" className="py-10 md:py-14">
       <div className="w-full max-w-[1600px] mx-auto px-4 sm:px-8 lg:px-14 xl:px-20">
-        
         {/* Section Header */}
         <div className="mb-8">
           <div className="inline-flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-[#C83E62] dark:text-[#E04870] mb-2">
             <span>Trajetória & Essência</span>
             <span aria-hidden="true">·</span>
-            <span>23 Anos</span>
+            <span>{personal.age} anos</span>
           </div>
           <h2 className="text-3xl sm:text-4xl font-bold tracking-tight text-[#141416] dark:text-[#F4F4F7] text-balance">
             Quem Sou Eu
@@ -33,7 +38,6 @@ export const About: React.FC<AboutProps> = ({ data }) => {
 
         {/* Narrative & Strategic Pillars */}
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-14 xl:gap-20 items-start">
-          
           {/* Main Story Paragraphs */}
           <div className="lg:col-span-7 space-y-5 text-[#4B4B54] dark:text-[#9E9EAA] text-base sm:text-lg leading-relaxed font-normal">
             {personal.bioParagraphs.map((para, index) => (
@@ -81,9 +85,7 @@ export const About: React.FC<AboutProps> = ({ data }) => {
               </div>
             ))}
           </div>
-
         </div>
-
       </div>
     </section>
   );

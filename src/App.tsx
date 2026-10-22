@@ -3,51 +3,104 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import React, { useState, useEffect } from 'react';
-import { initialPortfolioData, PortfolioData, ProjectItem } from './data/portfolioData';
-import { Header, TabType } from './components/Header';
-import { Hero } from './components/Hero';
-import { About } from './components/About';
-import { Experience } from './components/Experience';
-import { EducationAndAI } from './components/EducationAndAI';
-import { Projects } from './components/Projects';
-import { CertificationsAndSkills } from './components/CertificationsAndSkills';
-import { Contact } from './components/Contact';
-import { Footer } from './components/Footer';
-import { ProjectModal } from './components/ProjectModal';
-import { ResumeModal } from './components/ResumeModal';
-import { CmsDrawer } from './components/CmsDrawer';
-import { ArrowRight } from 'lucide-react';
+import React, { Suspense, lazy, useState, useEffect } from "react";
+import {
+  initialPortfolioData,
+  PortfolioData,
+  ProjectItem,
+} from "./data/portfolioData";
+import { Header, TabType } from "./components/Header";
+import { Hero } from "./components/Hero";
+import { About } from "./components/About";
+import { Experience } from "./components/Experience";
+import { EducationAndAI } from "./components/EducationAndAI";
+import { Projects } from "./components/Projects";
+import { CertificationsAndSkills } from "./components/CertificationsAndSkills";
+import { Contact } from "./components/Contact";
+import { Footer } from "./components/Footer";
+import { ProjectModal } from "./components/ProjectModal";
+import { ResumeModal } from "./components/ResumeModal";
+const CmsDrawer = lazy(() =>
+  import("./components/CmsDrawer").then((module) => ({
+    default: module.CmsDrawer,
+  })),
+);
+import { ArrowRight } from "lucide-react";
+import { readPortfolio, writePortfolio } from "./lib/portfolio";
+import { useAdmin } from "./hooks/useAdmin";
 
 export default function App() {
   const [isDarkMode, setIsDarkMode] = useState<boolean>(() => {
-    if (typeof window !== 'undefined') {
-      const savedTheme = localStorage.getItem('kemily_theme');
+    if (typeof window !== "undefined") {
+      const savedTheme = localStorage.getItem("kemily_theme");
       if (savedTheme) {
-        return savedTheme === 'dark';
+        return savedTheme === "dark";
       }
-      return window.matchMedia('(prefers-color-scheme: dark)').matches;
+      return window.matchMedia("(prefers-color-scheme: dark)").matches;
     }
     return false;
   });
 
-  const [activeTab, setActiveTab] = useState<TabType>('sobre');
+  const [activeTab, setActiveTab] = useState<TabType>("sobre");
 
-  const [data, setData] = useState<PortfolioData>(() => {
-    if (typeof window !== 'undefined') {
-      const savedData = localStorage.getItem('kemily_portfolio_data');
-      if (savedData) {
-        try {
-          return JSON.parse(savedData);
-        } catch {
-          return initialPortfolioData;
+  const [data, setData] = useState<PortfolioData>(initialPortfolioData);
+  const [revision, setRevision] = useState(0);
+  const [contentLoaded, setContentLoaded] = useState(false);
+  const [contentError, setContentError] = useState("");
+  const admin = useAdmin();
+  useEffect(() => {
+    let active = true;
+    readPortfolio()
+      .then((result) => {
+        if (!active) return;
+        if (result) {
+          if (result.data) setData(result.data);
+          setRevision(result.revision);
+          setContentLoaded(true);
         }
-      }
+      })
+      .catch((error) => {
+        if (active) setContentError(error.message);
+      });
+    return () => {
+      active = false;
+    };
+  }, []);
+  useEffect(() => {
+    const personal = data.personal;
+    document.title = `${personal.brandTitle} — ${personal.headline}`;
+    const tags: Record<string, string> = {
+      "name:description": personal.subtitle,
+      "name:author": personal.name,
+      "property:og:title": document.title,
+      "property:og:description": personal.subtitle,
+      "property:og:site_name": personal.brandTitle,
+      "name:twitter:title": document.title,
+      "name:twitter:description": personal.subtitle,
+    };
+    for (const [key, content] of Object.entries(tags)) {
+      const [attribute, value] = key.split(":");
+      document
+        .querySelector(`meta[${attribute}="${value}"]`)
+        ?.setAttribute("content", content);
     }
-    return initialPortfolioData;
-  });
-
-  const [selectedProject, setSelectedProject] = useState<ProjectItem | null>(null);
+    const structured = document.querySelector(
+      'script[type="application/ld+json"]',
+    );
+    if (structured)
+      structured.textContent = JSON.stringify({
+        "@context": "https://schema.org",
+        "@type": "Person",
+        name: personal.name,
+        description: personal.headline,
+        image: personal.avatarUrl,
+        email: personal.email,
+        sameAs: [personal.linkedin].filter(Boolean),
+      });
+  }, [data.personal]);
+  const [selectedProject, setSelectedProject] = useState<ProjectItem | null>(
+    null,
+  );
   const [isResumeOpen, setIsResumeOpen] = useState(false);
   const [isCmsOpen, setIsCmsOpen] = useState(false);
 
@@ -55,13 +108,13 @@ export default function App() {
   useEffect(() => {
     const root = document.documentElement;
     if (isDarkMode) {
-      root.classList.add('dark');
-      root.style.colorScheme = 'dark';
-      localStorage.setItem('kemily_theme', 'dark');
+      root.classList.add("dark");
+      root.style.colorScheme = "dark";
+      localStorage.setItem("kemily_theme", "dark");
     } else {
-      root.classList.remove('dark');
-      root.style.colorScheme = 'light';
-      localStorage.setItem('kemily_theme', 'light');
+      root.classList.remove("dark");
+      root.style.colorScheme = "light";
+      localStorage.setItem("kemily_theme", "light");
     }
   }, [isDarkMode]);
 
@@ -69,24 +122,25 @@ export default function App() {
     setIsDarkMode((prev) => !prev);
   };
 
-  const handleUpdateData = (newData: PortfolioData) => {
+  const handleUpdateData = async (newData: PortfolioData) => {
+    if (!admin.isAdmin || !contentLoaded)
+      throw new Error(
+        "Entre com uma conta autorizada e carregue o conteúdo antes de publicar.",
+      );
+    const nextRevision = await writePortfolio(newData, revision);
     setData(newData);
-    localStorage.setItem('kemily_portfolio_data', JSON.stringify(newData));
-  };
-
-  const handleResetData = () => {
-    setData(initialPortfolioData);
-    localStorage.removeItem('kemily_portfolio_data');
+    setRevision(nextRevision);
   };
 
   const handleSelectTab = (tab: TabType) => {
     setActiveTab(tab);
-    window.scrollTo({ top: 0, behavior: 'smooth' });
+    window.scrollTo({ top: 0, behavior: "smooth" });
   };
 
   return (
-    <div className={`min-h-screen bg-[#F8F7F4] dark:bg-[#0B0B0E] text-[#141416] dark:text-[#F4F4F7] transition-colors duration-200 flex flex-col font-sans selection:bg-[#C83E62]/20 selection:text-[#C83E62] ${isDarkMode ? 'dark' : ''}`}>
-      
+    <div
+      className={`min-h-screen portfolio-site bg-[#F8F7F4] dark:bg-[#0B0B0E] text-[#141416] dark:text-[#F4F4F7] transition-colors duration-200 flex flex-col font-sans selection:bg-[#C83E62]/20 selection:text-[#C83E62] ${isDarkMode ? "dark" : ""}`}
+    >
       {/* Header with Portfólio Kemily Diniz brand & Tab Navigation */}
       <Header
         activeTab={activeTab}
@@ -94,13 +148,20 @@ export default function App() {
         isDarkMode={isDarkMode}
         onToggleTheme={toggleTheme}
         onOpenCms={() => setIsCmsOpen(true)}
+        personal={data.personal}
+        isAdmin={admin.isAdmin}
       />
 
+      {contentError && (
+        <div role="status" className="site-content-notice">
+          O conteúdo atualizado está indisponível no momento. Exibindo a versão
+          de apresentação.
+        </div>
+      )}
       {/* Main Blocked View Container with expansive desktop width */}
       <main className="flex-1 w-full max-w-[1600px] mx-auto px-4 sm:px-8 lg:px-14 xl:px-20 py-4">
-        
         {/* Block 1: Sobre mim (Hero + Quem Sou Eu) */}
-        {activeTab === 'sobre' && (
+        {activeTab === "sobre" && (
           <div className="space-y-6 animate-in fade-in-50 duration-200">
             <Hero
               data={data}
@@ -108,11 +169,11 @@ export default function App() {
               onNavigateToTab={handleSelectTab}
             />
             <About data={data} />
-            
+
             {/* Direct jump to next block */}
             <div className="pt-8 pb-4 flex justify-end">
               <button
-                onClick={() => handleSelectTab('experiencia')}
+                onClick={() => handleSelectTab("experiencia")}
                 className="inline-flex items-center gap-2 px-6 py-3 rounded-2xl bg-[#C83E62] hover:bg-[#A82447] text-white text-xs font-bold transition-all shadow-sm cursor-pointer"
               >
                 <span>Avançar para Experiência Corporativa</span>
@@ -123,7 +184,7 @@ export default function App() {
         )}
 
         {/* Block 2: Experiência Profissional */}
-        {activeTab === 'experiencia' && (
+        {activeTab === "experiencia" && (
           <div className="animate-in fade-in-50 duration-200">
             <Experience
               experiences={data.experiences}
@@ -133,7 +194,7 @@ export default function App() {
         )}
 
         {/* Block 3: Formação Acadêmica & Imersão em IA */}
-        {activeTab === 'formacao-ia' && (
+        {activeTab === "formacao-ia" && (
           <div className="animate-in fade-in-50 duration-200">
             <EducationAndAI
               education={data.education}
@@ -144,23 +205,23 @@ export default function App() {
         )}
 
         {/* Block 4: Projetos */}
-        {activeTab === 'projetos' && (
+        {activeTab === "projetos" && (
           <div className="animate-in fade-in-50 duration-200">
             <Projects
               projects={data.projects}
               onSelectProject={(project) => setSelectedProject(project)}
             />
-            
+
             {/* Block Navigation Helper */}
             <div className="flex items-center justify-between pt-8 border-t border-[#DCD9D0] dark:border-[#282832]">
               <button
-                onClick={() => handleSelectTab('formacao-ia')}
+                onClick={() => handleSelectTab("formacao-ia")}
                 className="text-xs font-bold text-[#4B4B54] dark:text-[#9E9EAA] hover:text-[#C83E62] transition-colors cursor-pointer"
               >
                 ← Voltar para Formação & IA
               </button>
               <button
-                onClick={() => handleSelectTab('certificacoes')}
+                onClick={() => handleSelectTab("certificacoes")}
                 className="inline-flex items-center gap-1.5 text-xs font-bold text-[#C83E62] dark:text-[#E04870] hover:underline cursor-pointer"
               >
                 <span>Avançar para Certificações</span>
@@ -171,7 +232,7 @@ export default function App() {
         )}
 
         {/* Block 5: Certificações & Habilidades */}
-        {activeTab === 'certificacoes' && (
+        {activeTab === "certificacoes" && (
           <div className="animate-in fade-in-50 duration-200">
             <CertificationsAndSkills
               certifications={data.certifications}
@@ -182,23 +243,20 @@ export default function App() {
         )}
 
         {/* Block 6: Contato Direto & Conexões */}
-        {activeTab === 'contato' && (
+        {activeTab === "contato" && (
           <div className="animate-in fade-in-50 duration-200">
-            <Contact
-              data={data}
-              onOpenResume={() => setIsResumeOpen(true)}
-            />
-            
+            <Contact data={data} onOpenResume={() => setIsResumeOpen(true)} />
+
             {/* Block Navigation Helper */}
             <div className="flex items-center justify-between pt-8 border-t border-[#DCD9D0] dark:border-[#282832]">
               <button
-                onClick={() => handleSelectTab('certificacoes')}
+                onClick={() => handleSelectTab("certificacoes")}
                 className="text-xs font-bold text-[#4B4B54] dark:text-[#9E9EAA] hover:text-[#C83E62] transition-colors cursor-pointer"
               >
                 ← Voltar para Certificações
               </button>
               <button
-                onClick={() => handleSelectTab('sobre')}
+                onClick={() => handleSelectTab("sobre")}
                 className="inline-flex items-center gap-1.5 text-xs font-bold text-[#C83E62] dark:text-[#E04870] hover:underline cursor-pointer"
               >
                 <span>Voltar ao Início (Sobre mim)</span>
@@ -207,11 +265,10 @@ export default function App() {
             </div>
           </div>
         )}
-
       </main>
 
       {/* Clean Editorial Footer */}
-      <Footer />
+      <Footer personal={data.personal} onOpenAdmin={() => setIsCmsOpen(true)} />
 
       {/* Case Study Lightbox / Modal */}
       <ProjectModal
@@ -227,14 +284,27 @@ export default function App() {
       />
 
       {/* CMS Headless / Comprehensive Content Manager Drawer */}
-      <CmsDrawer
-        isOpen={isCmsOpen}
-        onClose={() => setIsCmsOpen(false)}
-        data={data}
-        onUpdateData={handleUpdateData}
-        onResetData={handleResetData}
-      />
-
+      {isCmsOpen && (
+        <Suspense
+          fallback={
+            <div role="status" className="site-content-notice">
+              Abrindo o estúdio…
+            </div>
+          }
+        >
+          <CmsDrawer
+            isOpen={isCmsOpen}
+            onClose={() => setIsCmsOpen(false)}
+            data={data}
+            onUpdateData={handleUpdateData}
+            session={admin.session}
+            isAdmin={admin.isAdmin}
+            checking={admin.checking}
+            authError={admin.authError}
+            canPublish={contentLoaded}
+          />
+        </Suspense>
+      )}
     </div>
   );
 }
