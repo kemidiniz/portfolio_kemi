@@ -27,10 +27,10 @@ export const Contact: React.FC<ContactProps> = ({ data, onOpenResume }) => {
   };
 
   return (
-    <section id="contato" className="py-8 md:py-12">
+    <section id="contato" className="py-6 md:py-7">
       <div className="w-full max-w-[1600px] mx-auto px-4 sm:px-8 lg:px-14 xl:px-20">
         {/* Section Header */}
-        <div className="max-w-2xl mb-10">
+        <div className="max-w-2xl mb-6">
           <div className="inline-flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-[var(--wine)] mb-2">
             <span>Conexões Diretas</span>
             <span aria-hidden="true">·</span>
@@ -47,9 +47,9 @@ export const Contact: React.FC<ContactProps> = ({ data, onOpenResume }) => {
         </div>
 
         {/* High-Impact Direct Contact Cards Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-10">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
           {/* E-mail Card */}
-          <div className="p-7 surface-card rounded-2xl bg-[var(--paper-light)] border border-[var(--rule)] hover:border-[var(--wine)] dark:hover:border-[var(--wine)] transition-all shadow-sm hover:shadow-md flex flex-col justify-between group">
+          <div className="p-5 surface-card rounded-2xl bg-[var(--paper-light)] border border-[var(--rule)] hover:border-[var(--wine)] dark:hover:border-[var(--wine)] transition-all shadow-sm hover:shadow-md flex flex-col justify-between group">
             <div>
               <div className="flex items-center justify-between mb-5">
                 <div className="p-3.5 rounded-xl bg-[var(--button-bg)]/10 dark:bg-[var(--button-bg)]/20 text-[var(--wine)] group-hover:scale-105 transition-transform">
@@ -93,7 +93,7 @@ export const Contact: React.FC<ContactProps> = ({ data, onOpenResume }) => {
           </div>
 
           {/* LinkedIn Card */}
-          <div className="p-7 surface-card rounded-2xl bg-[var(--paper-light)] border border-[var(--rule)] hover:border-[var(--wine)] dark:hover:border-[var(--wine)] transition-all shadow-sm hover:shadow-md flex flex-col justify-between group">
+          <div className="p-5 surface-card rounded-2xl bg-[var(--paper-light)] border border-[var(--rule)] hover:border-[var(--wine)] dark:hover:border-[var(--wine)] transition-all shadow-sm hover:shadow-md flex flex-col justify-between group">
             <div>
               <div className="flex items-center justify-between mb-5">
                 <div className="p-3.5 rounded-xl bg-[var(--button-bg)]/10 dark:bg-[var(--button-bg)]/20 text-[var(--wine)] group-hover:scale-105 transition-transform">
@@ -131,7 +131,7 @@ export const Contact: React.FC<ContactProps> = ({ data, onOpenResume }) => {
           </div>
 
           {/* WhatsApp Card */}
-          <div className="p-7 surface-card rounded-2xl bg-[var(--paper-light)] border border-[var(--rule)] hover:border-[var(--wine)] dark:hover:border-[var(--wine)] transition-all shadow-sm hover:shadow-md flex flex-col justify-between group">
+          <div className="p-5 surface-card rounded-2xl bg-[var(--paper-light)] border border-[var(--rule)] hover:border-[var(--wine)] dark:hover:border-[var(--wine)] transition-all shadow-sm hover:shadow-md flex flex-col justify-between group">
             <div>
               <div className="flex items-center justify-between mb-5">
                 <div className="p-3.5 rounded-xl bg-[var(--button-bg)]/10 dark:bg-[var(--button-bg)]/20 text-[var(--wine)] group-hover:scale-105 transition-transform">
@@ -166,7 +166,7 @@ export const Contact: React.FC<ContactProps> = ({ data, onOpenResume }) => {
         </div>
 
         {/* Bottom Curriculum Callout Banner */}
-        <div className="p-7 sm:p-8 rounded-2xl bg-gradient-to-r from-[var(--wine)]/12 via-[var(--wine)]/5 to-transparent border-2 border-[var(--wine)]/30 flex flex-col sm:flex-row items-center justify-between gap-6">
+        <div className="p-5 sm:p-8 rounded-2xl bg-gradient-to-r from-[var(--wine)]/12 via-[var(--wine)]/5 to-transparent border-2 border-[var(--wine)]/30 flex flex-col sm:flex-row items-center justify-between gap-6">
           <div className="flex items-center gap-4">
             <div className="p-4 rounded-xl bg-[var(--button-bg)] text-white shrink-0 shadow-sm">
               <FileText className="w-6 h-6" />
@@ -175,7 +175,7 @@ export const Contact: React.FC<ContactProps> = ({ data, onOpenResume }) => {
               <h4 className="text-lg font-bold text-[var(--ink)]">
                 Currículo Profissional Completo
               </h4>
-              <p className="text-xs sm:text-sm text-[var(--muted)] mt-0.5 font-normal">
+              <p className="text-sm text-[var(--muted)] mt-0.5 font-normal">
                 Visualização formatada para recrutadores, disponível para
                 download direto em PDF ou impressão.
               </p>

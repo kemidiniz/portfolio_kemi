@@ -29,10 +29,10 @@ export const Experience: React.FC<ExperienceProps> = ({
   };
 
   return (
-    <section id="experiencia" className="py-8 md:py-12">
+    <section id="experiencia" className="py-6 md:py-7">
       <div className="w-full max-w-[1600px] mx-auto px-4 sm:px-8 lg:px-14 xl:px-20">
         {/* Section Header */}
-        <div className="mb-8">
+        <div className="mb-6">
           <div className="inline-flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-[var(--wine)] mb-2">
             <span>Trajetória Profissional</span>
             <span aria-hidden="true">·</span>
@@ -41,14 +41,14 @@ export const Experience: React.FC<ExperienceProps> = ({
           <h2 className="text-3xl sm:text-4xl font-bold tracking-tight text-[var(--ink)] text-balance">
             Experiência Corporativa
           </h2>
-          <p className="text-xs sm:text-sm text-[var(--muted)] mt-2 max-w-2xl font-normal">
+          <p className="text-sm text-[var(--muted)] mt-2 max-w-2xl font-normal">
             Experiências, desafios e aprendizados que constroem meu percurso
             profissional.
           </p>
         </div>
 
         {/* Experience List / Chronological Grid */}
-        <div className="space-y-6 mb-10">
+        <div className="space-y-6 mb-6">
           {experiences.map((exp, index) => {
             const isExpanded = expandedId === exp.id;
             const isFirst = index === 0;
@@ -60,7 +60,7 @@ export const Experience: React.FC<ExperienceProps> = ({
                   isFirst
                     ? "bg-[var(--paper-light)] border-[var(--wine)] shadow-md"
                     : "bg-[var(--paper-light)] border-[var(--rule)] hover:border-[var(--wine)]/50"
-                } p-6 sm:p-8`}
+                } p-5 sm:p-6`}
               >
                 {/* Header Row */}
                 <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
@@ -83,7 +83,7 @@ export const Experience: React.FC<ExperienceProps> = ({
                       {exp.badge && (
                         <>
                           <span aria-hidden="true">·</span>
-                          <span className="px-2.5 py-0.5 rounded-md bg-[var(--button-bg)]/10 dark:bg-[var(--button-bg)]/20 text-[var(--wine)] font-bold text-[11px]">
+                          <span className="px-2.5 py-0.5 rounded-md bg-[var(--button-bg)]/10 dark:bg-[var(--button-bg)]/20 text-[var(--wine)] font-bold text-xs">
                             {exp.badge}
                           </span>
                         </>

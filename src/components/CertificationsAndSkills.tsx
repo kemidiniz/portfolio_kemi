@@ -13,10 +13,10 @@ export const CertificationsAndSkills: React.FC<
   CertificationsAndSkillsProps
 > = ({ certifications, skills, onNavigateToTab }) => {
   return (
-    <section id="certificacoes" className="py-8 md:py-12">
+    <section id="certificacoes" className="py-6 md:py-7">
       <div className="w-full max-w-[1600px] mx-auto px-4 sm:px-8 lg:px-14 xl:px-20">
         {/* Section Header */}
-        <div className="mb-8">
+        <div className="mb-6">
           <div className="inline-flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-[var(--wine)] mb-2">
             <span>Validação de Competências</span>
             <span aria-hidden="true">·</span>
@@ -45,7 +45,7 @@ export const CertificationsAndSkills: React.FC<
                     <span className="font-bold text-sm text-[var(--wine)]">
                       {cert.institution}
                     </span>
-                    <span className="tabular-nums font-semibold px-2 py-0.5 rounded-md bg-[var(--surface-hover)] text-[11px]">
+                    <span className="tabular-nums font-semibold px-2 py-0.5 rounded-md bg-[var(--surface-hover)] text-xs">
                       {cert.year}
                     </span>
                   </div>
@@ -56,7 +56,7 @@ export const CertificationsAndSkills: React.FC<
                 </div>
 
                 <div className="pt-4 border-t border-[var(--rule)]">
-                  <span className="text-[11px] font-bold text-[var(--ink)] block mb-1">
+                  <span className="text-xs font-bold text-[var(--ink)] block mb-1">
                     Tópicos de Domínio:
                   </span>
                   <p className="text-xs text-[var(--muted)] leading-relaxed font-normal">
@@ -69,7 +69,7 @@ export const CertificationsAndSkills: React.FC<
         </div>
 
         {/* Hard Skills & Tools Matrix */}
-        <div className="mb-10">
+        <div className="mb-6">
           <h3 className="text-sm font-bold uppercase tracking-wider text-[var(--muted)] mb-4 flex items-center gap-2">
             <Wrench className="w-4 h-4 text-[var(--wine)]" />
             <span>Matriz de Ferramentas & Hard Skills</span>
@@ -79,7 +79,7 @@ export const CertificationsAndSkills: React.FC<
             {skills.map((skillGroup, sIdx) => (
               <div
                 key={sIdx}
-                className="p-6 sm:p-7 surface-card rounded-2xl bg-[var(--paper-light)] border border-[var(--rule)] flex flex-col justify-between shadow-2xs"
+                className="p-5 sm:p-6 surface-card rounded-2xl bg-[var(--paper-light)] border border-[var(--rule)] flex flex-col justify-between shadow-2xs"
               >
                 <div>
                   <h4 className="text-base font-bold text-[var(--ink)] mb-1">
@@ -106,7 +106,7 @@ export const CertificationsAndSkills: React.FC<
                   </div>
                 </div>
 
-                <div className="pt-4 mt-4 border-t border-[var(--rule)] text-[11px] text-[var(--muted)]">
+                <div className="pt-4 mt-4 border-t border-[var(--rule)] text-xs text-[var(--muted)]">
                   Aplicação prática em rotinas de estratégia e dados
                 </div>
               </div>

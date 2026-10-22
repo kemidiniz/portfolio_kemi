@@ -16,10 +16,10 @@ export const About: React.FC<AboutProps> = ({ data }) => {
   ];
 
   return (
-    <section id="sobre" className="py-10 md:py-14">
+    <section id="sobre" className="py-6 md:py-7">
       <div className="w-full max-w-[1600px] mx-auto px-4 sm:px-8 lg:px-14 xl:px-20">
         {/* Section Header */}
-        <div className="mb-8">
+        <div className="mb-6">
           <div className="inline-flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-[var(--wine)] mb-2">
             <span>Trajetória & Essência</span>
             <span aria-hidden="true">·</span>
@@ -33,7 +33,7 @@ export const About: React.FC<AboutProps> = ({ data }) => {
         {/* Narrative & Strategic Pillars */}
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-14 xl:gap-20 items-start">
           {/* Main Story Paragraphs */}
-          <div className="lg:col-span-7 space-y-5 text-[var(--muted)] text-base sm:text-lg leading-relaxed font-normal">
+          <div className="lg:col-span-7 space-y-5 text-[var(--muted)] text-[15px] leading-relaxed font-normal">
             {personal.bioParagraphs.map((para, index) => (
               <p key={index} className="text-balance">
                 {para}
@@ -41,7 +41,7 @@ export const About: React.FC<AboutProps> = ({ data }) => {
             ))}
 
             {/* High-Impact Motto Card */}
-            <div className="p-6 sm:p-7 rounded-2xl bg-gradient-to-r from-[var(--wine)]/10 via-transparent to-[var(--wine-hover)]/10 border-2 border-[var(--wine)]/30 shadow-xs">
+            <div className="p-5 sm:p-6 rounded-2xl bg-gradient-to-r from-[var(--wine)]/10 via-transparent to-[var(--wine-hover)]/10 border-2 border-[var(--wine)]/30 shadow-xs">
               <div className="flex items-center gap-4">
                 <div className="p-3 rounded-xl bg-[var(--button-bg)] text-white shrink-0">
                   <Sparkles className="w-5 h-5" />

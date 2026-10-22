@@ -31,7 +31,7 @@ export function Hero({
             <span className="status-dot" />
             {personal.statusBadge}
           </div>
-          <p className="profile-greeting">Olá, sou {personal.name}.</p>
+          <p className="profile-greeting">Oie, sou a {personal.nickname}!</p>
           <h1>
             {highlight > 0 ? (
               <>

@@ -22,7 +22,7 @@ O arquivo `vercel.json` registra os comandos e a saída. `package.json` fixa Nod
 
 ## 3. Configurar o Supabase na Vercel
 
-Antes do deploy, adicione em **Settings → Environment Variables**, para Production e Preview:
+Este portfólio já inclui a URL e a chave publicável em `src/config/publicSupabase.ts`. A área admin pode conectar também em prévias sem variáveis configuradas. Para substituir a conexão, adicione em **Settings → Environment Variables**, para Production e Preview:
 
 | Nome | Valor |
 | --- | --- |

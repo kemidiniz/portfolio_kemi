@@ -34,10 +34,10 @@ export const Projects: React.FC<ProjectsProps> = ({
       : projects.filter((p) => p.category === activeCategory);
 
   return (
-    <section id="projetos" className="py-8 md:py-12">
+    <section id="projetos" className="py-6 md:py-7">
       <div className="w-full max-w-[1600px] mx-auto px-4 sm:px-8 lg:px-14 xl:px-20">
         {/* Section Header */}
-        <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-8">
+        <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-6">
           <div>
             <div className="inline-flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-[var(--wine)] mb-2">
               <span>Produção Intelectual & Entregas</span>
@@ -47,7 +47,7 @@ export const Projects: React.FC<ProjectsProps> = ({
             <h2 className="text-3xl sm:text-4xl font-bold tracking-tight text-[var(--ink)] text-balance">
               Projetos
             </h2>
-            <p className="text-xs sm:text-sm text-[var(--muted)] mt-2 max-w-xl font-normal">
+            <p className="text-sm text-[var(--muted)] mt-2 max-w-xl font-normal">
               Clique em qualquer card para abrir o estudo de caso detalhado com
               desafios, metodologia e dados de impacto.
             </p>
@@ -72,7 +72,7 @@ export const Projects: React.FC<ProjectsProps> = ({
         </div>
 
         {/* Bento Grid Projects Showcase - Generous Card Sizing */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+        <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-5">
           {filteredProjects.map((project) => (
             <div
               key={project.id}
@@ -113,10 +113,10 @@ export const Projects: React.FC<ProjectsProps> = ({
               </div>
 
               {/* Card Body Content */}
-              <div className="p-6 sm:p-7 flex flex-col flex-grow justify-between">
+              <div className="p-5 sm:p-6 flex flex-col flex-grow justify-between">
                 <div>
                   <div className="flex items-start justify-between gap-4 mb-2">
-                    <h3 className="text-xl font-bold tracking-tight text-[var(--ink)] group-hover:text-[var(--wine)] dark:group-hover:text-[var(--wine)] transition-colors leading-snug">
+                    <h3 className="text-lg font-bold tracking-tight text-[var(--ink)] group-hover:text-[var(--wine)] dark:group-hover:text-[var(--wine)] transition-colors leading-snug">
                       {project.title}
                     </h3>
                     <div className="p-2.5 rounded-xl bg-[var(--surface-hover)] text-[var(--muted)] group-hover:text-white group-hover:bg-[var(--button-bg)] transition-all shrink-0">
@@ -128,7 +128,7 @@ export const Projects: React.FC<ProjectsProps> = ({
                     {project.clientOrContext}
                   </p>
 
-                  <p className="text-sm text-[var(--muted)] leading-relaxed mb-6 font-normal">
+                  <p className="text-sm text-[var(--muted)] leading-relaxed mb-4 font-normal">
                     {project.tagline}
                   </p>
                 </div>

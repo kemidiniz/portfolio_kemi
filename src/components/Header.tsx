@@ -1,3 +1,4 @@
+import { useEffect, useRef, useState } from "react";
 import {
   Award,
   BriefcaseBusiness,
@@ -5,9 +6,11 @@ import {
   GraduationCap,
   LockKeyhole,
   Mail,
+  Menu,
   Moon,
   Sun,
   UserRound,
+  X,
 } from "lucide-react";
 import type { PortfolioData } from "../data/portfolioData";
 export type TabType =
@@ -35,6 +38,31 @@ export function Header({
   personal,
   isAdmin,
 }: Props) {
+  const [menuOpen, setMenuOpen] = useState(false);
+  const header = useRef<HTMLElement>(null);
+  const menuButton = useRef<HTMLButtonElement>(null);
+  useEffect(() => {
+    if (!menuOpen) return;
+    const closeOutside = (e: PointerEvent) => {
+      if (!header.current?.contains(e.target as Node)) setMenuOpen(false);
+    };
+    const closeOnEscape = (e: KeyboardEvent) => {
+      if (e.key === "Escape") {
+        setMenuOpen(false);
+        menuButton.current?.focus();
+      }
+    };
+    document.addEventListener("pointerdown", closeOutside);
+    document.addEventListener("keydown", closeOnEscape);
+    return () => {
+      document.removeEventListener("pointerdown", closeOutside);
+      document.removeEventListener("keydown", closeOnEscape);
+    };
+  }, [menuOpen]);
+  function select(tab: TabType) {
+    setMenuOpen(false);
+    onSelectTab(tab);
+  }
   const items = [
     { id: "sobre", label: "Sobre mim", icon: UserRound },
     { id: "experiencia", label: "Experiência", icon: BriefcaseBusiness },
@@ -44,11 +72,11 @@ export function Header({
     { id: "contato", label: "Contato", icon: Mail },
   ] as const;
   return (
-    <header className="site-header">
+    <header className="site-header" ref={header}>
       <div className="site-header-inner">
         <button
           className="site-brand"
-          onClick={() => onSelectTab("sobre")}
+          onClick={() => select("sobre")}
           aria-label={`${personal.brandTitle} — início`}
         >
           <span className="brand-monogram" aria-hidden="true">
@@ -64,14 +92,18 @@ export function Header({
             <small>Comunicação, estratégia, dados & IA</small>
           </span>
         </button>
-        <nav className="site-navigation" aria-label="Navegação principal">
+        <nav
+          id="site-navigation"
+          className={`site-navigation ${menuOpen ? "is-open" : ""}`}
+          aria-label="Navegação principal"
+        >
           {items.map(({ id, label, icon: Icon }) => (
             <button
               key={id}
               type="button"
               aria-current={activeTab === id ? "page" : undefined}
               className={activeTab === id ? "active" : ""}
-              onClick={() => onSelectTab(id)}
+              onClick={() => select(id)}
             >
               <Icon size={15} aria-hidden="true" />
               <span>{label}</span>
@@ -92,10 +124,24 @@ export function Header({
           <button
             className="admin-entry"
             aria-label={isAdmin ? "Meu estúdio" : "Área admin"}
-            onClick={onOpenCms}
+            onClick={() => {
+              setMenuOpen(false);
+              onOpenCms();
+            }}
           >
             <LockKeyhole size={15} />
             <span>{isAdmin ? "Meu estúdio" : "Área admin"}</span>
+          </button>
+          <button
+            ref={menuButton}
+            className="navigation-toggle"
+            type="button"
+            aria-label={menuOpen ? "Fechar navegação" : "Abrir navegação"}
+            aria-expanded={menuOpen}
+            aria-controls="site-navigation"
+            onClick={() => setMenuOpen((open) => !open)}
+          >
+            {menuOpen ? <X size={19} /> : <Menu size={19} />}
           </button>
         </div>
       </div>

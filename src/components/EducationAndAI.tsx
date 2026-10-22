@@ -25,10 +25,10 @@ export const EducationAndAI: React.FC<EducationAndAIProps> = ({
   const summits = techImmersions.filter((item) => item.id !== "reprograma-ia");
 
   return (
-    <section id="formacao-ia" className="py-8 md:py-12">
+    <section id="formacao-ia" className="py-6 md:py-7">
       <div className="w-full max-w-[1600px] mx-auto px-4 sm:px-8 lg:px-14 xl:px-20">
         {/* Section Header */}
-        <div className="mb-8">
+        <div className="mb-6">
           <div className="inline-flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-[var(--wine)] mb-2">
             <span>Repertório & Aprendizado Contínuo</span>
             <span aria-hidden="true">·</span>
@@ -40,7 +40,7 @@ export const EducationAndAI: React.FC<EducationAndAIProps> = ({
         </div>
 
         {/* Top Grid: Academic Degrees */}
-        <div className="mb-10">
+        <div className="mb-6">
           <h3 className="text-sm font-bold uppercase tracking-wider text-[var(--muted)] mb-4 flex items-center gap-2">
             <GraduationCap className="w-4 h-4 text-[var(--wine)]" />
             <span>Graduação & Ensino Superior</span>
@@ -50,13 +50,13 @@ export const EducationAndAI: React.FC<EducationAndAIProps> = ({
             {education.map((edu) => (
               <div
                 key={edu.id}
-                className="p-7 surface-card rounded-2xl bg-[var(--paper-light)] border border-[var(--rule)] hover:border-[var(--wine)]/60 transition-all shadow-2xs"
+                className="p-5 surface-card rounded-2xl bg-[var(--paper-light)] border border-[var(--rule)] hover:border-[var(--wine)]/60 transition-all shadow-2xs"
               >
                 <div className="flex items-center justify-between gap-2 text-xs text-[var(--muted)] mb-3">
                   <span className="font-bold text-sm text-[var(--wine)]">
                     {edu.institution}
                   </span>
-                  <span className="tabular-nums font-semibold px-2.5 py-0.5 rounded-md bg-[var(--surface-hover)] text-[11px]">
+                  <span className="tabular-nums font-semibold px-2.5 py-0.5 rounded-md bg-[var(--surface-hover)] text-xs">
                     {edu.period} · {edu.status}
                   </span>
                 </div>
@@ -79,7 +79,7 @@ export const EducationAndAI: React.FC<EducationAndAIProps> = ({
 
         {/* Spotlight: Reprograma AI Formation */}
         {aiCourse && (
-          <div className="mb-10 p-7 sm:p-9 rounded-2xl bg-gradient-to-r from-[var(--wine)]/15 via-[var(--wine)]/5 to-transparent border-2 border-[var(--wine)] relative overflow-hidden shadow-sm">
+          <div className="mb-6 p-5 sm:p-6 rounded-2xl bg-gradient-to-r from-[var(--wine)]/15 via-[var(--wine)]/5 to-transparent border-2 border-[var(--wine)] relative overflow-hidden shadow-sm">
             <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
               <div className="space-y-3 max-w-3xl">
                 <div className="inline-flex items-center gap-2 text-xs font-bold text-[var(--wine)]">
@@ -127,7 +127,7 @@ export const EducationAndAI: React.FC<EducationAndAIProps> = ({
                 <span className="text-xl font-black text-[var(--wine)] mt-1">
                   &#123;reprograma&#125;
                 </span>
-                <span className="text-[11px] font-semibold text-[var(--muted)] mt-1">
+                <span className="text-xs font-semibold text-[var(--muted)] mt-1">
                   Diversidade & Inteligência Artificial
                 </span>
               </div>
@@ -136,7 +136,7 @@ export const EducationAndAI: React.FC<EducationAndAIProps> = ({
         )}
 
         {/* Bottom Section: Tech Summits & Immersions */}
-        <div className="mb-10">
+        <div className="mb-6">
           <h3 className="text-sm font-bold uppercase tracking-wider text-[var(--muted)] mb-4 flex items-center gap-2">
             <Users className="w-4 h-4 text-[var(--wine)]" />
             <span>Eventos, Summits & Imersões Tech</span>
@@ -167,7 +167,7 @@ export const EducationAndAI: React.FC<EducationAndAIProps> = ({
                   </p>
                 </div>
 
-                <div className="pt-3 border-t border-[var(--rule)] text-[11px] font-medium text-[var(--wine)]">
+                <div className="pt-3 border-t border-[var(--rule)] text-xs font-medium text-[var(--wine)]">
                   {event.focus.join(" · ")}
                 </div>
               </div>
