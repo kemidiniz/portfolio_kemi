@@ -100,16 +100,16 @@ Power BI, Excel Avançado, Gestão de KPIs, Comunicação Estratégica, Endomark
     <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-6 bg-black/80 backdrop-blur-md overflow-y-auto">
       {/* Outer Modal Container */}
       <div
-        className="relative w-full max-w-4xl my-6 bg-white dark:bg-[#141419] rounded-3xl border-2 border-[#DCD9D0] dark:border-[#282832] shadow-2xl overflow-hidden flex flex-col max-h-[92vh]"
+        className="relative w-full max-w-4xl my-6 bg-[var(--paper-light)] rounded-3xl border border-[var(--rule)] shadow-2xl overflow-hidden flex flex-col max-h-[92vh]"
         onClick={(e) => e.stopPropagation()}
       >
         {/* Top Control Bar (Hidden when printing) */}
-        <div className="no-print p-4 sm:p-5 bg-[#F8F7F4] dark:bg-[#0B0B0E] border-b border-[#DCD9D0] dark:border-[#282832] flex flex-wrap items-center justify-between gap-4">
+        <div className="no-print p-4 sm:p-5 bg-[var(--paper)] border-b border-[var(--rule)] flex flex-wrap items-center justify-between gap-4">
           <div className="flex items-center gap-2">
-            <span className="font-extrabold text-sm text-[#141416] dark:text-[#F4F4F7]">
+            <span className="font-extrabold text-sm text-[var(--ink)]">
               Currículo Profissional — {personal.name} ({personal.nickname})
             </span>
-            <span className="text-xs text-[#C83E62] dark:text-[#E04870] font-semibold hidden sm:inline">
+            <span className="text-xs text-[var(--wine)] font-semibold hidden sm:inline">
               (Formato A4 Otimizado para Recrutadores)
             </span>
           </div>
@@ -117,7 +117,7 @@ Power BI, Excel Avançado, Gestão de KPIs, Comunicação Estratégica, Endomark
           <div className="flex items-center gap-2.5">
             <button
               onClick={handleCopyText}
-              className="inline-flex items-center gap-1.5 px-3.5 py-1.5 text-xs font-bold rounded-xl border border-[#DCD9D0] dark:border-[#282832] text-[#141416] dark:text-[#F4F4F7] hover:border-[#C83E62] transition-colors cursor-pointer"
+              className="inline-flex items-center gap-1.5 px-3.5 py-1.5 text-xs font-bold rounded-xl border border-[var(--rule)] text-[var(--ink)] hover:border-[var(--wine)] transition-colors cursor-pointer"
               title="Copiar texto simples para colar no LinkedIn ou ATS"
             >
               {copied ? (
@@ -130,7 +130,7 @@ Power BI, Excel Avançado, Gestão de KPIs, Comunicação Estratégica, Endomark
 
             <button
               onClick={handlePrint}
-              className="inline-flex items-center gap-1.5 px-4 py-1.5 text-xs font-bold rounded-xl bg-[#C83E62] hover:bg-[#A82447] text-white transition-all shadow-xs cursor-pointer"
+              className="inline-flex items-center gap-1.5 px-4 py-1.5 text-xs font-bold rounded-xl bg-[var(--button-bg)] hover:bg-[var(--button-hover)] text-white transition-all shadow-xs cursor-pointer"
               title="Salvar como arquivo PDF ou imprimir"
             >
               <Printer className="w-3.5 h-3.5" />
@@ -140,7 +140,7 @@ Power BI, Excel Avançado, Gestão de KPIs, Comunicação Estratégica, Endomark
             <button
               onClick={onClose}
               aria-label="Fechar"
-              className="p-1.5 rounded-lg text-[#4B4B54] dark:text-[#9E9EAA] hover:text-[#141416] dark:hover:text-[#F4F4F7] cursor-pointer"
+              className="p-1.5 rounded-lg text-[var(--muted)] hover:text-[var(--ink)] dark:hover:text-[var(--ink)] cursor-pointer"
             >
               <X className="w-5 h-5" />
             </button>
@@ -148,23 +148,23 @@ Power BI, Excel Avançado, Gestão de KPIs, Comunicação Estratégica, Endomark
         </div>
 
         {/* Printable Curriculum Sheet */}
-        <div className="p-6 sm:p-10 overflow-y-auto bg-white dark:bg-[#141419] text-[#141416] dark:text-[#F4F4F7] print-page">
+        <div className="p-6 sm:p-10 overflow-y-auto bg-[var(--paper-light)] text-[var(--ink)] print-page">
           {/* CV Header */}
-          <div className="border-b-2 border-[#141416] dark:border-[#F4F4F7] pb-6 mb-6">
+          <div className="border-b-2 border-[var(--ink)] pb-6 mb-6">
             <h1 className="text-3xl font-black tracking-tight">
               {personal.name.toUpperCase()}{" "}
-              <span className="text-lg font-bold text-[#C83E62] dark:text-[#E04870]">
+              <span className="text-lg font-bold text-[var(--wine)]">
                 ({personal.nickname})
               </span>
             </h1>
-            <p className="text-base font-bold text-[#C83E62] dark:text-[#E04870] mt-1">
+            <p className="text-base font-bold text-[var(--wine)] mt-1">
               {personal.headline}
             </p>
-            <p className="text-xs italic text-[#4B4B54] dark:text-[#9E9EAA] mt-1">
+            <p className="text-xs italic text-[var(--muted)] mt-1">
               "{personal.motto}"
             </p>
 
-            <div className="flex flex-wrap items-center gap-4 text-xs text-[#4B4B54] dark:text-[#9E9EAA] mt-3 font-medium">
+            <div className="flex flex-wrap items-center gap-4 text-xs text-[var(--muted)] mt-3 font-medium">
               <span>{personal.location}</span>
               <span>•</span>
               <span>{personal.email}</span>
@@ -173,7 +173,7 @@ Power BI, Excel Avançado, Gestão de KPIs, Comunicação Estratégica, Endomark
                 href={personal.linkedin}
                 target="_blank"
                 rel="noreferrer"
-                className="hover:underline text-[#C83E62] dark:text-[#E04870] font-bold"
+                className="hover:underline text-[var(--wine)] font-bold"
               >
                 {personal.linkedinDisplay}
               </a>
@@ -184,38 +184,38 @@ Power BI, Excel Avançado, Gestão de KPIs, Comunicação Estratégica, Endomark
 
           {/* Section: Resumo Profissional */}
           <div className="mb-6">
-            <h2 className="text-xs font-black uppercase tracking-wider text-[#C83E62] dark:text-[#E04870] border-b border-[#DCD9D0] dark:border-[#282832] pb-1 mb-2.5">
+            <h2 className="text-xs font-black uppercase tracking-wider text-[var(--wine)] border-b border-[var(--rule)] pb-1 mb-2.5">
               Resumo Profissional
             </h2>
-            <p className="text-xs sm:text-sm text-[#4B4B54] dark:text-[#9E9EAA] leading-relaxed">
+            <p className="text-xs sm:text-sm text-[var(--muted)] leading-relaxed">
               {personal.bioParagraphs.join(" ")}
             </p>
           </div>
 
           {/* Section: Experiência Profissional */}
           <div className="mb-6">
-            <h2 className="text-xs font-black uppercase tracking-wider text-[#C83E62] dark:text-[#E04870] border-b border-[#DCD9D0] dark:border-[#282832] pb-1 mb-3">
+            <h2 className="text-xs font-black uppercase tracking-wider text-[var(--wine)] border-b border-[var(--rule)] pb-1 mb-3">
               Experiência Profissional
             </h2>
 
             <div className="space-y-4">
               {experiences.map((exp) => (
                 <div key={exp.id} className="text-xs sm:text-sm">
-                  <div className="flex flex-wrap items-baseline justify-between gap-2 font-black text-[#141416] dark:text-[#F4F4F7]">
+                  <div className="flex flex-wrap items-baseline justify-between gap-2 font-black text-[var(--ink)]">
                     <span>
                       {exp.role} —{" "}
-                      <span className="font-bold text-[#C83E62] dark:text-[#E04870]">
+                      <span className="font-bold text-[var(--wine)]">
                         {exp.company}
                       </span>
                     </span>
-                    <span className="text-xs font-semibold tabular-nums text-[#4B4B54] dark:text-[#9E9EAA]">
+                    <span className="text-xs font-semibold tabular-nums text-[var(--muted)]">
                       {exp.period}
                     </span>
                   </div>
-                  <p className="text-xs text-[#4B4B54] dark:text-[#9E9EAA] mt-1 mb-1.5">
+                  <p className="text-xs text-[var(--muted)] mt-1 mb-1.5">
                     {exp.summary}
                   </p>
-                  <ul className="list-disc list-inside space-y-1 text-xs text-[#4B4B54] dark:text-[#9E9EAA]">
+                  <ul className="list-disc list-inside space-y-1 text-xs text-[var(--muted)]">
                     {exp.achievements.map((ach, idx) => (
                       <li key={idx} className="leading-snug">
                         {ach}
@@ -229,7 +229,7 @@ Power BI, Excel Avançado, Gestão de KPIs, Comunicação Estratégica, Endomark
 
           {/* Section: Artigos Acadêmicos Publicados */}
           <div className="mb-6">
-            <h2 className="text-xs font-black uppercase tracking-wider text-[#C83E62] dark:text-[#E04870] border-b border-[#DCD9D0] dark:border-[#282832] pb-1 mb-2.5">
+            <h2 className="text-xs font-black uppercase tracking-wider text-[var(--wine)] border-b border-[var(--rule)] pb-1 mb-2.5">
               Projetos & Publicações
             </h2>
             <div className="space-y-3 text-xs">
@@ -247,16 +247,16 @@ Power BI, Excel Avançado, Gestão de KPIs, Comunicação Estratégica, Endomark
           {/* Section: Formação Acadêmica & IA */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
             <div>
-              <h2 className="text-xs font-black uppercase tracking-wider text-[#C83E62] dark:text-[#E04870] border-b border-[#DCD9D0] dark:border-[#282832] pb-1 mb-2.5">
+              <h2 className="text-xs font-black uppercase tracking-wider text-[var(--wine)] border-b border-[var(--rule)] pb-1 mb-2.5">
                 Formação Acadêmica
               </h2>
               <div className="space-y-3 text-xs">
                 {education.map((edu) => (
                   <div key={edu.id}>
-                    <p className="font-bold text-[#141416] dark:text-[#F4F4F7]">
+                    <p className="font-bold text-[var(--ink)]">
                       {edu.field} ({edu.degree})
                     </p>
-                    <p className="text-[#4B4B54] dark:text-[#9E9EAA]">
+                    <p className="text-[var(--muted)]">
                       {edu.institution} ·{" "}
                       <span className="tabular-nums font-semibold">
                         {edu.period}
@@ -269,7 +269,7 @@ Power BI, Excel Avançado, Gestão de KPIs, Comunicação Estratégica, Endomark
             </div>
 
             <div>
-              <h2 className="text-xs font-black uppercase tracking-wider text-[#C83E62] dark:text-[#E04870] border-b border-[#DCD9D0] dark:border-[#282832] pb-1 mb-2.5">
+              <h2 className="text-xs font-black uppercase tracking-wider text-[var(--wine)] border-b border-[var(--rule)] pb-1 mb-2.5">
                 Formação em Tecnologia & IA
               </h2>
               <div className="space-y-3 text-xs">
@@ -288,13 +288,13 @@ Power BI, Excel Avançado, Gestão de KPIs, Comunicação Estratégica, Endomark
           {/* Section: Certificações & Hard Skills */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div>
-              <h2 className="text-xs font-black uppercase tracking-wider text-[#C83E62] dark:text-[#E04870] border-b border-[#DCD9D0] dark:border-[#282832] pb-1 mb-2.5">
+              <h2 className="text-xs font-black uppercase tracking-wider text-[var(--wine)] border-b border-[var(--rule)] pb-1 mb-2.5">
                 Certificações Principais
               </h2>
-              <ul className="space-y-1.5 text-xs text-[#4B4B54] dark:text-[#9E9EAA]">
+              <ul className="space-y-1.5 text-xs text-[var(--muted)]">
                 {certifications.map((c) => (
                   <li key={c.id}>
-                    <span className="font-bold text-[#141416] dark:text-[#F4F4F7]">
+                    <span className="font-bold text-[var(--ink)]">
                       {c.title}
                     </span>{" "}
                     — {c.institution} ({c.year})
@@ -304,10 +304,10 @@ Power BI, Excel Avançado, Gestão de KPIs, Comunicação Estratégica, Endomark
             </div>
 
             <div>
-              <h2 className="text-xs font-black uppercase tracking-wider text-[#C83E62] dark:text-[#E04870] border-b border-[#DCD9D0] dark:border-[#282832] pb-1 mb-2.5">
+              <h2 className="text-xs font-black uppercase tracking-wider text-[var(--wine)] border-b border-[var(--rule)] pb-1 mb-2.5">
                 Habilidades & Ferramentas
               </h2>
-              <p className="text-xs text-[#4B4B54] dark:text-[#9E9EAA] leading-relaxed">
+              <p className="text-xs text-[var(--muted)] leading-relaxed">
                 {skills
                   .flatMap((group) => group.items.map((item) => item.name))
                   .join(", ")}

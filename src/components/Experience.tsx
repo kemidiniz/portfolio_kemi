@@ -29,26 +29,26 @@ export const Experience: React.FC<ExperienceProps> = ({
   };
 
   return (
-    <section id="experiencia" className="py-8 md:py-12">
+    <section id="experiencia" className="py-6 md:py-7">
       <div className="w-full max-w-[1600px] mx-auto px-4 sm:px-8 lg:px-14 xl:px-20">
         {/* Section Header */}
-        <div className="mb-8">
-          <div className="inline-flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-[#C83E62] dark:text-[#E04870] mb-2">
+        <div className="mb-6">
+          <div className="inline-flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-[var(--wine)] mb-2">
             <span>Trajetória Profissional</span>
             <span aria-hidden="true">·</span>
             <span>Comunicação, CX & Estratégia</span>
           </div>
-          <h2 className="text-3xl sm:text-4xl font-bold tracking-tight text-[#141416] dark:text-[#F4F4F7] text-balance">
+          <h2 className="text-3xl sm:text-4xl font-bold tracking-tight text-[var(--ink)] text-balance">
             Experiência Corporativa
           </h2>
-          <p className="text-xs sm:text-sm text-[#4B4B54] dark:text-[#9E9EAA] mt-2 max-w-2xl font-normal">
+          <p className="text-sm text-[var(--muted)] mt-2 max-w-2xl font-normal">
             Experiências, desafios e aprendizados que constroem meu percurso
             profissional.
           </p>
         </div>
 
         {/* Experience List / Chronological Grid */}
-        <div className="space-y-6 mb-10">
+        <div className="space-y-6 mb-6">
           {experiences.map((exp, index) => {
             const isExpanded = expandedId === exp.id;
             const isFirst = index === 0;
@@ -58,16 +58,16 @@ export const Experience: React.FC<ExperienceProps> = ({
                 key={exp.id}
                 className={`rounded-2xl transition-all border-2 ${
                   isFirst
-                    ? "bg-white dark:bg-[#141419] border-[#C83E62] dark:border-[#E04870] shadow-md"
-                    : "bg-white dark:bg-[#141419] border-[#DCD9D0] dark:border-[#282832] hover:border-[#C83E62]/50"
-                } p-6 sm:p-8`}
+                    ? "bg-[var(--paper-light)] border-[var(--wine)] shadow-md"
+                    : "bg-[var(--paper-light)] border-[var(--rule)] hover:border-[var(--wine)]/50"
+                } p-5 sm:p-6`}
               >
                 {/* Header Row */}
                 <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
                   <div className="space-y-1.5">
                     {/* Unboxed Metadata: Period · Location · Badge */}
-                    <div className="flex flex-wrap items-center gap-2 text-xs text-[#4B4B54] dark:text-[#9E9EAA]">
-                      <span className="font-bold text-sm text-[#C83E62] dark:text-[#E04870]">
+                    <div className="flex flex-wrap items-center gap-2 text-xs text-[var(--muted)]">
+                      <span className="font-bold text-sm text-[var(--wine)]">
                         {exp.company}
                       </span>
                       <span aria-hidden="true">·</span>
@@ -83,7 +83,7 @@ export const Experience: React.FC<ExperienceProps> = ({
                       {exp.badge && (
                         <>
                           <span aria-hidden="true">·</span>
-                          <span className="px-2.5 py-0.5 rounded-md bg-[#C83E62]/10 dark:bg-[#E04870]/20 text-[#C83E62] dark:text-[#E04870] font-bold text-[11px]">
+                          <span className="px-2.5 py-0.5 rounded-md bg-[var(--button-bg)]/10 dark:bg-[var(--button-bg)]/20 text-[var(--wine)] font-bold text-xs">
                             {exp.badge}
                           </span>
                         </>
@@ -91,7 +91,7 @@ export const Experience: React.FC<ExperienceProps> = ({
                     </div>
 
                     {/* Role Title */}
-                    <h3 className="text-xl sm:text-2xl font-bold tracking-tight text-[#141416] dark:text-[#F4F4F7]">
+                    <h3 className="text-xl sm:text-2xl font-bold tracking-tight text-[var(--ink)]">
                       {exp.role}
                     </h3>
                   </div>
@@ -99,7 +99,7 @@ export const Experience: React.FC<ExperienceProps> = ({
                   {/* Toggle Accordion / Expansion Button */}
                   <button
                     onClick={() => toggleExpand(exp.id)}
-                    className="self-start md:self-center inline-flex items-center gap-1.5 text-xs font-semibold text-[#C83E62] dark:text-[#E04870] hover:text-[#A82447] py-2 px-3.5 rounded-xl border border-[#DCD9D0] dark:border-[#282832] hover:border-[#C83E62] transition-colors whitespace-nowrap cursor-pointer"
+                    className="self-start md:self-center inline-flex items-center gap-1.5 text-xs font-semibold text-[var(--wine)] hover:text-[var(--wine-hover)] py-2 px-3.5 rounded-xl border border-[var(--rule)] hover:border-[var(--wine)] transition-colors whitespace-nowrap cursor-pointer"
                   >
                     <span>
                       {isExpanded
@@ -115,14 +115,14 @@ export const Experience: React.FC<ExperienceProps> = ({
                 </div>
 
                 {/* Summary */}
-                <p className="mt-3.5 text-sm sm:text-base text-[#4B4B54] dark:text-[#9E9EAA] leading-relaxed font-normal">
+                <p className="mt-3.5 text-sm sm:text-base text-[var(--muted)] leading-relaxed font-normal">
                   {exp.summary}
                 </p>
 
                 {/* Expandable Achievements & Scope */}
                 {isExpanded && (
-                  <div className="mt-6 pt-6 border-t border-[#DCD9D0] dark:border-[#282832] space-y-4">
-                    <h4 className="text-xs font-bold uppercase tracking-wider text-[#141416] dark:text-[#F4F4F7]">
+                  <div className="mt-6 pt-6 border-t border-[var(--rule)] space-y-4">
+                    <h4 className="text-xs font-bold uppercase tracking-wider text-[var(--ink)]">
                       Principais Impactos & Entregas
                     </h4>
 
@@ -130,9 +130,9 @@ export const Experience: React.FC<ExperienceProps> = ({
                       {exp.achievements.map((ach, aIdx) => (
                         <li
                           key={aIdx}
-                          className="flex items-start gap-3 text-sm text-[#4B4B54] dark:text-[#9E9EAA] font-normal"
+                          className="flex items-start gap-3 text-sm text-[var(--muted)] font-normal"
                         >
-                          <CheckCircle2 className="w-4 h-4 text-[#C83E62] dark:text-[#E04870] shrink-0 mt-0.5" />
+                          <CheckCircle2 className="w-4 h-4 text-[var(--wine)] shrink-0 mt-0.5" />
                           <span>{ach}</span>
                         </li>
                       ))}
@@ -140,10 +140,10 @@ export const Experience: React.FC<ExperienceProps> = ({
 
                     {/* Skills Used */}
                     <div className="pt-3">
-                      <span className="text-xs font-bold text-[#141416] dark:text-[#F4F4F7] mr-2">
+                      <span className="text-xs font-bold text-[var(--ink)] mr-2">
                         Competências Mobilizadas:
                       </span>
-                      <span className="text-xs font-medium text-[#C83E62] dark:text-[#E04870]">
+                      <span className="text-xs font-medium text-[var(--wine)]">
                         {exp.skills.join(" · ")}
                       </span>
                     </div>
@@ -156,16 +156,16 @@ export const Experience: React.FC<ExperienceProps> = ({
 
         {/* Block Navigation Helper */}
         {onNavigateToTab && (
-          <div className="flex items-center justify-between pt-6 border-t border-[#DCD9D0] dark:border-[#282832]">
+          <div className="flex items-center justify-between pt-6 border-t border-[var(--rule)]">
             <button
               onClick={() => onNavigateToTab("sobre")}
-              className="text-xs font-bold text-[#4B4B54] dark:text-[#9E9EAA] hover:text-[#C83E62] transition-colors cursor-pointer"
+              className="text-xs font-bold text-[var(--muted)] hover:text-[var(--wine)] transition-colors cursor-pointer"
             >
               ← Voltar para Sobre mim
             </button>
             <button
               onClick={() => onNavigateToTab("formacao-ia")}
-              className="inline-flex items-center gap-1.5 text-xs font-bold text-[#C83E62] dark:text-[#E04870] hover:underline cursor-pointer"
+              className="inline-flex items-center gap-1.5 text-xs font-bold text-[var(--wine)] hover:underline cursor-pointer"
             >
               <span>Avançar para Formação & IA</span>
               <ArrowRight className="w-3.5 h-3.5" />

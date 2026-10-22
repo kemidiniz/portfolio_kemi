@@ -42,6 +42,7 @@ export default function App() {
   });
 
   const [activeTab, setActiveTab] = useState<TabType>("sobre");
+  const [showBiography, setShowBiography] = useState(false);
 
   const [data, setData] = useState<PortfolioData>(initialPortfolioData);
   const [revision, setRevision] = useState(0);
@@ -134,13 +135,17 @@ export default function App() {
 
   const handleSelectTab = (tab: TabType) => {
     setActiveTab(tab);
-    window.scrollTo({ top: 0, behavior: "smooth" });
+    setShowBiography(false);
+    window.scrollTo({ top: 0, behavior: "instant" });
   };
 
   return (
     <div
-      className={`min-h-screen portfolio-site bg-[#F8F7F4] dark:bg-[#0B0B0E] text-[#141416] dark:text-[#F4F4F7] transition-colors duration-200 flex flex-col font-sans selection:bg-[#C83E62]/20 selection:text-[#C83E62] ${isDarkMode ? "dark" : ""}`}
+      className={`min-h-screen portfolio-site bg-[var(--paper)] text-[var(--ink)] transition-colors duration-200 flex flex-col font-sans selection:bg-[var(--button-bg)]/20 selection:text-[var(--wine)] ${isDarkMode ? "dark" : ""}`}
     >
+      <a className="skip-link" href="#conteudo">
+        Ir para o conteúdo
+      </a>
       {/* Header with Portfólio Kemily Diniz brand & Tab Navigation */}
       <Header
         activeTab={activeTab}
@@ -159,33 +164,43 @@ export default function App() {
         </div>
       )}
       {/* Main Blocked View Container with expansive desktop width */}
-      <main className="flex-1 w-full max-w-[1600px] mx-auto px-4 sm:px-8 lg:px-14 xl:px-20 py-4">
+      <main id="conteudo" className="site-main">
         {/* Block 1: Sobre mim (Hero + Quem Sou Eu) */}
         {activeTab === "sobre" && (
-          <div className="space-y-6 animate-in fade-in-50 duration-200">
-            <Hero
-              data={data}
-              onOpenResume={() => setIsResumeOpen(true)}
-              onNavigateToTab={handleSelectTab}
-            />
-            <About data={data} />
-
-            {/* Direct jump to next block */}
-            <div className="pt-8 pb-4 flex justify-end">
-              <button
-                onClick={() => handleSelectTab("experiencia")}
-                className="inline-flex items-center gap-2 px-6 py-3 rounded-2xl bg-[#C83E62] hover:bg-[#A82447] text-white text-xs font-bold transition-all shadow-sm cursor-pointer"
-              >
-                <span>Avançar para Experiência Corporativa</span>
-                <ArrowRight className="w-4 h-4" />
-              </button>
-            </div>
+          <div
+            className="section-view"
+            key={showBiography ? "biography" : "presentation"}
+          >
+            {showBiography ? (
+              <>
+                <button
+                  className="back-to-profile"
+                  onClick={() => {
+                    setShowBiography(false);
+                    window.scrollTo({ top: 0, behavior: "instant" });
+                  }}
+                >
+                  ← Voltar à apresentação
+                </button>
+                <About data={data} />
+              </>
+            ) : (
+              <Hero
+                data={data}
+                onOpenResume={() => setIsResumeOpen(true)}
+                onNavigateToTab={handleSelectTab}
+                onOpenAbout={() => {
+                  setShowBiography(true);
+                  window.scrollTo({ top: 0, behavior: "instant" });
+                }}
+              />
+            )}
           </div>
         )}
 
         {/* Block 2: Experiência Profissional */}
         {activeTab === "experiencia" && (
-          <div className="animate-in fade-in-50 duration-200">
+          <div className="section-view">
             <Experience
               experiences={data.experiences}
               onNavigateToTab={handleSelectTab}
@@ -195,7 +210,7 @@ export default function App() {
 
         {/* Block 3: Formação Acadêmica & Imersão em IA */}
         {activeTab === "formacao-ia" && (
-          <div className="animate-in fade-in-50 duration-200">
+          <div className="section-view">
             <EducationAndAI
               education={data.education}
               techImmersions={data.techImmersions}
@@ -206,23 +221,23 @@ export default function App() {
 
         {/* Block 4: Projetos */}
         {activeTab === "projetos" && (
-          <div className="animate-in fade-in-50 duration-200">
+          <div className="section-view">
             <Projects
               projects={data.projects}
               onSelectProject={(project) => setSelectedProject(project)}
             />
 
             {/* Block Navigation Helper */}
-            <div className="flex items-center justify-between pt-8 border-t border-[#DCD9D0] dark:border-[#282832]">
+            <div className="flex items-center justify-between pt-8 border-t border-[var(--rule)]">
               <button
                 onClick={() => handleSelectTab("formacao-ia")}
-                className="text-xs font-bold text-[#4B4B54] dark:text-[#9E9EAA] hover:text-[#C83E62] transition-colors cursor-pointer"
+                className="text-xs font-bold text-[var(--muted)] hover:text-[var(--wine)] transition-colors cursor-pointer"
               >
                 ← Voltar para Formação & IA
               </button>
               <button
                 onClick={() => handleSelectTab("certificacoes")}
-                className="inline-flex items-center gap-1.5 text-xs font-bold text-[#C83E62] dark:text-[#E04870] hover:underline cursor-pointer"
+                className="inline-flex items-center gap-1.5 text-xs font-bold text-[var(--wine)] hover:underline cursor-pointer"
               >
                 <span>Avançar para Certificações</span>
                 <ArrowRight className="w-3.5 h-3.5" />
@@ -233,7 +248,7 @@ export default function App() {
 
         {/* Block 5: Certificações & Habilidades */}
         {activeTab === "certificacoes" && (
-          <div className="animate-in fade-in-50 duration-200">
+          <div className="section-view">
             <CertificationsAndSkills
               certifications={data.certifications}
               skills={data.skills}
@@ -244,20 +259,20 @@ export default function App() {
 
         {/* Block 6: Contato Direto & Conexões */}
         {activeTab === "contato" && (
-          <div className="animate-in fade-in-50 duration-200">
+          <div className="section-view">
             <Contact data={data} onOpenResume={() => setIsResumeOpen(true)} />
 
             {/* Block Navigation Helper */}
-            <div className="flex items-center justify-between pt-8 border-t border-[#DCD9D0] dark:border-[#282832]">
+            <div className="flex items-center justify-between pt-8 border-t border-[var(--rule)]">
               <button
                 onClick={() => handleSelectTab("certificacoes")}
-                className="text-xs font-bold text-[#4B4B54] dark:text-[#9E9EAA] hover:text-[#C83E62] transition-colors cursor-pointer"
+                className="text-xs font-bold text-[var(--muted)] hover:text-[var(--wine)] transition-colors cursor-pointer"
               >
                 ← Voltar para Certificações
               </button>
               <button
                 onClick={() => handleSelectTab("sobre")}
-                className="inline-flex items-center gap-1.5 text-xs font-bold text-[#C83E62] dark:text-[#E04870] hover:underline cursor-pointer"
+                className="inline-flex items-center gap-1.5 text-xs font-bold text-[var(--wine)] hover:underline cursor-pointer"
               >
                 <span>Voltar ao Início (Sobre mim)</span>
                 <ArrowRight className="w-3.5 h-3.5" />

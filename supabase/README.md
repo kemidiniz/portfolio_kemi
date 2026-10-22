@@ -2,7 +2,7 @@
 
 ## Conectar o projeto
 
-O frontend usa apenas `VITE_SUPABASE_URL` e `VITE_SUPABASE_PUBLISHABLE_KEY` (ou `VITE_SUPABASE_ANON_KEY`). Configure os valores públicos no `.env.local` e no provedor de hospedagem **antes** do build. Nunca use uma chave `service_role`/secret no navegador. Reinicie o Vite após alterar as variáveis.
+A conexão pública deste portfólio está definida em `src/config/publicSupabase.ts`, para funcionar também em prévias sem variáveis de ambiente. Essas informações são públicas; as permissões de edição são verificadas pelo banco. Para usar outro projeto, substitua essa configuração ou defina `VITE_SUPABASE_URL` e `VITE_SUPABASE_PUBLISHABLE_KEY` (ou `VITE_SUPABASE_ANON_KEY`) no `.env.local` e no provedor de hospedagem antes do build. Nunca use uma chave `service_role`/secret no navegador. Reinicie o Vite após alterar as variáveis.
 
 1. No painel do seu projeto Supabase, abra **SQL Editor** e execute o arquivo completo [202610220001_portfolio_cms.sql](migrations/202610220001_portfolio_cms.sql). Execute uma vez; a transação inteira é revertida se houver erro. Confira antes se já existem tabelas com esses nomes. Alternativa com projeto vinculado e CLI autenticada: `supabase db push`.
 2. Em **Authentication → Users → Add user**, crie a conta de administração com seu e-mail e uma senha forte. Confirme o e-mail pelo fluxo do Supabase ou pela opção administrativa apropriada. Não há cadastro público na interface.
