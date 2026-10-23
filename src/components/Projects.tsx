@@ -1,45 +1,71 @@
-import { useState } from "react";
-import { ArrowUpRight } from "lucide-react";
-import type { ProjectItem } from "../data/portfolioData";
+import { useId, useState } from "react";
+import { ArrowUpRight, ArrowRight } from "lucide-react";
+import type { PortfolioData, ProjectItem } from "../data/portfolioData";
+import { ResponsiveImage } from "./ResponsiveImage";
 
-export function Projects({ projects, onSelectProject }: {
+function ProjectCard({ project, onOpen }: { project: ProjectItem; onOpen: () => void }) {
+  const id = useId();
+  return (
+    <article className="project-card" data-project-id={project.id}>
+      <div className="project-thumbnail" aria-hidden="true">
+        <ResponsiveImage src={project.image} alt="" loading="lazy" sizes="(max-width: 600px) calc(100vw - 32px), (max-width: 1000px) 46vw, (min-width: 1440px) 310px, 30vw" />
+        {project.year && <span>{project.year}</span>}
+      </div>
+      <div className="project-card-content">
+        <span className="project-category">{project.categoryLabel}</span>
+        <h3><button className="project-open" onClick={onOpen} aria-haspopup="dialog" aria-describedby={`${id}-description`}>{project.title}</button></h3>
+        <p id={`${id}-description`}>{project.tagline}</p>
+        <div className="project-card-bottom"><span>{project.tools.slice(0, 2).join(" · ")}</span><ArrowUpRight size={18} aria-hidden="true" /></div>
+      </div>
+    </article>
+  );
+}
+
+function PortfolioPreview({ personal }: { personal: PortfolioData["personal"] }) {
+  return (
+    <div className="portfolio-preview" aria-hidden="true">
+      <div className="preview-browser"><i /><i /><i /><span>Um espaço para minhas conexões</span></div>
+      <div className="preview-page">
+        <div className="preview-name"><span>KD</span><strong>{personal.name}</strong><small>Estratégia e Comunicação</small></div>
+        <div className="preview-content"><div><small>Oie, sou a {personal.nickname}!</small><strong>{personal.headline}</strong><span className="preview-cta">Explorar projetos <ArrowUpRight size={12} /></span><div className="preview-rules"><i /><i /><i /></div></div><ResponsiveImage src={personal.avatarUrl} alt="" sizes="190px" loading="lazy" /></div>
+      </div>
+      <span className="preview-caption">Ideia · interface · dados · integrações</span>
+    </div>
+  );
+}
+
+export function Projects({ projects, personal, onSelectProject }: {
   projects: ProjectItem[];
+  personal: PortfolioData["personal"];
   onSelectProject: (project: ProjectItem) => void;
 }) {
   const [activeCategory, setActiveCategory] = useState("todos");
   const categories = [
-    { id: "todos", label: "Todos os Projetos" },
-    { id: "pesquisa", label: "Artigos Publicados" },
-    { id: "estrategia", label: "Estratégia & CX" },
-    { id: "comunicacao", label: "Comunicação & Design" },
-    { id: "dados-ia", label: "Dados & IA" },
+    { id: "todos", label: "Todos os Projetos" }, { id: "pesquisa", label: "Artigos Publicados" },
+    { id: "estrategia", label: "Estratégia & CX" }, { id: "comunicacao", label: "Comunicação & Design" }, { id: "dados-ia", label: "Dados & IA" },
   ];
   const filtered = activeCategory === "todos" ? projects : projects.filter(project => project.category === activeCategory);
+  const featured = activeCategory === "todos" ? projects.find(project => project.id === "portfolio-kemi" && project.featured) ?? projects.find(project => project.featured) : undefined;
+  const catalogue = filtered.filter(project => project.id !== featured?.id);
   return (
     <section aria-label="Projetos" id="projetos" className="py-6 md:py-7">
       <div className="w-full max-w-[1600px] mx-auto px-4 sm:px-8 lg:px-14 xl:px-20">
         <div className="projects-filters" role="group" aria-label="Filtrar projetos">
-          {categories.map(category => (
-            <button key={category.id} onClick={() => setActiveCategory(category.id)} aria-pressed={activeCategory === category.id}>
-              {category.label}
-            </button>
-          ))}
+          {categories.map(category => <button key={category.id} onClick={() => setActiveCategory(category.id)} aria-pressed={activeCategory === category.id}>{category.label}</button>)}
         </div>
+        {featured && <article className="featured-project" data-project-id={featured.id}>
+          <div className="featured-project-copy">
+            <span className="eyebrow">Em destaque · {featured.categoryLabel}</span>
+            <h2><button className="project-open" onClick={() => onSelectProject(featured)} aria-haspopup="dialog">{featured.title}</button></h2>
+            <p>{featured.tagline}</p>
+            <div className="featured-tools">{featured.tools.slice(0, 4).map(tool => <span key={tool}>{tool}</span>)}</div>
+            <span className="featured-link" aria-hidden="true">Conheça as decisões por trás do projeto <ArrowRight size={17} /></span>
+          </div>
+          {featured.id === "portfolio-kemi" ? <PortfolioPreview personal={personal} /> : <ResponsiveImage src={featured.image} alt="" sizes="(max-width: 760px) 90vw, 500px" loading="lazy" />}
+        </article>}
+        <div className="catalogue-heading"><span className="eyebrow">{featured ? "Explore também" : "Projetos selecionados"}</span><p role="status" aria-live="polite" aria-atomic="true">{filtered.length} {filtered.length === 1 ? "projeto" : "projetos"}</p></div>
         <div className="projects-grid">
-          {filtered.map(project => (
-            <button className="project-card" key={project.id} onClick={() => onSelectProject(project)} aria-label={`Abrir projeto: ${project.title}`}>
-              <div className="project-thumbnail">
-                <img src={project.image} alt="" loading="lazy" referrerPolicy="no-referrer" />
-                {project.year && <span>{project.year}</span>}
-              </div>
-              <div className="project-card-content">
-                <span className="project-category">{project.categoryLabel}</span>
-                <h3>{project.title}</h3>
-                <p>{project.tagline}</p>
-                <div className="project-card-bottom"><span>{project.tools.slice(0, 2).join(" · ")}</span><ArrowUpRight size={17} aria-hidden="true" /></div>
-              </div>
-            </button>
-          ))}
+          {catalogue.map(project => <ProjectCard key={project.id} project={project} onOpen={() => onSelectProject(project)} />)}
         </div>
         {filtered.length === 0 && <p className="py-6 text-sm text-[var(--muted)]">Novos projetos em breve.</p>}
       </div>

@@ -2,7 +2,7 @@ import type { PortfolioData, ProjectItem } from "./portfolioData";
 
 export const personalProjects: ProjectItem[] = [
   {
-    id: "portfolio-kemi", title: "Meu portfólio: primeira experiência com vibe coding",
+    id: "portfolio-kemi", featured: true, title: "Meu portfólio: primeira experiência com vibe coding",
     category: "dados-ia", categoryLabel: "Produto digital & IA", year: "2026",
     tagline: "Minha primeira experiência com vibe coding, conectando front-end, back-end, banco de dados e integrações.",
     image: "/assets/projects/portfolio-kemi.svg", role: "Concepção do produto & construção com IA",
@@ -43,6 +43,7 @@ export function applyPortfolioUpdates(input: PortfolioData, seedProjects = false
       name: skill.name === "Power BI & Dashboards" ? "Dashboards com apoio de IA" : skill.name,
     })),
   }));
+  data.projects = data.projects.map(project => project.id === "portfolio-kemi" && project.featured === undefined ? { ...project, featured: true } : project);
   data.projects = data.projects.map(project => project.id === "dados-automacao-ia" ? {
     ...project,
     tagline: project.tagline.replace("Painéis de acompanhamento em Power BI", "Dashboards criados com apoio de IA"),

@@ -281,7 +281,7 @@ test("header navigation replaces content and biography opens on demand", async (
   await expect(
     page.getByRole("region", { name: "Biografia", exact: true }),
   ).toBeVisible();
-  await expect(page.getByRole("heading", { level: 1 })).toHaveCount(0);
+  await expect(page.getByRole("heading", { level: 1 })).toHaveClass(/sr-only/);
   await page.getByRole("button", { name: "Voltar à apresentação" }).click();
   await expect(page.getByRole("heading", { level: 1 })).toBeVisible();
   const sections = [
@@ -296,7 +296,7 @@ test("header navigation replaces content and biography opens on demand", async (
       navigation.getByRole("button", { name: label, exact: true }),
     ).toHaveAttribute("aria-current", "page");
     await expect(page.locator(heading)).toBeVisible();
-    await expect(page.getByRole("heading", { level: 1 })).toHaveCount(0);
+    await expect(page.getByRole("heading", { level: 1 })).toHaveClass(/sr-only/);
   }
   await navigation
     .getByRole("button", { name: "Sobre mim", exact: true })
@@ -353,7 +353,8 @@ test("hover feedback is visible and reduced motion removes transitions", async (
 }) => {
   await setup(page);
   await page.goto("/");
-  const metric = page.locator(".metric-card").first();
+  await navigate(page, "Projetos");
+  const metric = page.locator(".project-card").first();
   await metric.hover();
   await expect
     .poll(() => metric.evaluate((el) => getComputedStyle(el).transform))
@@ -429,7 +430,7 @@ test("desktop header stays in one row and key information fits a standard screen
   expect(metrics!.y + metrics!.height).toBeLessThan(800);
   expect(
     await page
-      .locator(".profile-links a")
+      .locator(".profile-description")
       .first()
       .evaluate((el) => parseFloat(getComputedStyle(el).fontSize)),
   ).toBeGreaterThanOrEqual(12);
@@ -464,7 +465,7 @@ test("experience starts collapsed and page introductions do not repeat navigatio
     }),
   ).toBeVisible();
   await navigate(page, "Projetos");
-  await expect(page.locator("#projetos h2")).toHaveCount(0);
+  await expect(page.locator("#projetos h2")).toHaveCount(1);
   await expect(
     page.getByText("Clique em qualquer card", { exact: false }),
   ).toHaveCount(0);
@@ -485,7 +486,7 @@ for (const width of [390, 1280]) {
     await page.goto("/");
     await navigate(page, "Projetos");
     const opener = page.getByRole("button", {
-      name: `Abrir projeto: ${initialPortfolioData.projects[0].title}`,
+      name: `${initialPortfolioData.projects[0].title}`,
       exact: true,
     });
     await opener.focus();
@@ -707,7 +708,7 @@ test("contact cards use published phone to repair legacy sample WhatsApp links",
   content.personal.linkedinDisplay = "linkedin.com/in/kemily-diniz";
   await page.route("**/rest/v1/rpc/read_portfolio", route => route.fulfill({ json: { content, revision: 1 } }));
   await page.goto("/");
-  await expect(page.locator(".profile-links").getByRole("link", { name: "WhatsApp" })).toHaveAttribute("href", "https://wa.me/5511950201858?text=Oi%20Kemi");
+  await expect(page.locator(".profile-links")).toHaveCount(0);
   const contacts = page.getByRole("navigation", { name: "Contatos do rodapé" });
   await expect(contacts.getByRole("link")).toHaveCount(3);
   await expect(contacts.getByRole("link", { name: "WhatsApp", exact: true })).toHaveAttribute("href", "https://wa.me/5511950201858?text=Oi%20Kemi");
@@ -770,10 +771,10 @@ test("compact projects, aligned skills and permanent contacts replace the contac
   const grid = (await page.locator(".projects-grid").boundingBox())!;
   expect(Math.abs(filters.width - grid.width)).toBeLessThan(2);
   expect((await page.locator(".project-card").first().boundingBox())!.height).toBeLessThan(350);
-  await page.getByRole("button", { name: "Abrir projeto: Agente Gi: inglês com IA", exact: true }).click();
+  await page.getByRole("button", { name: "Agente Gi: inglês com IA", exact: true }).click();
   await expect(page.getByRole("link", { name: "Abrir Agente Gi no Gemini" })).toHaveAttribute("href", "https://gemini.google.com/gem/1LbceA06YOwXQ-_ZtgwmIqwKuNAQifuko?usp=sharing");
   await page.getByRole("button", { name: "Fechar projeto", exact: true }).click();
-  await page.getByRole("button", { name: "Abrir projeto: Meu portfólio: primeira experiência com vibe coding", exact: true }).click();
+  await page.getByRole("button", { name: "Meu portfólio: primeira experiência com vibe coding", exact: true }).click();
   await expect(page.getByRole("dialog")).toContainText("Pensei o front-end, o back-end, o banco de dados e os conectores");
 });
 

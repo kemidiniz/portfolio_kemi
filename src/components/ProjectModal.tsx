@@ -1,5 +1,8 @@
-import { useEffect, useRef } from "react";
+import { useRef } from "react";
 import { ArrowLeft, CheckCircle2, X } from "lucide-react";
+import { useDialogFocus } from "../hooks/useDialogFocus";
+import { ResponsiveImage } from "./ResponsiveImage";
+import { ProjectProcess } from "./ProjectProcess";
 import type { ProjectItem } from "../data/portfolioData";
 
 function ProjectText({ text }: { text: string }) {
@@ -18,25 +21,14 @@ export function ProjectModal({
   onClose: () => void;
 }) {
   const dialog = useRef<HTMLDivElement>(null);
-  const close = useRef(onClose);
-  close.current = onClose;
-  useEffect(() => {
-    if (!project) return;
-    const before = document.activeElement as HTMLElement | null;
-    const overflow = document.body.style.overflow;
-    document.body.style.overflow = "hidden";
-    dialog.current?.querySelector<HTMLButtonElement>("button")?.focus();
-    return () => {
-      document.body.style.overflow = overflow;
-      before?.focus();
-    };
-  }, [project?.id]);
+  useDialogFocus(dialog, !!project, onClose);
   if (!project) return null;
   return (
     <div
       className="project-backdrop"
+      data-modal-layer
       onClick={(e) => {
-        if (e.target === e.currentTarget) close.current();
+        if (e.target === e.currentTarget) onClose();
       }}
     >
       <div
@@ -45,25 +37,7 @@ export function ProjectModal({
         aria-modal="true"
         aria-labelledby="project-modal-title"
         ref={dialog}
-        onKeyDown={(e) => {
-          if (e.key === "Escape") {
-            e.stopPropagation();
-            close.current();
-          }
-          if (e.key === "Tab") {
-            const nodes =
-              dialog.current?.querySelectorAll<HTMLElement>("button,a[href]");
-            const first = nodes?.[0],
-              last = nodes?.[nodes.length - 1];
-            if (e.shiftKey && document.activeElement === first) {
-              e.preventDefault();
-              last?.focus();
-            } else if (!e.shiftKey && document.activeElement === last) {
-              e.preventDefault();
-              first?.focus();
-            }
-          }
-        }}
+        tabIndex={-1}
       >
         <header className="project-dialog-header">
           <span>Detalhes do projeto</span>
@@ -75,12 +49,12 @@ export function ProjectModal({
             Fechar <X size={18} />
           </button>
         </header>
-        <div className="project-dialog-body">
+        <div className="project-dialog-body" tabIndex={0} role="region" aria-label="Conteúdo do estudo de caso">
           <div className="project-cover">
-            <img src={project.image} alt="" />
+            <ResponsiveImage src={project.image} alt="" sizes="(max-width: 900px) 95vw, 900px" />
             <div>
               <p>
-                {project.categoryLabel} · {project.year}
+                {project.categoryLabel}{project.year ? ` · ${project.year}` : ""}
               </p>
               <h2 id="project-modal-title">{project.title}</h2>
             </div>
@@ -100,6 +74,7 @@ export function ProjectModal({
               <h3>Visão geral</h3>
               <p>{project.overview}</p>
             </section>
+            {project.id === "portfolio-kemi" && <ProjectProcess />}
             <div className="project-detail-grid">
               <section>
                 <h3>O desafio</h3>

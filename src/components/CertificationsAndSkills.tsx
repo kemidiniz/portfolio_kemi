@@ -80,7 +80,7 @@ export const CertificationsAndSkills: React.FC<
                     <span>{group.items[row]?.level}</span>
                   </div>
                 ))}
-                <footer>Aplicação prática em rotinas de estratégia e dados</footer>
+                <footer>{onNavigateToTab ? <button className="text-link" onClick={() => onNavigateToTab("projetos")}>Ver projetos na prática <ArrowRight size={14} aria-hidden="true" /></button> : "Aplicação prática em rotinas de estratégia e dados"}</footer>
               </article>
             ))}
           </div>
