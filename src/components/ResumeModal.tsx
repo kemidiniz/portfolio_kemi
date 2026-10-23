@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import {
   X,
   Printer,
@@ -10,6 +10,7 @@ import {
   Phone,
   MapPin,
 } from "lucide-react";
+import { useDialogFocus } from "../hooks/useDialogFocus";
 import { PortfolioData } from "../data/portfolioData";
 
 interface ResumeModalProps {
@@ -34,19 +35,14 @@ export const ResumeModal: React.FC<ResumeModalProps> = ({
     skills,
   } = data;
 
+  const dialog = useRef<HTMLDivElement>(null);
+  const [copyError, setCopyError] = useState("");
+  useDialogFocus(dialog, isOpen, onClose);
   useEffect(() => {
-    const handleKeyDown = (e: KeyboardEvent) => {
-      if (e.key === "Escape") onClose();
-    };
-    if (isOpen) {
-      document.body.style.overflow = "hidden";
-      window.addEventListener("keydown", handleKeyDown);
-    }
-    return () => {
-      document.body.style.overflow = "unset";
-      window.removeEventListener("keydown", handleKeyDown);
-    };
-  }, [isOpen, onClose]);
+    if (!copied) return;
+    const timer = window.setTimeout(() => setCopied(false), 2500);
+    return () => window.clearTimeout(timer);
+  }, [copied]);
 
   if (!isOpen) return null;
 
@@ -54,7 +50,7 @@ export const ResumeModal: React.FC<ResumeModalProps> = ({
     window.print();
   };
 
-  const handleCopyText = () => {
+  const handleCopyText = async () => {
     const textResume = `
 ${personal.name.toUpperCase()} (${personal.nickname})
 ${personal.headline}
@@ -88,25 +84,35 @@ CERTIFICAÇÕES EXECUTIVAS
 ${certifications.map((c) => `• ${c.title} — ${c.institution} (${c.year})`).join("\n")}
 
 COMPETÊNCIAS & FERRAMENTAS
-Power BI, Excel Avançado, Gestão de KPIs, Comunicação Estratégica, Endomarketing, Canva Pro, Photoshop, Capcut, Engenharia de Prompts com IA.
+${skills.map(group => `${group.category}: ${group.items.map(item => item.name).join(", ")}`).join("\n")}
     `.trim();
 
-    navigator.clipboard.writeText(textResume);
-    setCopied(true);
-    setTimeout(() => setCopied(false), 2500);
+    setCopyError("");
+    setCopied(false);
+    try {
+      await navigator.clipboard.writeText(textResume);
+      setCopied(true);
+    } catch {
+      setCopyError("Não foi possível copiar. Selecione o texto do currículo ou tente novamente.");
+    }
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-6 bg-black/80 backdrop-blur-md overflow-y-auto">
+    <div data-modal-layer className="resume-backdrop fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-6 bg-[var(--palette-dark)]/80 backdrop-blur-md overflow-y-auto">
       {/* Outer Modal Container */}
       <div
-        className="relative w-full max-w-4xl my-6 bg-[var(--paper-light)] rounded-3xl border border-[var(--rule)] shadow-2xl overflow-hidden flex flex-col max-h-[92vh]"
+        ref={dialog}
+        tabIndex={-1}
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="resume-title"
+        className="resume-dialog relative w-full max-w-4xl my-6 bg-[var(--paper-light)] rounded-3xl border border-[var(--rule)] shadow-2xl overflow-hidden flex flex-col max-h-[92vh]"
         onClick={(e) => e.stopPropagation()}
       >
         {/* Top Control Bar (Hidden when printing) */}
-        <div className="no-print p-4 sm:p-5 bg-[var(--paper)] border-b border-[var(--rule)] flex flex-wrap items-center justify-between gap-4">
+        <div className="resume-toolbar no-print p-4 sm:p-5 bg-[var(--paper)] border-b border-[var(--rule)] flex flex-wrap items-center justify-between gap-4">
           <div className="flex items-center gap-2">
-            <span className="font-extrabold text-sm text-[var(--ink)]">
+            <span id="resume-title" className="font-extrabold text-sm text-[var(--ink)]">
               Currículo Profissional — {personal.name} ({personal.nickname})
             </span>
             <span className="text-xs text-[var(--wine)] font-semibold hidden sm:inline">
@@ -114,14 +120,14 @@ Power BI, Excel Avançado, Gestão de KPIs, Comunicação Estratégica, Endomark
             </span>
           </div>
 
-          <div className="flex items-center gap-2.5">
+          <div className="resume-actions flex items-center gap-2.5">
             <button
               onClick={handleCopyText}
               className="inline-flex items-center gap-1.5 px-3.5 py-1.5 text-xs font-bold rounded-xl border border-[var(--rule)] text-[var(--ink)] hover:border-[var(--wine)] transition-colors cursor-pointer"
               title="Copiar texto simples para colar no LinkedIn ou ATS"
             >
               {copied ? (
-                <Check className="w-3.5 h-3.5 text-emerald-600" />
+                <Check className="w-3.5 h-3.5 text-[var(--wine)]" />
               ) : (
                 <Copy className="w-3.5 h-3.5" />
               )}
@@ -130,7 +136,7 @@ Power BI, Excel Avançado, Gestão de KPIs, Comunicação Estratégica, Endomark
 
             <button
               onClick={handlePrint}
-              className="inline-flex items-center gap-1.5 px-4 py-1.5 text-xs font-bold rounded-xl bg-[var(--button-bg)] hover:bg-[var(--button-hover)] text-white transition-all shadow-xs cursor-pointer"
+              className="inline-flex items-center gap-1.5 px-4 py-1.5 text-xs font-bold rounded-xl bg-[var(--button-bg)] hover:bg-[var(--button-hover)] text-[var(--palette-light)] transition-all shadow-xs cursor-pointer"
               title="Salvar como arquivo PDF ou imprimir"
             >
               <Printer className="w-3.5 h-3.5" />
@@ -147,8 +153,9 @@ Power BI, Excel Avançado, Gestão de KPIs, Comunicação Estratégica, Endomark
           </div>
         </div>
 
+        <p role="status" className={copyError ? "copy-feedback" : "sr-only"}>{copyError || (copied ? "Texto do currículo copiado." : "")}</p>
         {/* Printable Curriculum Sheet */}
-        <div className="p-6 sm:p-10 overflow-y-auto bg-[var(--paper-light)] text-[var(--ink)] print-page">
+        <div tabIndex={0} role="region" aria-label="Conteúdo do currículo" className="p-6 sm:p-10 overflow-y-auto bg-[var(--paper-light)] text-[var(--ink)] print-page">
           {/* CV Header */}
           <div className="border-b-2 border-[var(--ink)] pb-6 mb-6">
             <h1 className="text-3xl font-black tracking-tight">

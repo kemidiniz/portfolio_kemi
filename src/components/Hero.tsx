@@ -1,14 +1,11 @@
 import {
   ArrowRight,
   ArrowUpRight,
-  Download,
-  Linkedin,
-  Mail,
+  FileText,
   MapPin,
-  MessageCircle,
 } from "lucide-react";
 import type { PortfolioData } from "../data/portfolioData";
-import { contactLinks } from "../lib/contactLinks";
+import { ResponsiveImage } from "./ResponsiveImage";
 import type { TabType } from "./Header";
 export function Hero({
   data,
@@ -22,24 +19,13 @@ export function Hero({
   onOpenAbout: () => void;
 }) {
   const { personal } = data;
-  const links = contactLinks(personal);
-  const highlight = personal.headline.lastIndexOf("Dados");
   const currentExperience = data.experiences[0];
   return (
     <section className="profile-hero" aria-label="Apresentação">
       <div className="profile-grid">
         <div className="profile-heading">
-          <p className="profile-greeting">Oie, sou a {personal.nickname}!</p>
-          <h1>
-            {highlight > 0 ? (
-              <>
-                {personal.headline.slice(0, highlight)}
-                <span>{personal.headline.slice(highlight)}</span>
-              </>
-            ) : (
-              personal.headline
-            )}
-          </h1>
+          <p className="profile-greeting">{personal.headline}</p>
+          <h1>Oie, sou a <span>{personal.nickname}!</span></h1>
           <p className="profile-description">{personal.subtitle}</p>
         </div>
         <div className="profile-copy">
@@ -51,23 +37,9 @@ export function Hero({
               Ver projetos <ArrowUpRight size={18} />
             </button>
             <button className="secondary-button" onClick={onOpenResume}>
-              <Download size={16} />
-              Baixar currículo
+              <FileText size={16} />
+              Ver currículo
             </button>
-          </div>
-          <div className="profile-links">
-            <a href={links.linkedin} target="_blank" rel="noreferrer">
-              <Linkedin size={15} />
-              LinkedIn
-            </a>
-            <a href={links.email}>
-              <Mail size={15} />
-              E-mail
-            </a>
-            <a href={links.whatsapp} target="_blank" rel="noreferrer">
-              <MessageCircle size={15} />
-              WhatsApp
-            </a>
           </div>
           <button className="profile-about-link" onClick={onOpenAbout}>
             Conheça minha história <ArrowRight size={15} />
@@ -83,10 +55,11 @@ export function Hero({
           ))}
         </div>
         <figure className="profile-portrait">
-          <img
+          <ResponsiveImage
             src={personal.avatarUrl}
             alt={`Retrato de ${personal.name}`}
             fetchPriority="high"
+            sizes="(max-width: 760px) calc(100vw - 32px), (max-width: 1179px) 42vw, 500px"
           />
           <figcaption>
             <span className="portrait-location">

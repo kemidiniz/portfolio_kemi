@@ -3,22 +3,23 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import React, { Suspense, lazy, useState, useEffect } from "react";
+import React, { Suspense, lazy, useState, useEffect, useRef } from "react";
 import {
   initialPortfolioData,
   PortfolioData,
   ProjectItem,
 } from "./data/portfolioData";
-import { Header, TabType } from "./components/Header";
+import { Header, sectionNames, TabType } from "./components/Header";
 import { Hero } from "./components/Hero";
-import { About } from "./components/About";
+import { BiographyModal } from "./components/BiographyModal";
+import { AnimatePresence } from "motion/react";
 import { Experience } from "./components/Experience";
 import { EducationAndAI } from "./components/EducationAndAI";
 import { Projects } from "./components/Projects";
 import { CertificationsAndSkills } from "./components/CertificationsAndSkills";
 import { Footer } from "./components/Footer";
-import { ProjectModal } from "./components/ProjectModal";
-import { ResumeModal } from "./components/ResumeModal";
+const ProjectModal = lazy(() => import("./components/ProjectModal").then(module => ({ default: module.ProjectModal })));
+const ResumeModal = lazy(() => import("./components/ResumeModal").then(module => ({ default: module.ResumeModal })));
 const CmsDrawer = lazy(() =>
   import("./components/CmsDrawer").then((module) => ({
     default: module.CmsDrawer,
@@ -40,6 +41,11 @@ export default function App() {
     return false;
   });
 
+  const main = useRef<HTMLElement>(null);
+  const focusContent = () => requestAnimationFrame(() => {
+    main.current?.focus({ preventScroll: true });
+    window.scrollTo({ top: 0, behavior: "instant" });
+  });
   const [activeTab, setActiveTab] = useState<TabType>("sobre");
   const [showBiography, setShowBiography] = useState(false);
 
@@ -135,14 +141,14 @@ export default function App() {
   const handleSelectTab = (tab: TabType) => {
     setActiveTab(tab);
     setShowBiography(false);
-    window.scrollTo({ top: 0, behavior: "instant" });
+    focusContent();
   };
 
   return (
     <div
-      className={`min-h-screen portfolio-site bg-[var(--paper)] text-[var(--ink)] transition-colors duration-200 flex flex-col font-sans selection:bg-[var(--button-bg)]/20 selection:text-[var(--wine)] ${isDarkMode ? "dark" : ""}`}
+      className={`min-h-screen portfolio-site bg-[var(--paper)] text-[var(--ink)] flex flex-col font-sans selection:bg-[var(--button-bg)]/20 selection:text-[var(--wine)] ${isDarkMode ? "dark" : ""}`}
     >
-      <a className="skip-link" href="#conteudo">
+      <a className="skip-link" href="#conteudo" onClick={event => { event.preventDefault(); focusContent(); }}>
         Ir para o conteúdo
       </a>
       {/* Header with Portfólio Kemily Diniz brand & Tab Navigation */}
@@ -163,35 +169,28 @@ export default function App() {
         </div>
       )}
       {/* Main Blocked View Container with expansive desktop width */}
-      <main id="conteudo" className="site-main">
+      <main ref={main} id="conteudo" className="site-main site-container" tabIndex={-1} aria-label={sectionNames[activeTab]}>
+        {activeTab !== "sobre" && <h1 className="sr-only">{sectionNames[activeTab]}</h1>}
         {/* Block 1: Sobre mim (Hero + Quem Sou Eu) */}
         {activeTab === "sobre" && (
           <div
             className="section-view"
-            key={showBiography ? "biography" : "presentation"}
+            key="presentation"
           >
-            {showBiography ? (
-              <About data={data} onBack={() => {
-                setShowBiography(false);
-                window.scrollTo({ top: 0, behavior: "instant" });
-              }} />
-            ) : (
-              <Hero
-                data={data}
-                onOpenResume={() => setIsResumeOpen(true)}
-                onNavigateToTab={handleSelectTab}
-                onOpenAbout={() => {
-                  setShowBiography(true);
-                  window.scrollTo({ top: 0, behavior: "instant" });
-                }}
-              />
-            )}
+            <Hero
+              data={data}
+              onOpenResume={() => setIsResumeOpen(true)}
+              onNavigateToTab={handleSelectTab}
+              onOpenAbout={() => {
+                setShowBiography(true);
+              }}
+            />
           </div>
         )}
 
         {/* Block 2: Experiência Profissional */}
         {activeTab === "experiencia" && (
-          <div className="section-view">
+          <div className="section-view" key={activeTab}>
             <Experience
               experiences={data.experiences}
               onNavigateToTab={handleSelectTab}
@@ -201,7 +200,7 @@ export default function App() {
 
         {/* Block 3: Formação Acadêmica & Imersão em IA */}
         {activeTab === "formacao-ia" && (
-          <div className="section-view">
+          <div className="section-view" key={activeTab}>
             <EducationAndAI
               education={data.education}
               techImmersions={data.techImmersions}
@@ -212,9 +211,10 @@ export default function App() {
 
         {/* Block 4: Projetos */}
         {activeTab === "projetos" && (
-          <div className="section-view">
+          <div className="section-view" key={activeTab}>
             <Projects
               projects={data.projects}
+              modalOpen={!!selectedProject}
               onSelectProject={(project) => setSelectedProject(project)}
             />
 
@@ -239,7 +239,7 @@ export default function App() {
 
         {/* Block 5: Certificações & Habilidades */}
         {activeTab === "certificacoes" && (
-          <div className="section-view">
+          <div className="section-view" key={activeTab}>
             <CertificationsAndSkills
               certifications={data.certifications}
               skills={data.skills}
@@ -253,18 +253,13 @@ export default function App() {
       {/* Clean Editorial Footer */}
       <Footer personal={data.personal} />
 
-      {/* Case Study Lightbox / Modal */}
-      <ProjectModal
-        project={selectedProject}
-        onClose={() => setSelectedProject(null)}
-      />
-
-      {/* Recruiter-Ready Printable CV Modal */}
-      <ResumeModal
-        data={data}
-        isOpen={isResumeOpen}
-        onClose={() => setIsResumeOpen(false)}
-      />
+      <AnimatePresence>{showBiography && <BiographyModal key="biography" data={data} onClose={() => setShowBiography(false)} />}</AnimatePresence>
+      <Suspense fallback={<div role="status" className="dialog-loading">Abrindo estudo de caso…</div>}>
+        <AnimatePresence>{selectedProject && <ProjectModal key="project" project={selectedProject} onClose={() => setSelectedProject(null)} />}</AnimatePresence>
+      </Suspense>
+      {isResumeOpen && <Suspense fallback={<div role="status" className="dialog-loading">Abrindo currículo…</div>}>
+        <ResumeModal data={data} isOpen onClose={() => setIsResumeOpen(false)} />
+      </Suspense>}
 
       {/* CMS Headless / Comprehensive Content Manager Drawer */}
       {isCmsOpen && (

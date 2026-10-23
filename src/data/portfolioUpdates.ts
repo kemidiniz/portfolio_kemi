@@ -2,10 +2,10 @@ import type { PortfolioData, ProjectItem } from "./portfolioData";
 
 export const personalProjects: ProjectItem[] = [
   {
-    id: "portfolio-kemi", title: "Meu portfólio: primeira experiência com vibe coding",
+    id: "portfolio-kemi", featured: true, title: "Meu portfólio",
     category: "dados-ia", categoryLabel: "Produto digital & IA", year: "2026",
     tagline: "Minha primeira experiência com vibe coding, conectando front-end, back-end, banco de dados e integrações.",
-    image: "/assets/projects/portfolio-kemi.svg", role: "Concepção do produto & construção com IA",
+    image: "/assets/projects/portfolio-kemi.jpg", role: "Concepção do produto & construção com IA",
     clientOrContext: "Projeto pessoal",
     overview: "Este portfólio foi minha primeira experiência com vibe coding. Pensei o front-end, o back-end, o banco de dados e os conectores para reunir minha trajetória, formações e projetos em um produto que posso atualizar.",
     challenge: "Apresentar informações profissionais com clareza e permitir a atualização contínua do conteúdo.",
@@ -15,9 +15,9 @@ export const personalProjects: ProjectItem[] = [
   },
   {
     id: "agente-gi", title: "Agente Gi: inglês com IA",
-    category: "dados-ia", categoryLabel: "IA & Aprendizagem", year: "",
+    category: "dados-ia", categoryLabel: "IA & Aprendizagem", year: "2026",
     tagline: "Agente de IA criado no Gemini para apoiar meus estudos de inglês.",
-    image: "/assets/projects/agente-gi.svg", role: "Criadora", clientOrContext: "Projeto pessoal de aprendizagem",
+    image: "/assets/projects/agente-gi.webp", role: "Criadora", clientOrContext: "Projeto pessoal de aprendizagem",
     overview: "Agente de IA chamado Gi, criado no Gemini para apoiar meus estudos de inglês.",
     challenge: "Usar inteligência artificial como apoio à minha rotina de estudos de inglês.",
     solution: "Criação de um agente no Gemini voltado ao estudo de inglês. Acesse: https://gemini.google.com/gem/1LbceA06YOwXQ-_ZtgwmIqwKuNAQifuko?usp=sharing",
@@ -43,6 +43,18 @@ export function applyPortfolioUpdates(input: PortfolioData, seedProjects = false
       name: skill.name === "Power BI & Dashboards" ? "Dashboards com apoio de IA" : skill.name,
     })),
   }));
+  data.projects = data.projects.map(project => project.id === "portfolio-kemi" && project.featured === undefined ? { ...project, featured: true } : project);
+  data.projects = data.projects.map(project => {
+    if (project.id === "portfolio-kemi") return { ...project,
+      title: project.title === "Meu portfólio: primeira experiência com vibe coding" ? "Meu portfólio" : project.title,
+      image: project.image === "/assets/projects/portfolio-kemi.svg" ? "/assets/projects/portfolio-kemi.jpg" : project.image,
+    };
+    if (project.id === "agente-gi") return { ...project,
+      year: project.year || "2026",
+      image: project.image === "/assets/projects/agente-gi.svg" ? "/assets/projects/agente-gi.webp" : project.image,
+    };
+    return project;
+  });
   data.projects = data.projects.map(project => project.id === "dados-automacao-ia" ? {
     ...project,
     tagline: project.tagline.replace("Painéis de acompanhamento em Power BI", "Dashboards criados com apoio de IA"),

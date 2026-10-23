@@ -17,16 +17,16 @@ export const About: React.FC<AboutProps> = ({ data, onBack }) => {
   ];
 
   return (
-    <section id="sobre" aria-label="Biografia" className="py-6 md:py-7">
+    <section id="sobre" aria-label="Biografia" className="biography-section py-6 md:py-7">
       <div className="w-full max-w-[1600px] mx-auto px-4 sm:px-8 lg:px-14 xl:px-20">
         {/* Narrative & Strategic Pillars */}
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-14 xl:gap-20 items-start">
           {/* Main Story Paragraphs */}
-          <div className="lg:col-span-7 space-y-5 text-[var(--muted)] text-[15px] leading-relaxed font-normal">
+          <div className="biography-copy lg:col-span-7 space-y-5 text-[var(--muted)] text-[15px] leading-relaxed font-normal">
             {/* High-Impact Motto Card */}
             <div className="purpose-card p-5 sm:p-6 rounded-2xl bg-gradient-to-r from-[var(--wine)]/10 via-transparent to-[var(--wine-hover)]/10 border-2 border-[var(--wine)]/30 shadow-xs">
               <div className="flex items-center gap-4">
-                <div className="p-3 rounded-xl bg-[var(--button-bg)] text-white shrink-0">
+                <div className="p-3 rounded-xl bg-[var(--button-bg)] text-[var(--palette-light)] shrink-0">
                   <Sparkles className="w-5 h-5" />
                 </div>
                 <div>
@@ -50,7 +50,7 @@ export const About: React.FC<AboutProps> = ({ data, onBack }) => {
           </div>
 
           {/* Three Structural Pillars */}
-          <div className="lg:col-span-5 flex flex-col gap-4">
+          <div className="biography-values lg:col-span-5 flex flex-col gap-4">
             {personal.coreValues.map((val, idx) => (
               <div
                 key={idx}
