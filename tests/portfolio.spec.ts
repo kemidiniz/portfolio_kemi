@@ -355,6 +355,9 @@ test("hover feedback is visible and reduced motion removes transitions", async (
   await setup(page);
   await page.goto("/");
   await navigate(page, "Projetos");
+  await page.locator(".section-view").evaluate(async element => {
+    await Promise.all(element.getAnimations().map(animation => animation.finished));
+  });
   const metric = page.locator(".carousel-originals .project-card").first();
   await metric.hover();
   await expect

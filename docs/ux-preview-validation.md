@@ -1,6 +1,6 @@
 # Validação da prévia UX/UI
 
-Prévia no PR #8, para revisão antes do merge. A versão de produção e as tabelas do Supabase não foram alteradas.
+Entrega no PR #8, com publicação em produção solicitada e autorizada pela Kemily. Domínio oficial: https://portfoliokemi-public.vercel.app/. As tabelas do Supabase não foram alteradas.
 
 ## Escopo final
 
@@ -18,7 +18,7 @@ Prévia no PR #8, para revisão antes do merge. A versão de produção e as tab
 
 - `npm run lint`: aprovado (TypeScript).
 - `npm run build`: aprovado.
-- 61 cenários Playwright aprovados, incluindo os testes de regressão atualizados para a história em modal, cards em linha e remoção do destaque.
+- 62 cenários Playwright aprovados, incluindo os testes de regressão atualizados para a história em modal, cards em linha e remoção do destaque.
 - Larguras: 320, 375, 390, 430, 768, 1024 e 1440 px. Sem overflow horizontal da página; sem corte dos indicadores ou conteúdo dos modais.
 - Teclado, toque sintetizado pelo Chromium, loop, hover, pausa explícita, pausa entre filtros, retorno de foco, rolagem e preferência por movimento reduzido verificados.
 - Regressões de login, edição/publicação simulada, conflitos e enquadramento de fotos verificadas.
@@ -43,3 +43,10 @@ Prévia no PR #8, para revisão antes do merge. A versão de produção e as tab
 - `src/index.css`, `src/styles/portfolio.css`: paleta e remoção do tratamento especial de destaque.
 - `src/styles/interactions.css`, `src/main.tsx`: estilos responsivos das interações solicitadas.
 - `tests/{portfolio,ux-preview,interaction-refinements}.spec.ts`: regressões e cenários de aceitação.
+
+## Ajuste final e publicação
+
+- Removidos do layout visual o título, a contagem e a orientação acima dos projetos. A contagem e a orientação continuam disponíveis para leitores de tela.
+- Controles de pausa e navegação deslocados para baixo do carrossel.
+- Todas as cinco páginas usam a entrada de 460 ms, com opacidade e deslocamento de 14 px, respeitando movimento reduzido.
+- Teste de hover aguarda o término da entrada da página para validar o destaque isoladamente.

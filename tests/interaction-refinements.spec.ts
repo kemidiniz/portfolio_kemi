@@ -12,6 +12,26 @@ async function navigate(page: Page, name: string) {
   await page.getByRole("navigation", { name: "Navegação principal" }).getByRole("button", { name, exact: true }).click();
 }
 
+test("every page enters smoothly and project labels stay off the visual layout", async ({ page }) => {
+  await open(page);
+  for (const name of ["Sobre mim", "Experiência", "Formação & IA", "Projetos", "Certificações"]) {
+    await navigate(page, name);
+    const view = page.locator(".section-view");
+    await expect(view).toHaveCSS("animation-name", "section-appear");
+    await expect(view).toHaveCSS("animation-duration", "0.46s");
+  }
+  await navigate(page, "Projetos");
+  await expect(page.locator(".catalogue-heading, .carousel-toolbar")).toHaveCount(0);
+  await expect(page.getByRole("status")).toHaveClass("sr-only");
+  await expect(page.getByText("Explore os projetos. Deslize ou use as setas.", { exact: true })).toHaveClass("sr-only");
+  const controls = (await page.locator(".carousel-controls").boundingBox())!;
+  const cards = (await page.locator(".carousel-viewport").boundingBox())!;
+  expect(controls.y).toBeGreaterThanOrEqual(cards.y + cards.height);
+  await page.emulateMedia({ reducedMotion: "reduce" });
+  await navigate(page, "Sobre mim");
+  expect(await page.locator(".section-view").evaluate(el => parseFloat(getComputedStyle(el).animationDuration))).toBeLessThan(0.01);
+});
+
 for (const width of [320, 375, 390, 430, 768, 1024, 1440]) {
   test(`glass cards, carousel and biography fit ${width}px without page overflow`, async ({ page }) => {
     const errors: string[] = [];

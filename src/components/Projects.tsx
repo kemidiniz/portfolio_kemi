@@ -103,14 +103,7 @@ function ProjectCarousel({ projects, onSelectProject, modalOpen, paused, onToggl
   const cards = (duplicate: boolean) => projects.map(project => <ProjectCard key={project.id} project={project} duplicate={duplicate} onOpen={() => open(project, duplicate)} />);
   return (
     <div className="project-carousel" role="region" aria-roledescription="carrossel" aria-label="Projetos selecionados" onMouseEnter={() => setHovered(true)} onMouseLeave={() => setHovered(false)} onFocusCapture={() => setFocused(true)} onBlurCapture={event => { if (!event.currentTarget.contains(event.relatedTarget)) setFocused(false); }}>
-      <div className="carousel-toolbar">
-        <p id={`${id}-instructions`}>Explore os projetos. Deslize ou use as setas.</p>
-        <div className="carousel-controls">
-          <button onClick={onTogglePause} disabled={reduced || !loop} aria-label={reduced ? "Sem animação: movimento automático desativado" : paused ? "Retomar movimento dos projetos" : "Pausar movimento dos projetos"} aria-pressed={paused || reduced} title={reduced ? "Sua preferência de movimento reduzido está ativa" : undefined}>{paused || reduced ? <Play size={16} /> : <Pause size={16} />}<span>{reduced ? "Sem animação" : paused ? "Retomar" : "Pausar"}</span></button>
-          <button aria-label="Projetos anteriores" onClick={() => step(-1)} disabled={!loop}><ChevronLeft size={19} /></button>
-          <button aria-label="Próximos projetos" onClick={() => step(1)} disabled={!loop}><ChevronRight size={19} /></button>
-        </div>
-      </div>
+      <p id={`${id}-instructions`} className="sr-only">Explore os projetos. Deslize ou use as setas.</p>
       <div ref={viewport} className="carousel-viewport" tabIndex={0} role="group" aria-label="Cards de projetos" aria-describedby={`${id}-instructions`} onScroll={normalizeScroll} onPointerDown={() => { clearTimeout(timer.current); setInteracting(true); }} onPointerUp={pauseForInteraction} onPointerCancel={pauseForInteraction} onWheel={pauseForInteraction} onKeyDown={event => {
         if (event.target !== event.currentTarget) return;
         if (event.key === "ArrowRight" || event.key === "ArrowLeft") { event.preventDefault(); step(event.key === "ArrowRight" ? 1 : -1); }
@@ -120,6 +113,11 @@ function ProjectCarousel({ projects, onSelectProject, modalOpen, paused, onToggl
           <div ref={group} className="carousel-set carousel-originals">{cards(false)}</div>
           {loop && <div className="carousel-set" aria-hidden="true">{cards(true)}</div>}
         </div>
+      </div>
+      <div className="carousel-controls">
+          <button onClick={onTogglePause} disabled={reduced || !loop} aria-label={reduced ? "Sem animação: movimento automático desativado" : paused ? "Retomar movimento dos projetos" : "Pausar movimento dos projetos"} aria-pressed={paused || reduced} title={reduced ? "Sua preferência de movimento reduzido está ativa" : undefined}>{paused || reduced ? <Play size={16} /> : <Pause size={16} />}<span>{reduced ? "Sem animação" : paused ? "Retomar" : "Pausar"}</span></button>
+          <button aria-label="Projetos anteriores" onClick={() => step(-1)} disabled={!loop}><ChevronLeft size={19} /></button>
+          <button aria-label="Próximos projetos" onClick={() => step(1)} disabled={!loop}><ChevronRight size={19} /></button>
       </div>
     </div>
   );
@@ -139,7 +137,7 @@ export function Projects({ projects, onSelectProject, modalOpen }: { projects: P
         <div className="projects-filters" role="group" aria-label="Filtrar projetos">
           {categories.map(category => <button key={category.id} onClick={() => setActiveCategory(category.id)} aria-pressed={activeCategory === category.id}>{category.label}</button>)}
         </div>
-        <div className="catalogue-heading"><span className="eyebrow">Projetos selecionados</span><p role="status" aria-live="polite" aria-atomic="true">{filtered.length} {filtered.length === 1 ? "projeto" : "projetos"}</p></div>
+        <p className="sr-only" role="status" aria-live="polite" aria-atomic="true">{filtered.length} {filtered.length === 1 ? "projeto" : "projetos"}</p>
         {filtered.length > 0 ? <ProjectCarousel key={activeCategory} projects={filtered} onSelectProject={onSelectProject} modalOpen={modalOpen} paused={paused} onTogglePause={() => setPaused(value => !value)} /> : <p className="py-6 text-sm text-[var(--muted)]">Novos projetos em breve.</p>}
       </div>
     </section>

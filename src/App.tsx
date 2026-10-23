@@ -190,7 +190,7 @@ export default function App() {
 
         {/* Block 2: Experiência Profissional */}
         {activeTab === "experiencia" && (
-          <div className="section-view">
+          <div className="section-view" key={activeTab}>
             <Experience
               experiences={data.experiences}
               onNavigateToTab={handleSelectTab}
@@ -200,7 +200,7 @@ export default function App() {
 
         {/* Block 3: Formação Acadêmica & Imersão em IA */}
         {activeTab === "formacao-ia" && (
-          <div className="section-view">
+          <div className="section-view" key={activeTab}>
             <EducationAndAI
               education={data.education}
               techImmersions={data.techImmersions}
@@ -211,7 +211,7 @@ export default function App() {
 
         {/* Block 4: Projetos */}
         {activeTab === "projetos" && (
-          <div className="section-view">
+          <div className="section-view" key={activeTab}>
             <Projects
               projects={data.projects}
               modalOpen={!!selectedProject}
@@ -239,7 +239,7 @@ export default function App() {
 
         {/* Block 5: Certificações & Habilidades */}
         {activeTab === "certificacoes" && (
-          <div className="section-view">
+          <div className="section-view" key={activeTab}>
             <CertificationsAndSkills
               certifications={data.certifications}
               skills={data.skills}
