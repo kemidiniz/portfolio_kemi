@@ -2,7 +2,15 @@ import type { PortfolioData } from "../data/portfolioData";
 
 export function contactLinks(personal: PortfolioData["personal"]) {
   const email = `mailto:${personal.email.trim()}`;
-  const linkedin = personal.linkedin.trim();
+  const configuredLinkedin = personal.linkedin.trim();
+  // Correct the previous profile slug without overriding later admin edits.
+  const legacyLinkedin = /^https?:\/\/(?:www\.|br\.)?linkedin\.com\/in\/kemily-diniz\/?$/i.test(configuredLinkedin);
+  const linkedin = legacyLinkedin
+    ? "https://br.linkedin.com/in/kemilydiniz"
+    : configuredLinkedin;
+  const linkedinDisplay = legacyLinkedin && /^(?:https?:\/\/)?(?:www\.|br\.)?linkedin\.com\/in\/kemily-diniz\/?$/i.test(personal.linkedinDisplay.trim())
+    ? "linkedin.com/in/kemilydiniz"
+    : personal.linkedinDisplay;
   let whatsapp = personal.whatsapp.trim();
   // Older published content contains a sample URL but an already updated phone label.
   // Preserve explicitly configured real links, including their conversation message.
@@ -19,5 +27,5 @@ export function contactLinks(personal: PortfolioData["personal"]) {
   } catch {
     // Invalid URLs are rejected by the admin form's existing schema validation.
   }
-  return { email, linkedin, whatsapp };
+  return { email, linkedin, linkedinDisplay, whatsapp };
 }

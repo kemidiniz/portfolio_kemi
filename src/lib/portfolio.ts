@@ -1,6 +1,7 @@
 import { z } from "zod";
 import type { PortfolioData } from "../data/portfolioData";
 import { supabase } from "./supabase";
+import { contactLinks } from "./contactLinks";
 
 const text = z.string().max(20000);
 const list = z.array(text).max(100);
@@ -166,8 +167,13 @@ export async function readPortfolio() {
     throw new Error(
       "Não foi possível carregar o conteúdo publicado. Verifique a conexão e a configuração do Supabase.",
     );
+  const content = data.content ? validatePortfolio(data.content) : null;
+  if (content) {
+    const { linkedin, linkedinDisplay, whatsapp } = contactLinks(content.personal);
+    content.personal = { ...content.personal, linkedin, linkedinDisplay, whatsapp };
+  }
   return {
-    data: data.content ? validatePortfolio(data.content) : null,
+    data: content,
     revision: Number(data.revision),
   };
 }

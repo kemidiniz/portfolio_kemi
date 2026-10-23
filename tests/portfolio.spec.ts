@@ -686,6 +686,8 @@ test("contact cards use published phone to repair legacy sample WhatsApp links",
   const content = structuredClone(initialPortfolioData);
   content.personal.whatsapp = "https://wa.me/5511999999999?text=Oi%20Kemi";
   content.personal.whatsappDisplay = "+55 (11) 95020-1858";
+  content.personal.linkedin = "https://www.linkedin.com/in/kemily-diniz/";
+  content.personal.linkedinDisplay = "linkedin.com/in/kemily-diniz";
   await page.route("**/rest/v1/rpc/read_portfolio", route => route.fulfill({ json: { content, revision: 1 } }));
   await page.goto("/");
   await expect(page.locator(".profile-links").getByRole("link", { name: "WhatsApp" })).toHaveAttribute("href", "https://wa.me/5511950201858?text=Oi%20Kemi");
@@ -694,6 +696,7 @@ test("contact cards use published phone to repair legacy sample WhatsApp links",
   await expect(page.locator(".contact-card")).toHaveCount(3);
   await expect(page.getByRole("link", { name: "Abrir conversa no WhatsApp" })).toHaveAttribute("href", "https://wa.me/5511950201858?text=Oi%20Kemi");
   await expect(page.getByRole("link", { name: "Escrever e-mail", exact: true })).toHaveAttribute("href", `mailto:${content.personal.email}`);
-  await expect(page.getByRole("link", { name: "Conectar no LinkedIn" })).toHaveAttribute("href", content.personal.linkedin);
+  await expect(page.getByRole("link", { name: "Conectar no LinkedIn" })).toHaveAttribute("href", "https://br.linkedin.com/in/kemilydiniz");
+  await expect(page.locator(".contact-card").getByText("linkedin.com/in/kemilydiniz", { exact: true })).toBeVisible();
   await expect(page.getByText("Currículo Profissional Completo", { exact: true })).toHaveCount(0);
 });
