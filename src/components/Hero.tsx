@@ -28,7 +28,7 @@ export function Hero({
   return (
     <section className="profile-hero" aria-label="Apresentação">
       <div className="profile-grid">
-        <div className="profile-copy">
+        <div className="profile-heading">
           <p className="profile-greeting">Oie, sou a {personal.nickname}!</p>
           <h1>
             {highlight > 0 ? (
@@ -41,6 +41,8 @@ export function Hero({
             )}
           </h1>
           <p className="profile-description">{personal.subtitle}</p>
+        </div>
+        <div className="profile-copy">
           <div className="profile-actions">
             <button
               className="primary-button"

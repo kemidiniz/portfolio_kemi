@@ -1,33 +1,37 @@
-import { ArrowUp, LockKeyhole } from "lucide-react";
+import { useLayoutEffect, useRef } from "react";
+import { ArrowUp, LockKeyhole, Linkedin, Mail, MessageCircle } from "lucide-react";
 import type { PortfolioData } from "../data/portfolioData";
-export function Footer({
-  personal,
-  onOpenAdmin,
-}: {
+import { contactLinks } from "../lib/contactLinks";
+
+export function Footer({ personal, onOpenAdmin }: {
   personal: PortfolioData["personal"];
   onOpenAdmin: () => void;
 }) {
+  const footerRef = useRef<HTMLElement>(null);
+  const links = contactLinks(personal);
+  useLayoutEffect(() => {
+    const footer = footerRef.current;
+    const site = footer?.closest<HTMLElement>(".portfolio-site");
+    if (!footer || !site) return;
+    const measure = () => site.style.setProperty("--contact-footer-height", `${footer.getBoundingClientRect().height}px`);
+    measure();
+    const observer = new ResizeObserver(measure);
+    observer.observe(footer);
+    return () => { observer.disconnect(); site.style.removeProperty("--contact-footer-height"); };
+  }, []);
   return (
-    <footer className="site-footer">
+    <footer className="site-footer" ref={footerRef} aria-label="Contatos permanentes">
       <div className="site-footer-inner">
-        <div className="footer-brand">
-          <strong>{personal.brandTitle}</strong>
-          <span>{personal.motto}</span>
-        </div>
-        <div className="footer-links">
-          <span>{personal.location}</span>
-          <button onClick={onOpenAdmin}>
-            <LockKeyhole size={13} />
-            Área administrativa
-          </button>
-          <button
-            className="footer-top"
-            aria-label="Voltar ao topo"
-            onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
-          >
-            <ArrowUp size={16} />
-          </button>
-        </div>
+        <div className="footer-brand"><strong>{personal.name}</strong></div>
+        <nav className="footer-links" aria-label="Contatos do rodapé">
+          <a href={links.email} aria-label={`E-mail: ${personal.email}`}>
+            <Mail size={16} /><span className="footer-email-address">{personal.email}</span><span className="footer-short-label">E-mail</span>
+          </a>
+          <a href={links.linkedin} target="_blank" rel="noreferrer"><Linkedin size={16} />LinkedIn</a>
+          <a href={links.whatsapp} target="_blank" rel="noreferrer"><MessageCircle size={16} />WhatsApp</a>
+          <button className="footer-admin" onClick={onOpenAdmin} aria-label="Área administrativa" title="Área administrativa"><LockKeyhole size={15} /></button>
+          <button className="footer-top" aria-label="Voltar ao topo" onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}><ArrowUp size={16} /></button>
+        </nav>
       </div>
     </footer>
   );

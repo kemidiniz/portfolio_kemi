@@ -170,7 +170,11 @@ export async function readPortfolio() {
   const content = data.content ? validatePortfolio(data.content) : null;
   if (content) {
     const { linkedin, linkedinDisplay, whatsapp } = contactLinks(content.personal);
-    content.personal = { ...content.personal, linkedin, linkedinDisplay, whatsapp };
+    content.personal = {
+      ...content.personal, linkedin, linkedinDisplay, whatsapp,
+      bioParagraphs: content.personal.bioParagraphs.map(paragraph =>
+        paragraph.replace(" — mas pode me chamar carinhosamente de Kemi! —", "")),
+    };
   }
   return {
     data: content,
