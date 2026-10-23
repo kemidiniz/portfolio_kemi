@@ -2041,3 +2041,10 @@
   letter-spacing: 0;
 }
 }
+
+/* The last highlight aligns with the portrait's lower edge. */
+@media (min-width: 761px) {
+  .profile-portrait {
+    align-self: end;
+  }
+}

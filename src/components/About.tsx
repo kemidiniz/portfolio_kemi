@@ -16,20 +16,8 @@ export const About: React.FC<AboutProps> = ({ data }) => {
   ];
 
   return (
-    <section id="sobre" className="py-6 md:py-7">
+    <section id="sobre" aria-label="Biografia" className="py-6 md:py-7">
       <div className="w-full max-w-[1600px] mx-auto px-4 sm:px-8 lg:px-14 xl:px-20">
-        {/* Section Header */}
-        <div className="mb-6">
-          <div className="inline-flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-[var(--wine)] mb-2">
-            <span>Trajetória & Essência</span>
-            <span aria-hidden="true">·</span>
-            <span>{personal.age} anos</span>
-          </div>
-          <h2 className="text-3xl sm:text-4xl font-bold tracking-tight text-[var(--ink)] text-balance">
-            Quem Sou Eu
-          </h2>
-        </div>
-
         {/* Narrative & Strategic Pillars */}
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-14 xl:gap-20 items-start">
           {/* Main Story Paragraphs */}
