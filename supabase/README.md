@@ -67,3 +67,9 @@ O domínio `exlthhgqgbxlngpnxrqs.supabase.co` precisa estar liberado na rede do 
 Ao escolher uma foto, o editor abre uma prévia com zoom e posição horizontal/vertical. Fotos de perfil usam recorte 3:4 e capas de projetos usam 16:9. “Usar enquadramento” gera uma nova imagem JPEG e envia ao Storage; as tabelas continuam guardando apenas a URL, sem novas colunas. Também é possível ajustar novamente uma imagem existente quando o servidor da imagem permite acesso pelo navegador. Durante o envio, a publicação fica bloqueada.
 
 Se a publicação falhar, o aviso mantém o rascunho na tela e mostra o código retornado pelo Supabase. “Copiar erro” copia apenas essa mensagem, sem senha, token ou dados de sessão. Exporte o rascunho antes de sair/recarregar caso precise preservá-lo. Exemplos: `40001` indica conflito de revisão, `42501` indica permissão, `22023` indica formato recusado pelo banco e `PGRST202` indica função indisponível. Um erro interno diferente precisa ser investigado usando o código e a mensagem do projeto real; não remova RLS ou conceda escrita pública para contorná-lo.
+
+### Correção de publicação em projetos que bloqueiam DELETE sem WHERE
+
+Se o admin mostrar `21000: DELETE requires a WHERE clause`, execute **somente** [202610230002_safe_publication_delete.sql](migrations/202610230002_safe_publication_delete.sql) em uma nova consulta do SQL Editor. O reparo altera a exclusão interna da função para `WHERE position >= 0`, condição que cobre os itens válidos das coleções. A autorização de admin, a validação e a transação permanecem ativas. O reparo não publica conteúdo nem altera as informações atuais; pode ser executado novamente sem duplicar a mudança. Após executar, volte ao editor do site e tente publicar o rascunho.
+
+Instalações novas devem aplicar todas as migrações em ordem. Não é necessário executar novamente a migração inicial em um banco que já tem as tabelas.
