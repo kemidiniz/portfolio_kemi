@@ -626,3 +626,30 @@ test("photo can be framed and uploaded before publishing without losing other ed
     "Kemi — retrato atualizado",
   );
 });
+
+test("mobile framing preview and controls have separate scrollable space", async ({
+  page,
+}) => {
+  await setup(page, true);
+  await page.setViewportSize({ width: 390, height: 700 });
+  await page.goto("/");
+  await login(page);
+  await page
+    .getByLabel("Enviar Foto de perfil", { exact: true })
+    .setInputFiles("public/assets/aistudio/IMG_1992_c0be0322.jpeg");
+  const dialog = page.getByRole("dialog", {
+    name: "Enquadrar foto de perfil",
+    exact: true,
+  });
+  await expect(
+    dialog.getByRole("button", { name: "Usar enquadramento", exact: true }),
+  ).toBeEnabled();
+  const preview = await dialog.locator(".crop-preview").boundingBox(),
+    controls = await dialog.locator(".crop-controls").boundingBox();
+  expect(preview!.y + preview!.height).toBeLessThanOrEqual(controls!.y);
+  await dialog.getByRole("button", { name: "Cancelar", exact: true }).click();
+  await expect(dialog).toHaveCount(0);
+  await expect(page.getByLabel("Foto de perfil", { exact: true })).toHaveValue(
+    initialPortfolioData.personal.avatarUrl,
+  );
+});

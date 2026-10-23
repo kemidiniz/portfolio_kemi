@@ -61,3 +61,9 @@ A opção `--legacy-peer-deps` contorna o conflito preexistente entre esbuild e 
 Os testes de navegador simulam as respostas Supabase para verificar a interface, o login, as permissões e os erros sem tocar nos dados reais. Os testes de banco executam a migração real em PostgreSQL, com estruturas mínimas que representam Auth/Storage do Supabase, e verificam permissões, rollback, conflitos e leitura pública. Eles não substituem o teste final no projeto Supabase conectado.
 
 O domínio `exlthhgqgbxlngpnxrqs.supabase.co` precisa estar liberado na rede do ambiente. As configurações de rede/variáveis salvas no rascunho só passam a valer pelo fluxo de configurações do ambiente.
+
+## Enquadramento e diagnóstico de publicação
+
+Ao escolher uma foto, o editor abre uma prévia com zoom e posição horizontal/vertical. Fotos de perfil usam recorte 3:4 e capas de projetos usam 16:9. “Usar enquadramento” gera uma nova imagem JPEG e envia ao Storage; as tabelas continuam guardando apenas a URL, sem novas colunas. Também é possível ajustar novamente uma imagem existente quando o servidor da imagem permite acesso pelo navegador. Durante o envio, a publicação fica bloqueada.
+
+Se a publicação falhar, o aviso mantém o rascunho na tela e mostra o código retornado pelo Supabase. “Copiar erro” copia apenas essa mensagem, sem senha, token ou dados de sessão. Exporte o rascunho antes de sair/recarregar caso precise preservá-lo. Exemplos: `40001` indica conflito de revisão, `42501` indica permissão, `22023` indica formato recusado pelo banco e `PGRST202` indica função indisponível. Um erro interno diferente precisa ser investigado usando o código e a mensagem do projeto real; não remova RLS ou conceda escrita pública para contorná-lo.

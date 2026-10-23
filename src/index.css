@@ -1876,3 +1876,23 @@
     font-size: 16px;
   }
 }
+
+.crop-content {
+  grid-auto-rows: max-content;
+  align-content: start;
+}
+.crop-preview canvas {
+  position: absolute;
+  inset: 0;
+}
+.crop-preview.is-profile {
+  width: 260px;
+  max-width: 100%;
+  height: 347px;
+}
+@media (max-width: 760px) {
+  .crop-preview.is-profile {
+    width: 180px;
+    height: 240px;
+  }
+}
