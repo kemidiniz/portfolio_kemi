@@ -36,7 +36,12 @@ for (const width of [320, 375, 390, 430, 768, 1024, 1440]) {
     for (const name of ["Sobre mim", "Experiência", "Formação & IA", "Projetos", "Certificações"]) {
       await navigate(page, name);
       expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
-      await expect(page.locator("#site-navigation [aria-current=page]")).toHaveText(name);
+      if (width <= 760) {
+        await page.getByRole("button", { name: "Abrir navegação", exact: true }).click();
+        await expect(page.locator("#site-navigation [aria-current=page]")).toHaveText(name);
+        await page.keyboard.press("Escape");
+        await expect(page.getByRole("dialog")).toHaveCount(0);
+      } else await expect(page.locator("#site-navigation [aria-current=page]")).toHaveText(name);
     }
   });
 }

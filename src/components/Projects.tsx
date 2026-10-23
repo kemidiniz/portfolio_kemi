@@ -65,7 +65,7 @@ function ProjectCarousel({ projects, onSelectProject, modalOpen, paused, onToggl
     const node = viewport.current!;
     let frame = 0, previous = 0, position = node.scrollLeft;
     const tick = (now: number) => {
-      if (previous) position += Math.min(now - previous, 64) * 0.018;
+      if (previous) position += Math.min(now - previous, 64) * 0.024;
       previous = now;
       if (cycle.current && position >= cycle.current * 2) position -= cycle.current;
       node.scrollLeft = position;

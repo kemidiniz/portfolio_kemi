@@ -69,6 +69,7 @@ async function navigate(page: Page, label: string) {
     .getByRole("navigation", { name: "Navegação principal" })
     .getByRole("button", { name: label, exact: true })
     .click();
+  await expect(page.locator(".mobile-menu-dialog")).toHaveCount(0);
 }
 async function login(page: Page) {
   await page.getByRole("button", { name: "Área admin", exact: true }).click();

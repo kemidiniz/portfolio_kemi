@@ -1,7 +1,10 @@
 import { useEffect, useRef, useState } from "react";
+import { createPortal } from "react-dom";
+import { AnimatePresence } from "motion/react";
 import { Award, BriefcaseBusiness, FolderKanban, GraduationCap, LockKeyhole, Menu, Moon, Sun, UserRound, X } from "lucide-react";
 import type { PortfolioData } from "../data/portfolioData";
 import { useMediaQuery } from "../hooks/useMediaQuery";
+import { MobileNavigation } from "./MobileNavigation";
 
 export type TabType = "sobre" | "experiencia" | "formacao-ia" | "projetos" | "certificacoes";
 export const sectionNames: Record<TabType, string> = {
@@ -14,6 +17,8 @@ interface Props {
 export function Header({ activeTab, onSelectTab, isDarkMode, onToggleTheme, onOpenCms, personal, isAdmin }: Props) {
   const [menuOpen, setMenuOpen] = useState(false);
   const compact = useMediaQuery("(max-width: 1179px)");
+  const mobile = useMediaQuery("(max-width: 760px)");
+  const pendingTab = useRef<TabType | null>(null);
   const header = useRef<HTMLElement>(null);
   const menuButton = useRef<HTMLButtonElement>(null);
   useEffect(() => {
@@ -25,9 +30,9 @@ export function Header({ activeTab, onSelectTab, isDarkMode, onToggleTheme, onOp
     observer.observe(node);
     return () => { observer.disconnect(); document.documentElement.style.removeProperty("--header-height"); };
   }, []);
-  useEffect(() => { setMenuOpen(false); }, [compact]);
+  useEffect(() => { setMenuOpen(false); }, [compact, mobile]);
   useEffect(() => {
-    if (!menuOpen) return;
+    if (!menuOpen || mobile) return;
     const outside = (event: PointerEvent) => { if (!header.current?.contains(event.target as Node)) setMenuOpen(false); };
     const escape = (event: KeyboardEvent) => {
       if (event.key === "Escape") { setMenuOpen(false); menuButton.current?.focus(); }
@@ -35,8 +40,11 @@ export function Header({ activeTab, onSelectTab, isDarkMode, onToggleTheme, onOp
     document.addEventListener("pointerdown", outside);
     document.addEventListener("keydown", escape);
     return () => { document.removeEventListener("pointerdown", outside); document.removeEventListener("keydown", escape); };
-  }, [menuOpen]);
-  function select(tab: TabType) { setMenuOpen(false); onSelectTab(tab); }
+  }, [menuOpen, mobile]);
+  function select(tab: TabType) {
+    if (mobile && menuOpen) { pendingTab.current = tab; setMenuOpen(false); }
+    else { setMenuOpen(false); onSelectTab(tab); }
+  }
   const items = [
     { id: "sobre", icon: UserRound }, { id: "experiencia", icon: BriefcaseBusiness },
     { id: "formacao-ia", icon: GraduationCap }, { id: "projetos", icon: FolderKanban }, { id: "certificacoes", icon: Award },
@@ -51,7 +59,7 @@ export function Header({ activeTab, onSelectTab, isDarkMode, onToggleTheme, onOp
     </nav>
   );
   return (
-    <header className="site-header" ref={header}>
+    <><header className="site-header" ref={header}>
       <div className="site-header-inner site-container">
         <button className="site-brand" onClick={() => select("sobre")}>
           <span className="brand-monogram" aria-hidden="true">{personal.name.split(" ").filter(Boolean).map(name => name[0]).slice(0, 2).join("")}</span>
@@ -69,8 +77,14 @@ export function Header({ activeTab, onSelectTab, isDarkMode, onToggleTheme, onOp
             {menuOpen ? <X size={19} /> : <Menu size={19} />}
           </button>}
         </div>
-        {compact && navigation}
+        {compact && !mobile && navigation}
       </div>
     </header>
+    {createPortal(<AnimatePresence>{mobile && menuOpen && <MobileNavigation key="mobile-navigation" onClose={() => setMenuOpen(false)} onAfterClose={() => {
+      const tab = pendingTab.current;
+      pendingTab.current = null;
+      if (tab) onSelectTab(tab);
+    }}>{navigation}</MobileNavigation>}</AnimatePresence>, document.body)}
+    </>
   );
 }

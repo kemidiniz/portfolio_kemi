@@ -10,7 +10,54 @@ async function navigate(page: Page, name: string) {
   const menu = page.getByRole("button", { name: "Abrir navegação", exact: true });
   if (await menu.isVisible()) await menu.click();
   await page.getByRole("navigation", { name: "Navegação principal" }).getByRole("button", { name, exact: true }).click();
+  await expect(page.locator(".mobile-menu-dialog")).toHaveCount(0);
 }
+
+test("phone popup fills available width, traps focus and restores it on dismiss", async ({ page }) => {
+  for (const width of [320, 375, 390, 430]) {
+    await page.setViewportSize({ width, height: 844 }); await open(page);
+    const trigger = page.getByRole("button", { name: "Abrir navegação", exact: true });
+    await trigger.click();
+    const dialog = page.getByRole("dialog", { name: "Navegação", exact: true });
+    await expect(dialog).toBeVisible();
+    const close = dialog.getByRole("button", { name: "Fechar navegação", exact: true });
+    await expect(close).toBeFocused();
+    expect(await page.evaluate(() => document.body.style.overflow)).toBe("hidden");
+    await expect(page.locator("#root")).toHaveAttribute("inert", "");
+    await expect.poll(async () => (await dialog.boundingBox())!.width).toBeGreaterThan(width - 44);
+    const box = (await dialog.boundingBox())!;
+    expect(box.x).toBeGreaterThanOrEqual(12); expect(box.x + box.width).toBeLessThanOrEqual(width - 12);
+    expect((await dialog.getByRole("button", { name: "Sobre mim", exact: true }).boundingBox())!.width).toBeGreaterThan(box.width - 40);
+    await page.keyboard.press("Shift+Tab");
+    await expect(dialog.getByRole("button", { name: "Certificações", exact: true })).toBeFocused();
+    await page.keyboard.press("Tab"); await expect(close).toBeFocused();
+    await page.keyboard.press("Escape"); await expect(dialog).toHaveCount(0); await expect(trigger).toBeFocused();
+    expect(await page.evaluate(() => document.body.style.overflow)).toBe("");
+    await trigger.click(); await page.locator(".mobile-menu-backdrop").click({ position: { x: 2, y: 2 } });
+    await expect(dialog).toHaveCount(0); await expect(trigger).toBeFocused();
+    await navigate(page, "Projetos");
+    await expect(page.locator("main")).toHaveAttribute("aria-label", "Projetos");
+    await expect(page.locator("main")).toBeFocused();
+    expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
+  }
+});
+
+test("tablet keeps the dropdown and near-white palette reaches all page surfaces", async ({ page }) => {
+  await page.setViewportSize({ width: 768, height: 844 }); await open(page);
+  await expect(page.locator(".portfolio-site")).toHaveCSS("background-color", "rgb(255, 253, 250)");
+  await page.getByRole("button", { name: "Abrir navegação", exact: true }).click();
+  await expect(page.getByRole("navigation", { name: "Navegação principal" })).toBeVisible();
+  await expect(page.getByRole("dialog", { name: "Navegação", exact: true })).toHaveCount(0);
+  await expect(page.locator("#root")).not.toHaveAttribute("inert", "");
+  await page.keyboard.press("Escape");
+  await page.setViewportSize({ width: 390, height: 844 });
+  await page.getByRole("button", { name: "Ativar modo escuro", exact: true }).click();
+  await page.emulateMedia({ reducedMotion: "reduce" });
+  await page.getByRole("button", { name: "Abrir navegação", exact: true }).click();
+  await expect(page.getByRole("dialog", { name: "Navegação", exact: true })).toBeVisible();
+  await page.getByRole("dialog", { name: "Navegação", exact: true }).getByRole("button", { name: "Fechar navegação", exact: true }).click();
+  await expect(page.getByRole("dialog")).toHaveCount(0);
+});
 
 test("every page enters smoothly and project labels stay off the visual layout", async ({ page }) => {
   await open(page);
