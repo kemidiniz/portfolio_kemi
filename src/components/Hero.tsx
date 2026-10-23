@@ -71,36 +71,34 @@ export function Hero({
             Conheça minha história <ArrowRight size={15} />
           </button>
         </div>
-        <div className="profile-highlights">
-          <div className="profile-metrics" aria-label="Destaques da trajetória">
-            {personal.metrics.map((metric, index) => (
-              <div className="metric-card" key={index}>
-                <strong>{metric.value}</strong>
-                <span>{metric.label}</span>
-                <small>{metric.detail}</small>
-              </div>
-            ))}
-          </div>
-          <figure className="profile-portrait">
-            <img
-              src={personal.avatarUrl}
-              alt={`Retrato de ${personal.name}`}
-              fetchPriority="high"
-            />
-            <figcaption>
-              <span className="portrait-location">
-                <MapPin size={13} />
-                {personal.location}
-              </span>
-              <strong>{personal.name}</strong>
-              {currentExperience && (
-                <span>
-                  {currentExperience.role} · {currentExperience.company}
-                </span>
-              )}
-            </figcaption>
-          </figure>
+        <div className="profile-metrics" aria-label="Destaques da trajetória">
+          {personal.metrics.map((metric, index) => (
+            <div className="metric-card" key={index}>
+              <strong>{metric.value}</strong>
+              <span>{metric.label}</span>
+              <small>{metric.detail}</small>
+            </div>
+          ))}
         </div>
+        <figure className="profile-portrait">
+          <img
+            src={personal.avatarUrl}
+            alt={`Retrato de ${personal.name}`}
+            fetchPriority="high"
+          />
+          <figcaption>
+            <span className="portrait-location">
+              <MapPin size={13} />
+              {personal.location}
+            </span>
+            <strong>{personal.name}</strong>
+            {currentExperience && (
+              <span>
+                {currentExperience.role} · {currentExperience.company}
+              </span>
+            )}
+          </figcaption>
+        </figure>
       </div>
     </section>
   );

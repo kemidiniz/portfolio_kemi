@@ -672,8 +672,8 @@ test("compact overview stacks highlights beside portrait and keeps biography ret
   expect(bottom).toBeLessThan(800);
   const metrics = (await page.locator(".profile-metrics").boundingBox())!;
   const intro = (await page.locator(".profile-copy").boundingBox())!;
-  expect(metrics.x).toBeGreaterThanOrEqual(intro.x + intro.width);
-  expect(Math.abs(metrics.y - portrait.y)).toBeLessThan(2);
+  expect(Math.abs(metrics.x - intro.x)).toBeLessThan(2);
+  expect(metrics.y).toBeGreaterThanOrEqual(intro.y + intro.height);
   expect(Math.abs(bottom - (portrait.y + portrait.height))).toBeLessThan(2);
   await page.getByRole("button", { name: "Conheça minha história" }).click();
   await expect(page.locator("#sobre h2")).toHaveCount(0);
