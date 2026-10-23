@@ -204,7 +204,7 @@ test("admin adds, reorders and removes projects before publishing", async ({
     .getByRole("button", { name: "Projetos" })
     .click();
   await page.getByRole("button", { name: "Adicionar", exact: true }).click();
-  await page.getByText("Novo item 6", { exact: true }).click();
+  await page.getByText(`Novo item ${initialPortfolioData.projects.length + 1}`, { exact: true }).click();
   const added = page
     .locator(".admin-content > fieldset > .editor-list > .editor-item")
     .last();
@@ -289,7 +289,6 @@ test("header navigation replaces content and biography opens on demand", async (
     ["Formação & IA", "#formacao-ia"],
     ["Projetos", "#projetos"],
     ["Certificações", "#certificacoes"],
-    ["Contato", "#contato"],
   ];
   for (const [label, heading] of sections) {
     await navigation.getByRole("button", { name: label, exact: true }).click();
@@ -331,7 +330,7 @@ test("night mode persists and applies to other sections and admin login", async 
   expect(dark).not.toEqual(light);
   await page
     .getByRole("navigation", { name: "Navegação principal" })
-    .getByRole("button", { name: "Contato", exact: true })
+    .getByRole("button", { name: "Projetos", exact: true })
     .click();
   await expect(page.locator("html")).toHaveClass(/\bdark\b/);
   await page.getByRole("button", { name: "Área admin", exact: true }).click();
@@ -392,7 +391,6 @@ for (const width of [320, 390, 768, 1024]) {
       "Formação & IA",
       "Projetos",
       "Certificações",
-      "Contato",
     ]) {
       await navigate(page, label);
       await expect(
@@ -660,6 +658,10 @@ test("compact overview stacks highlights beside portrait and keeps biography ret
   await page.goto("/");
   await expect(page.locator(".site-brand small")).toHaveText("Estratégia e Comunicação");
   await expect(page.locator(".profile-status")).toHaveCount(0);
+  await page.locator(".section-view").evaluate(async element => {
+    await Promise.all(element.getAnimations().map(animation => animation.finished));
+  });
+  await page.evaluate(() => document.fonts.ready);
   const cards = await page.locator(".metric-card").all();
   const portrait = (await page.locator(".profile-portrait").boundingBox())!;
   let bottom = 0;
@@ -706,13 +708,12 @@ test("contact cards use published phone to repair legacy sample WhatsApp links",
   await page.route("**/rest/v1/rpc/read_portfolio", route => route.fulfill({ json: { content, revision: 1 } }));
   await page.goto("/");
   await expect(page.locator(".profile-links").getByRole("link", { name: "WhatsApp" })).toHaveAttribute("href", "https://wa.me/5511950201858?text=Oi%20Kemi");
-  await navigate(page, "Contato");
-  await expect(page.locator("#contato h2")).toHaveText("Conexões Diretas · Vamos Conversar");
-  await expect(page.locator(".contact-card")).toHaveCount(3);
-  await expect(page.getByRole("link", { name: "Abrir conversa no WhatsApp" })).toHaveAttribute("href", "https://wa.me/5511950201858?text=Oi%20Kemi");
-  await expect(page.getByRole("link", { name: "Escrever e-mail", exact: true })).toHaveAttribute("href", `mailto:${content.personal.email}`);
-  await expect(page.getByRole("link", { name: "Conectar no LinkedIn" })).toHaveAttribute("href", "https://br.linkedin.com/in/kemilydiniz");
-  await expect(page.locator(".contact-card").getByText("linkedin.com/in/kemilydiniz", { exact: true })).toBeVisible();
+  const contacts = page.getByRole("navigation", { name: "Contatos do rodapé" });
+  await expect(contacts.getByRole("link")).toHaveCount(3);
+  await expect(contacts.getByRole("link", { name: "WhatsApp", exact: true })).toHaveAttribute("href", "https://wa.me/5511950201858?text=Oi%20Kemi");
+  await expect(contacts.getByRole("link", { name: `E-mail: ${content.personal.email}`, exact: true })).toHaveAttribute("href", `mailto:${content.personal.email}`);
+  await expect(contacts.getByRole("link", { name: "LinkedIn", exact: true })).toHaveAttribute("href", "https://br.linkedin.com/in/kemilydiniz");
+
   await expect(page.getByText("Currículo Profissional Completo", { exact: true })).toHaveCount(0);
 });
 
@@ -740,7 +741,56 @@ for (const width of [320, 1280]) {
     const back = (await page.getByRole("button", { name: "Voltar à apresentação" }).boundingBox())!;
     expect(back.y + back.height).toBeLessThanOrEqual(box.y);
     expect(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth)).toBe(true);
-    await navigate(page, "Contato");
+    await navigate(page, "Projetos");
     await expect(footer).toBeVisible();
   });
 }
+
+test("compact projects, aligned skills and permanent contacts replace the contact tab", async ({ page }) => {
+  await setup(page);
+  await page.setViewportSize({ width: 1280, height: 800 });
+  await page.goto("/");
+  await expect(page.getByRole("navigation", { name: "Navegação principal" }).getByRole("button", { name: "Contato", exact: true })).toHaveCount(0);
+  await expect(page.locator(".site-footer").getByRole("button", { name: "Área administrativa" })).toHaveCount(0);
+  await expect(page.locator(".metric-card").nth(1)).toContainText("2 formações");
+  await expect(page.locator(".metric-card").nth(1)).toContainText("RH & Marketing");
+  const copy = (await page.locator(".profile-copy").boundingBox())!;
+  const photo = (await page.locator(".profile-portrait").boundingBox())!;
+  expect(Math.abs(photo.y - copy.y)).toBeLessThan(2);
+  await navigate(page, "Certificações");
+  await expect(page.locator(".skill-group")).toHaveCount(3);
+  const rows = await page.locator(".skill-group").evaluateAll(groups => groups.map(group => [...group.querySelectorAll('.skill-row')].map(row => row.getBoundingClientRect().y)));
+  for (let row = 0; row < 5; row++) {
+    expect(Math.max(...rows.map(group => group[row])) - Math.min(...rows.map(group => group[row]))).toBeLessThan(2);
+  }
+  for (const group of await page.locator(".skill-group").all()) await expect(group.locator(".skill-row")).toHaveCount(5);
+  await expect(page.locator("#certificacoes")).not.toContainText("Power BI");
+  await navigate(page, "Projetos");
+  const filters = (await page.locator(".projects-filters").boundingBox())!;
+  const grid = (await page.locator(".projects-grid").boundingBox())!;
+  expect(Math.abs(filters.width - grid.width)).toBeLessThan(2);
+  expect((await page.locator(".project-card").first().boundingBox())!.height).toBeLessThan(350);
+  await page.getByRole("button", { name: "Abrir projeto: Agente Gi: inglês com IA", exact: true }).click();
+  await expect(page.getByRole("link", { name: "Abrir Agente Gi no Gemini" })).toHaveAttribute("href", "https://gemini.google.com/gem/1LbceA06YOwXQ-_ZtgwmIqwKuNAQifuko?usp=sharing");
+  await page.getByRole("button", { name: "Fechar projeto", exact: true }).click();
+  await page.getByRole("button", { name: "Abrir projeto: Meu portfólio: primeira experiência com vibe coding", exact: true }).click();
+  await expect(page.getByRole("dialog")).toContainText("Pensei o front-end, o back-end, o banco de dados e os conectores");
+});
+
+test("mobile photo fills its column and reprograma community labels do not overlap", async ({ page }) => {
+  await setup(page);
+  await page.setViewportSize({ width: 320, height: 800 });
+  await page.goto("/");
+  const photo = (await page.locator(".profile-portrait").boundingBox())!;
+  const grid = (await page.locator(".profile-grid").boundingBox())!;
+  expect(Math.abs(photo.width - grid.width)).toBeLessThan(2);
+  await navigate(page, "Formação & IA");
+  const labels = await page.locator(".reprograma-community > span").all();
+  let bottom = 0;
+  for (const label of labels) {
+    const box = (await label.boundingBox())!;
+    expect(box.y).toBeGreaterThanOrEqual(bottom);
+    bottom = box.y + box.height;
+  }
+  expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
+});

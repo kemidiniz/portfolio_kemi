@@ -16,7 +16,6 @@ import { Experience } from "./components/Experience";
 import { EducationAndAI } from "./components/EducationAndAI";
 import { Projects } from "./components/Projects";
 import { CertificationsAndSkills } from "./components/CertificationsAndSkills";
-import { Contact } from "./components/Contact";
 import { Footer } from "./components/Footer";
 import { ProjectModal } from "./components/ProjectModal";
 import { ResumeModal } from "./components/ResumeModal";
@@ -249,16 +248,10 @@ export default function App() {
           </div>
         )}
 
-        {/* Block 6: Contato Direto & Conexões */}
-        {activeTab === "contato" && (
-          <div className="section-view">
-            <Contact data={data} />
-          </div>
-        )}
       </main>
 
       {/* Clean Editorial Footer */}
-      <Footer personal={data.personal} onOpenAdmin={() => setIsCmsOpen(true)} />
+      <Footer personal={data.personal} />
 
       {/* Case Study Lightbox / Modal */}
       <ProjectModal

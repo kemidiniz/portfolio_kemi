@@ -1,3 +1,5 @@
+import { applyPortfolioUpdates } from "./portfolioUpdates";
+
 export interface ExperienceItem {
   id: string;
   role: string;
@@ -91,7 +93,7 @@ export interface PortfolioData {
   skills: SkillCategory[];
 }
 
-export const initialPortfolioData: PortfolioData = {
+const originalPortfolioData: PortfolioData = {
   personal: {
     name: "Kemily Diniz",
     nickname: "Kemi",
@@ -458,3 +460,5 @@ export const initialPortfolioData: PortfolioData = {
     }
   ]
 };
+
+export const initialPortfolioData = applyPortfolioUpdates(originalPortfolioData, true);

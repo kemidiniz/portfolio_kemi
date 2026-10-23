@@ -2,6 +2,14 @@ import { useEffect, useRef } from "react";
 import { ArrowLeft, CheckCircle2, X } from "lucide-react";
 import type { ProjectItem } from "../data/portfolioData";
 
+function ProjectText({ text }: { text: string }) {
+  return <>{text.split(/(https?:\/\/[^\s]+)/g).map((part, index) =>
+    /^https?:\/\//.test(part)
+      ? <a key={index} href={part} target="_blank" rel="noreferrer" className="project-external-link">{part.includes("gemini.google.com") ? "Abrir Agente Gi no Gemini ↗" : "Abrir link do projeto ↗"}</a>
+      : part,
+  )}</>;
+}
+
 export function ProjectModal({
   project,
   onClose,
@@ -99,7 +107,7 @@ export function ProjectModal({
               </section>
               <section>
                 <h3>A solução</h3>
-                <p>{project.solution}</p>
+                <p><ProjectText text={project.solution} /></p>
               </section>
             </div>
             <section>

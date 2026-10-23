@@ -73,8 +73,8 @@ export const EducationAndAI: React.FC<EducationAndAIProps> = ({
         {aiCourse && (
           <div className="mb-6 p-5 sm:p-6 rounded-2xl bg-gradient-to-r from-[var(--wine)]/15 via-[var(--wine)]/5 to-transparent border-2 border-[var(--wine)] relative overflow-hidden shadow-sm">
             <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
-              <div className="space-y-3 max-w-3xl">
-                <div className="inline-flex items-center gap-2 text-xs font-bold text-[var(--wine)]">
+              <div className="reprograma-content space-y-3 max-w-3xl min-w-0">
+                <div className="flex flex-wrap items-center gap-2 text-xs font-bold text-[var(--wine)]">
                   <Sparkles className="w-4 h-4" />
                   <span>Destaque em Capacitação Tecnológica</span>
                   <span aria-hidden="true">·</span>
@@ -112,7 +112,7 @@ export const EducationAndAI: React.FC<EducationAndAIProps> = ({
                 </div>
               </div>
 
-              <div className="shrink-0 flex md:flex-col items-center justify-center p-6 surface-card rounded-2xl bg-[var(--paper-light)] border border-[var(--rule)] text-center min-w-[180px] shadow-sm">
+              <div className="reprograma-community shrink-0 flex flex-col items-center justify-center p-6 surface-card rounded-2xl bg-[var(--paper-light)] border border-[var(--rule)] text-center min-w-[180px] shadow-sm">
                 <span className="text-[10px] uppercase tracking-wider font-bold text-[var(--muted)]">
                   Comunidade Tech
                 </span>
