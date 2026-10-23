@@ -275,11 +275,11 @@ test("header navigation replaces content and biography opens on demand", async (
     name: "Navegação principal",
   });
   await expect(
-    page.getByRole("heading", { name: "Quem Sou Eu", exact: true }),
+    page.getByRole("region", { name: "Biografia", exact: true }),
   ).toHaveCount(0);
   await page.getByRole("button", { name: "Conheça minha história" }).click();
   await expect(
-    page.getByRole("heading", { name: "Quem Sou Eu", exact: true }),
+    page.getByRole("region", { name: "Biografia", exact: true }),
   ).toBeVisible();
   await expect(page.getByRole("heading", { level: 1 })).toHaveCount(0);
   await page.getByRole("button", { name: "Voltar à apresentação" }).click();
@@ -670,7 +670,15 @@ test("compact overview stacks highlights beside portrait and keeps biography ret
     bottom = box.y + box.height;
   }
   expect(bottom).toBeLessThan(800);
+  const metrics = (await page.locator(".profile-metrics").boundingBox())!;
+  const intro = (await page.locator(".profile-copy").boundingBox())!;
+  expect(metrics.x).toBeGreaterThanOrEqual(intro.x + intro.width);
+  expect(Math.abs(metrics.y - portrait.y)).toBeLessThan(2);
+  expect(Math.abs(bottom - (portrait.y + portrait.height))).toBeLessThan(2);
   await page.getByRole("button", { name: "Conheça minha história" }).click();
+  await expect(page.locator("#sobre h2")).toHaveCount(0);
+  await expect(page.getByText("Trajetória & Essência", { exact: true })).toHaveCount(0);
+  await expect(page.locator("#sobre").getByText(`${initialPortfolioData.personal.age} anos`, { exact: true })).toHaveCount(0);
   const back = page.getByRole("button", { name: "Voltar à apresentação" });
   await expect(back).toBeVisible();
   await expect(back).toHaveText("");
