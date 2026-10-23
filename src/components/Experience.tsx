@@ -106,15 +106,15 @@ export const Experience: React.FC<ExperienceProps> = ({
                   </button>
                 </div>
 
+                <p className="mt-3 text-sm text-[var(--muted)] leading-relaxed">
+                  {exp.summary}
+                </p>
                 {/* Expandable Achievements & Scope */}
                 {isExpanded && (
                   <div
                     id={`experience-${exp.id}`}
                     className="mt-5 pt-5 border-t border-[var(--rule)] space-y-4"
                   >
-                    <p className="text-sm text-[var(--muted)] leading-relaxed">
-                      {exp.summary}
-                    </p>
                     <h4 className="text-xs font-bold uppercase tracking-wider text-[var(--ink)]">
                       Principais Impactos & Entregas
                     </h4>

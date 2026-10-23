@@ -547,8 +547,12 @@
 }
 .back-to-profile {
   display: inline-flex;
-  margin-top: 22px;
-  padding: 9px 0;
+  margin-top: 6px;
+  width: 36px;
+  height: 36px;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
   color: var(--wine);
   font-size: 13px;
   font-weight: 600;
@@ -889,7 +893,7 @@
 }
 .admin-eyebrow {
   font-size: 12px;
-  letter-spacing: 0.16em;
+  letter-spacing: 0.025em;
   color: var(--muted);
   margin-bottom: 6px;
   font-weight: 600;
@@ -1412,7 +1416,8 @@
 .profile-metrics {
   grid-column: 1;
   grid-row: 2;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
+  grid-template-columns: 1fr;
+  gap: 8px;
   margin-top: 0;
 }
 .profile-portrait {
@@ -1421,11 +1426,11 @@
   align-self: center;
   aspect-ratio: 3 / 4;
   height: auto;
-  max-width: 420px;
+  max-width: 330px;
 }
 .site-brand small {
   font-size: 11px;
-  letter-spacing: 0.16em;
+  letter-spacing: 0.025em;
   font-weight: 400;
 }
 .page-introduction {
@@ -1759,7 +1764,7 @@
   }
   .profile-portrait {
     grid-column: 1;
-    grid-row: 2;
+    grid-row: 3;
     width: 100%;
     height: auto;
     max-width: 420px;
@@ -1767,7 +1772,8 @@
   }
   .profile-metrics {
     grid-column: 1;
-    grid-row: 3;
+    grid-row: 2;
+    grid-template-columns: 1fr;
     margin-top: 0;
   }
   .site-brand small {
@@ -1895,4 +1901,143 @@
     width: 180px;
     height: 240px;
   }
+}
+
+/* Compact overview: four readable highlights stacked beside the portrait. */
+.profile-hero {
+  padding-top: 24px;
+  padding-bottom: 24px;
+}
+.profile-grid {
+  column-gap: 36px;
+  row-gap: 16px;
+}
+.profile-greeting {
+  margin: 0 0 8px;
+  font-size: 15px;
+}
+.profile-copy h1 {
+  font-size: clamp(30px, 2.8vw, 38px);
+}
+.profile-description {
+  margin: 12px 0 16px;
+  font-size: 14px;
+}
+.profile-links {
+  margin-top: 14px;
+}
+.profile-about-link {
+  margin-top: 12px;
+}
+.metric-card {
+  display: grid;
+  grid-template-columns: minmax(90px, 0.35fr) minmax(0, 1fr);
+  column-gap: 14px;
+  padding: 10px 16px;
+  align-items: center;
+}
+.metric-card strong {
+  grid-column: 1;
+  grid-row: 1 / span 2;
+  font-size: 21px;
+}
+.metric-card > span {
+  grid-column: 2;
+  margin-top: 0;
+}
+.metric-card small {
+  grid-column: 2;
+  margin-top: 2px;
+  line-height: 1.4;
+}
+.back-to-profile:hover {
+  background: var(--accent-soft);
+}
+.back-to-profile + #sobre {
+  padding-top: 0;
+}
+.contact-heading {
+  margin-bottom: 18px;
+  color: var(--wine);
+  font-size: 15px !important;
+  font-weight: 600;
+}
+.contact-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 18px;
+}
+.contact-card {
+  padding: 22px;
+  border: 1px solid var(--rule);
+  border-radius: 16px;
+  background: var(--paper-light);
+  transition: border-color .2s, transform .2s, box-shadow .2s;
+}
+.contact-card:hover {
+  border-color: var(--wine);
+  transform: translateY(-3px);
+  box-shadow: var(--shadow);
+}
+.contact-card header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  color: var(--wine);
+  margin-bottom: 18px;
+}
+.contact-card header button {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+  min-height: 36px;
+}
+.contact-card h3 {
+  font-size: 17px;
+  font-weight: 650;
+}
+.contact-card p {
+  font-size: 13px;
+  color: var(--muted);
+  overflow-wrap: anywhere;
+  margin-top: 6px;
+}
+.contact-card > a {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 22px;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--wine);
+  min-height: 36px;
+}
+.contact-card > a:hover {
+  text-decoration: underline;
+}
+@media(max-width: 760px) {
+  .profile-hero {
+  padding-top: 20px;
+}
+  .profile-portrait {
+  max-width: 300px;
+}
+  .profile-grid {
+  gap: 18px;
+}
+  .metric-card {
+  grid-template-columns: 90px minmax(0, 1fr);
+  padding: 10px 12px;
+}
+  .contact-grid {
+  grid-template-columns: 1fr;
+  gap: 12px;
+}
+  .contact-card {
+  padding: 18px;
+}
+  .site-brand small {
+  letter-spacing: 0;
+}
 }
