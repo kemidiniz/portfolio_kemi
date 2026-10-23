@@ -458,7 +458,7 @@ test("experience starts collapsed and page introductions do not repeat navigatio
     page.getByText(initialPortfolioData.experiences[0].summary, {
       exact: true,
     }),
-  ).toHaveCount(0);
+  ).toBeVisible();
   await toggles.first().click();
   await expect(
     page.getByText(initialPortfolioData.experiences[0].summary, {
@@ -652,4 +652,51 @@ test("mobile framing preview and controls have separate scrollable space", async
   await expect(page.getByLabel("Foto de perfil", { exact: true })).toHaveValue(
     initialPortfolioData.personal.avatarUrl,
   );
+});
+
+test("compact overview stacks highlights beside portrait and keeps biography return discreet", async ({ page }) => {
+  await page.setViewportSize({ width: 1280, height: 800 });
+  await setup(page);
+  await page.goto("/");
+  await expect(page.locator(".site-brand small")).toHaveText("Estratégia e Comunicação");
+  await expect(page.locator(".profile-status")).toHaveCount(0);
+  const cards = await page.locator(".metric-card").all();
+  const portrait = (await page.locator(".profile-portrait").boundingBox())!;
+  let bottom = 0;
+  for (const card of cards) {
+    const box = (await card.boundingBox())!;
+    expect(box.x + box.width).toBeLessThan(portrait.x);
+    expect(box.y).toBeGreaterThanOrEqual(bottom);
+    bottom = box.y + box.height;
+  }
+  expect(bottom).toBeLessThan(800);
+  await page.getByRole("button", { name: "Conheça minha história" }).click();
+  const back = page.getByRole("button", { name: "Voltar à apresentação" });
+  await expect(back).toBeVisible();
+  await expect(back).toHaveText("");
+  const backBox = (await back.boundingBox())!;
+  const biography = (await page.locator("#sobre").boundingBox())!;
+  expect(biography.y - backBox.y - backBox.height).toBeLessThan(8);
+  await back.click();
+  await expect(page.getByRole("heading", { level: 1 })).toBeVisible();
+});
+
+test("contact cards use published phone to repair legacy sample WhatsApp links", async ({ page }) => {
+  await setup(page);
+  const content = structuredClone(initialPortfolioData);
+  content.personal.whatsapp = "https://wa.me/5511999999999?text=Oi%20Kemi";
+  content.personal.whatsappDisplay = "+55 (11) 95020-1858";
+  content.personal.linkedin = "https://www.linkedin.com/in/kemily-diniz/";
+  content.personal.linkedinDisplay = "linkedin.com/in/kemily-diniz";
+  await page.route("**/rest/v1/rpc/read_portfolio", route => route.fulfill({ json: { content, revision: 1 } }));
+  await page.goto("/");
+  await expect(page.locator(".profile-links").getByRole("link", { name: "WhatsApp" })).toHaveAttribute("href", "https://wa.me/5511950201858?text=Oi%20Kemi");
+  await navigate(page, "Contato");
+  await expect(page.locator("#contato h2")).toHaveText("Conexões Diretas · Vamos Conversar");
+  await expect(page.locator(".contact-card")).toHaveCount(3);
+  await expect(page.getByRole("link", { name: "Abrir conversa no WhatsApp" })).toHaveAttribute("href", "https://wa.me/5511950201858?text=Oi%20Kemi");
+  await expect(page.getByRole("link", { name: "Escrever e-mail", exact: true })).toHaveAttribute("href", `mailto:${content.personal.email}`);
+  await expect(page.getByRole("link", { name: "Conectar no LinkedIn" })).toHaveAttribute("href", "https://br.linkedin.com/in/kemilydiniz");
+  await expect(page.locator(".contact-card").getByText("linkedin.com/in/kemilydiniz", { exact: true })).toBeVisible();
+  await expect(page.getByText("Currículo Profissional Completo", { exact: true })).toHaveCount(0);
 });

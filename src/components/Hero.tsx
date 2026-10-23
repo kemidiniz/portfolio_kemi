@@ -8,6 +8,7 @@ import {
   MessageCircle,
 } from "lucide-react";
 import type { PortfolioData } from "../data/portfolioData";
+import { contactLinks } from "../lib/contactLinks";
 import type { TabType } from "./Header";
 export function Hero({
   data,
@@ -21,16 +22,13 @@ export function Hero({
   onOpenAbout: () => void;
 }) {
   const { personal } = data;
+  const links = contactLinks(personal);
   const highlight = personal.headline.lastIndexOf("Dados");
   const currentExperience = data.experiences[0];
   return (
     <section className="profile-hero" aria-label="Apresentação">
       <div className="profile-grid">
         <div className="profile-copy">
-          <div className="profile-status">
-            <span className="status-dot" />
-            {personal.statusBadge}
-          </div>
           <p className="profile-greeting">Oie, sou a {personal.nickname}!</p>
           <h1>
             {highlight > 0 ? (
@@ -56,15 +54,15 @@ export function Hero({
             </button>
           </div>
           <div className="profile-links">
-            <a href={personal.linkedin} target="_blank" rel="noreferrer">
+            <a href={links.linkedin} target="_blank" rel="noreferrer">
               <Linkedin size={15} />
               LinkedIn
             </a>
-            <a href={`mailto:${personal.email}`}>
+            <a href={links.email}>
               <Mail size={15} />
               E-mail
             </a>
-            <a href={personal.whatsapp} target="_blank" rel="noreferrer">
+            <a href={links.whatsapp} target="_blank" rel="noreferrer">
               <MessageCircle size={15} />
               WhatsApp
             </a>

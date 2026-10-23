@@ -89,7 +89,7 @@ export function Header({
           </span>
           <span>
             <strong>{personal.name}</strong>
-            <small>PORTFÓLIO</small>
+            <small>Estratégia e Comunicação</small>
           </span>
         </button>
         <nav

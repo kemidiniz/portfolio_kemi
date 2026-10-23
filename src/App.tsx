@@ -25,7 +25,7 @@ const CmsDrawer = lazy(() =>
     default: module.CmsDrawer,
   })),
 );
-import { ArrowRight } from "lucide-react";
+import { ArrowLeft, ArrowRight } from "lucide-react";
 import { readPortfolio, writePortfolio } from "./lib/portfolio";
 import { useAdmin } from "./hooks/useAdmin";
 
@@ -175,12 +175,14 @@ export default function App() {
               <>
                 <button
                   className="back-to-profile"
+                  aria-label="Voltar à apresentação"
+                  title="Voltar à apresentação"
                   onClick={() => {
                     setShowBiography(false);
                     window.scrollTo({ top: 0, behavior: "instant" });
                   }}
                 >
-                  ← Voltar à apresentação
+                  <ArrowLeft size={18} />
                 </button>
                 <About data={data} />
               </>
@@ -260,24 +262,7 @@ export default function App() {
         {/* Block 6: Contato Direto & Conexões */}
         {activeTab === "contato" && (
           <div className="section-view">
-            <Contact data={data} onOpenResume={() => setIsResumeOpen(true)} />
-
-            {/* Block Navigation Helper */}
-            <div className="flex items-center justify-between pt-8 border-t border-[var(--rule)]">
-              <button
-                onClick={() => handleSelectTab("certificacoes")}
-                className="text-xs font-bold text-[var(--muted)] hover:text-[var(--wine)] transition-colors cursor-pointer"
-              >
-                ← Voltar para Certificações
-              </button>
-              <button
-                onClick={() => handleSelectTab("sobre")}
-                className="inline-flex items-center gap-1.5 text-xs font-bold text-[var(--wine)] hover:underline cursor-pointer"
-              >
-                <span>Voltar ao Início (Sobre mim)</span>
-                <ArrowRight className="w-3.5 h-3.5" />
-              </button>
-            </div>
+            <Contact data={data} />
           </div>
         )}
       </main>
