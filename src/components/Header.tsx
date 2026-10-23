@@ -88,8 +88,8 @@ export function Header({
               .join("")}
           </span>
           <span>
-            <strong>{personal.brandTitle}</strong>
-            <small>Comunicação, estratégia, dados & IA</small>
+            <strong>{personal.name}</strong>
+            <small>PORTFÓLIO</small>
           </span>
         </button>
         <nav

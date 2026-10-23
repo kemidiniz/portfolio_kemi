@@ -20,6 +20,9 @@ import {
   type PortfolioData,
 } from "../data/portfolioData";
 import { supabase } from "../lib/supabase";
+import { ImageFraming } from "./ImageFraming";
+
+const UploadActivity = React.createContext<(active: boolean) => void>(() => {});
 import { validatePortfolio } from "../lib/portfolio";
 
 const labels: Record<string, string> = {
@@ -138,6 +141,14 @@ function Editor({
   onChange: (value: Json) => void;
 }) {
   const [uploading, setUploading] = useState(false);
+  const [cropSource, setCropSource] = useState<string | null>(null);
+  const setUploadActivity = React.useContext(UploadActivity);
+  useEffect(
+    () => () => {
+      if (cropSource?.startsWith("blob:")) URL.revokeObjectURL(cropSource);
+    },
+    [cropSource],
+  );
   const [uploadError, setUploadError] = useState("");
   const latestChange = useRef(onChange);
   latestChange.current = onChange;
@@ -330,6 +341,18 @@ function Editor({
     "achievements",
     "results",
   ].includes(field);
+  function frameFile(file?: File) {
+    if (!file) return;
+    if (
+      !["image/jpeg", "image/png", "image/webp"].includes(file.type) ||
+      file.size > 5 * 1024 * 1024
+    ) {
+      setUploadError("Escolha uma imagem JPG, PNG ou WebP de até 5 MB.");
+      return;
+    }
+    setUploadError("");
+    setCropSource(URL.createObjectURL(file));
+  }
   async function upload(file?: File) {
     if (!file || !supabase) return;
     if (
@@ -340,6 +363,7 @@ function Editor({
       return;
     }
     setUploading(true);
+    setUploadActivity(true);
     setUploadError("");
     try {
       const ext = {
@@ -361,8 +385,10 @@ function Editor({
       setUploadError(
         "Não foi possível enviar a imagem. Verifique a permissão e o bucket portfolio-media.",
       );
+      throw new Error("Falha no envio da imagem.");
     } finally {
       setUploading(false);
+      setUploadActivity(false);
     }
   }
   return (
@@ -423,12 +449,42 @@ function Editor({
               type="file"
               accept="image/jpeg,image/png,image/webp"
               disabled={uploading}
-              onChange={(e) => void upload(e.target.files?.[0])}
+              onChange={(e) => {
+                frameFile(e.target.files?.[0]);
+                e.target.value = "";
+              }}
             />
           </label>
           <span className="admin-muted">
             JPG, PNG ou WebP, até 5 MB. Você também pode colar a URL acima.
           </span>
+          {value && (
+            <div className="image-field-preview">
+              <img src={String(value)} alt={`Prévia: ${labels[field]}`} />
+              <button
+                type="button"
+                className="admin-button subtle"
+                disabled={uploading}
+                onClick={() => {
+                  setUploadError("");
+                  setCropSource(String(value));
+                }}
+              >
+                Ajustar enquadramento
+              </button>
+            </div>
+          )}
+          {cropSource && (
+            <ImageFraming
+              source={cropSource}
+              profile={field === "avatarUrl"}
+              onCancel={() => setCropSource(null)}
+              onApply={async (file) => {
+                await upload(file);
+                setCropSource(null);
+              }}
+            />
+          )}
           {uploadError && (
             <p role="alert" className="admin-error">
               {uploadError}
@@ -466,7 +522,9 @@ export function CmsDrawer({
   const [draft, setDraft] = useState(data);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [busy, setBusy] = useState(false);
+  const [working, setBusy] = useState(false);
+  const [uploads, setUploads] = useState(0);
+  const busy = working || uploads > 0;
   const [error, setError] = useState("");
   const [saved, setSaved] = useState(false);
   const dialog = useRef<HTMLDivElement>(null);
@@ -725,6 +783,7 @@ export function CmsDrawer({
                       key={key}
                       className={tab === key ? "selected" : ""}
                       aria-current={tab === key ? "page" : undefined}
+                      disabled={busy}
                       onClick={() => setTab(key)}
                     >
                       <span className="admin-section-number">0{index + 1}</span>
@@ -775,26 +834,43 @@ export function CmsDrawer({
                   </p>
                 )}
                 <fieldset disabled={busy || !canPublish} className="min-w-0">
-                  <Editor
-                    key={tab}
-                    value={draft[tab] as unknown as Json}
-                    template={initialPortfolioData[tab] as unknown as Json}
-                    field={tab}
-                    path={tab}
-                    onChange={(next) => {
-                      setDraft((current) => ({ ...current, [tab]: next }));
-                      setSaved(false);
-                    }}
-                  />
+                  <UploadActivity.Provider
+                    value={(active) =>
+                      setUploads((count) =>
+                        Math.max(0, count + (active ? 1 : -1)),
+                      )
+                    }
+                  >
+                    <Editor
+                      key={tab}
+                      value={draft[tab] as unknown as Json}
+                      template={initialPortfolioData[tab] as unknown as Json}
+                      field={tab}
+                      path={tab}
+                      onChange={(next) => {
+                        setDraft((current) => ({ ...current, [tab]: next }));
+                        setSaved(false);
+                      }}
+                    />
+                  </UploadActivity.Provider>
                 </fieldset>
               </div>
             </div>
             <footer className="admin-toolbar">
-              <div aria-live="polite">
+              <div className="admin-publication-feedback" aria-live="polite">
                 {error ? (
-                  <p role="alert" className="admin-error">
-                    {error}
-                  </p>
+                  <div className="publication-error">
+                    <p role="alert" className="admin-error">
+                      {error}
+                    </p>
+                    <button
+                      type="button"
+                      className="admin-button subtle"
+                      onClick={() => void navigator.clipboard.writeText(error)}
+                    >
+                      Copiar erro
+                    </button>
+                  </div>
                 ) : saved ? (
                   <span className="admin-success">
                     <Check size={16} />
@@ -821,7 +897,11 @@ export function CmsDrawer({
                   ) : (
                     <Save size={16} />
                   )}{" "}
-                  {busy ? "Publicando…" : "Publicar alterações"}
+                  {uploads > 0
+                    ? "Enviando imagem…"
+                    : busy
+                      ? "Publicando…"
+                      : "Publicar alterações"}
                 </button>
               </div>
             </footer>

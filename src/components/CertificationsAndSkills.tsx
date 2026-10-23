@@ -13,20 +13,12 @@ export const CertificationsAndSkills: React.FC<
   CertificationsAndSkillsProps
 > = ({ certifications, skills, onNavigateToTab }) => {
   return (
-    <section id="certificacoes" className="py-6 md:py-7">
+    <section
+      aria-label="Certificações e habilidades"
+      id="certificacoes"
+      className="py-6 md:py-7"
+    >
       <div className="w-full max-w-[1600px] mx-auto px-4 sm:px-8 lg:px-14 xl:px-20">
-        {/* Section Header */}
-        <div className="mb-6">
-          <div className="inline-flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-[var(--wine)] mb-2">
-            <span>Validação de Competências</span>
-            <span aria-hidden="true">·</span>
-            <span>Credenciais & Ferramentas</span>
-          </div>
-          <h2 className="text-3xl sm:text-4xl font-bold tracking-tight text-[var(--ink)] text-balance">
-            Certificações & Habilidades Técnicas
-          </h2>
-        </div>
-
         {/* Certifications Grid */}
         <div className="mb-12">
           <h3 className="text-sm font-bold uppercase tracking-wider text-[var(--muted)] mb-4 flex items-center gap-2">
