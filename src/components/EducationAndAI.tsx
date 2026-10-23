@@ -25,20 +25,12 @@ export const EducationAndAI: React.FC<EducationAndAIProps> = ({
   const summits = techImmersions.filter((item) => item.id !== "reprograma-ia");
 
   return (
-    <section id="formacao-ia" className="py-6 md:py-7">
+    <section
+      aria-label="Formação e aprendizado"
+      id="formacao-ia"
+      className="py-6 md:py-7"
+    >
       <div className="w-full max-w-[1600px] mx-auto px-4 sm:px-8 lg:px-14 xl:px-20">
-        {/* Section Header */}
-        <div className="mb-6">
-          <div className="inline-flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-[var(--wine)] mb-2">
-            <span>Repertório & Aprendizado Contínuo</span>
-            <span aria-hidden="true">·</span>
-            <span>Academia & Tecnologia</span>
-          </div>
-          <h2 className="text-3xl sm:text-4xl font-bold tracking-tight text-[var(--ink)] text-balance">
-            Formação Acadêmica & Imersão em IA
-          </h2>
-        </div>
-
         {/* Top Grid: Academic Degrees */}
         <div className="mb-6">
           <h3 className="text-sm font-bold uppercase tracking-wider text-[var(--muted)] mb-4 flex items-center gap-2">

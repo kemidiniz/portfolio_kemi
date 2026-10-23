@@ -20,9 +20,7 @@ export const Experience: React.FC<ExperienceProps> = ({
   experiences,
   onNavigateToTab,
 }) => {
-  const [expandedId, setExpandedId] = useState<string | null>(
-    experiences[0]?.id || null,
-  );
+  const [expandedId, setExpandedId] = useState<string | null>(null);
 
   const toggleExpand = (id: string) => {
     setExpandedId((prev) => (prev === id ? null : id));
@@ -31,17 +29,9 @@ export const Experience: React.FC<ExperienceProps> = ({
   return (
     <section id="experiencia" className="py-6 md:py-7">
       <div className="w-full max-w-[1600px] mx-auto px-4 sm:px-8 lg:px-14 xl:px-20">
-        {/* Section Header */}
-        <div className="mb-6">
-          <div className="inline-flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-[var(--wine)] mb-2">
-            <span>Trajetória Profissional</span>
-            <span aria-hidden="true">·</span>
-            <span>Comunicação, CX & Estratégia</span>
-          </div>
-          <h2 className="text-3xl sm:text-4xl font-bold tracking-tight text-[var(--ink)] text-balance">
-            Experiência Corporativa
-          </h2>
-          <p className="text-sm text-[var(--muted)] mt-2 max-w-2xl font-normal">
+        <div className="page-introduction">
+          <h2>Trajetória Profissional</h2>
+          <p>
             Experiências, desafios e aprendizados que constroem meu percurso
             profissional.
           </p>
@@ -98,6 +88,8 @@ export const Experience: React.FC<ExperienceProps> = ({
 
                   {/* Toggle Accordion / Expansion Button */}
                   <button
+                    aria-expanded={isExpanded}
+                    aria-controls={`experience-${exp.id}`}
                     onClick={() => toggleExpand(exp.id)}
                     className="self-start md:self-center inline-flex items-center gap-1.5 text-xs font-semibold text-[var(--wine)] hover:text-[var(--wine-hover)] py-2 px-3.5 rounded-xl border border-[var(--rule)] hover:border-[var(--wine)] transition-colors whitespace-nowrap cursor-pointer"
                   >
@@ -114,14 +106,15 @@ export const Experience: React.FC<ExperienceProps> = ({
                   </button>
                 </div>
 
-                {/* Summary */}
-                <p className="mt-3.5 text-sm sm:text-base text-[var(--muted)] leading-relaxed font-normal">
-                  {exp.summary}
-                </p>
-
                 {/* Expandable Achievements & Scope */}
                 {isExpanded && (
-                  <div className="mt-6 pt-6 border-t border-[var(--rule)] space-y-4">
+                  <div
+                    id={`experience-${exp.id}`}
+                    className="mt-5 pt-5 border-t border-[var(--rule)] space-y-4"
+                  >
+                    <p className="text-sm text-[var(--muted)] leading-relaxed">
+                      {exp.summary}
+                    </p>
                     <h4 className="text-xs font-bold uppercase tracking-wider text-[var(--ink)]">
                       Principais Impactos & Entregas
                     </h4>

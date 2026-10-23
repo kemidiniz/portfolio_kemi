@@ -285,20 +285,18 @@ test("header navigation replaces content and biography opens on demand", async (
   await page.getByRole("button", { name: "Voltar à apresentação" }).click();
   await expect(page.getByRole("heading", { level: 1 })).toBeVisible();
   const sections = [
-    ["Experiência", "Experiência Corporativa"],
-    ["Formação & IA", "Formação Acadêmica & Imersão em IA"],
-    ["Projetos", "Projetos"],
-    ["Certificações", "Certificações & Habilidades Técnicas"],
-    ["Contato", "Canais de Contato"],
+    ["Experiência", "#experiencia"],
+    ["Formação & IA", "#formacao-ia"],
+    ["Projetos", "#projetos"],
+    ["Certificações", "#certificacoes"],
+    ["Contato", "#contato"],
   ];
   for (const [label, heading] of sections) {
     await navigation.getByRole("button", { name: label, exact: true }).click();
     await expect(
       navigation.getByRole("button", { name: label, exact: true }),
     ).toHaveAttribute("aria-current", "page");
-    await expect(
-      page.getByRole("heading", { name: heading, exact: true }),
-    ).toBeVisible();
+    await expect(page.locator(heading)).toBeVisible();
     await expect(page.getByRole("heading", { level: 1 })).toHaveCount(0);
   }
   await navigation
@@ -437,4 +435,194 @@ test("desktop header stays in one row and key information fits a standard screen
       .first()
       .evaluate((el) => parseFloat(getComputedStyle(el).fontSize)),
   ).toBeGreaterThanOrEqual(12);
+});
+
+test("experience starts collapsed and page introductions do not repeat navigation titles", async ({
+  page,
+}) => {
+  await setup(page);
+  await page.goto("/");
+  await navigate(page, "Experiência");
+  await expect(
+    page.getByRole("heading", { name: "Trajetória Profissional", exact: true }),
+  ).toBeVisible();
+  await expect(
+    page.getByRole("heading", { name: "Experiência Corporativa", exact: true }),
+  ).toHaveCount(0);
+  const toggles = page.getByRole("button", {
+    name: "Ver Conquistas & Escopo",
+    exact: true,
+  });
+  expect(await toggles.count()).toBe(initialPortfolioData.experiences.length);
+  await expect(
+    page.getByText(initialPortfolioData.experiences[0].summary, {
+      exact: true,
+    }),
+  ).toHaveCount(0);
+  await toggles.first().click();
+  await expect(
+    page.getByText(initialPortfolioData.experiences[0].summary, {
+      exact: true,
+    }),
+  ).toBeVisible();
+  await navigate(page, "Projetos");
+  await expect(page.locator("#projetos h2")).toHaveCount(0);
+  await expect(
+    page.getByText("Clique em qualquer card", { exact: false }),
+  ).toHaveCount(0);
+  await navigate(page, "Experiência");
+  expect(await toggles.count()).toBe(initialPortfolioData.experiences.length);
+  await navigate(page, "Formação & IA");
+  await expect(page.locator("#formacao-ia h2")).toHaveCount(0);
+  await navigate(page, "Certificações");
+  await expect(page.locator("#certificacoes h2")).toHaveCount(0);
+});
+
+for (const width of [390, 1280]) {
+  test(`project close stays visible after scrolling at ${width}px`, async ({
+    page,
+  }) => {
+    await setup(page);
+    await page.setViewportSize({ width, height: 720 });
+    await page.goto("/");
+    await navigate(page, "Projetos");
+    const opener = page.getByRole("button", {
+      name: `Abrir projeto: ${initialPortfolioData.projects[0].title}`,
+      exact: true,
+    });
+    await opener.focus();
+    await page.keyboard.press("Enter");
+    const dialog = page.getByRole("dialog");
+    await expect(dialog).toBeVisible();
+    await page.locator(".project-dialog-body").evaluate((el) => {
+      el.scrollTop = el.scrollHeight;
+    });
+    const close = dialog.getByRole("button", {
+      name: "Fechar projeto",
+      exact: true,
+    });
+    await expect(close).toBeVisible();
+    const bounds = await close.boundingBox();
+    expect(bounds!.y).toBeGreaterThanOrEqual(0);
+    expect(bounds!.y + bounds!.height).toBeLessThan(720);
+    await close.click();
+    await expect(dialog).toHaveCount(0);
+    await expect(opener).toBeFocused();
+    await page.keyboard.press("Enter");
+    await expect(page.getByRole("dialog")).toBeVisible();
+    await page.keyboard.press("Escape");
+    await expect(page.getByRole("dialog")).toHaveCount(0);
+  });
+}
+
+for (const width of [390, 1280]) {
+  test(`publication error does not overlap the account at ${width}px`, async ({
+    page,
+  }) => {
+    await setup(page, true);
+    await page.route("**/rest/v1/rpc/save_portfolio", (r) =>
+      r.fulfill({
+        status: 500,
+        json: {
+          code: "42702",
+          message: "Ambiguous column in database function",
+        },
+      }),
+    );
+    await page.setViewportSize({ width, height: 700 });
+    await page.goto("/");
+    await login(page);
+    await page.getByLabel("Nome", { exact: true }).fill("Rascunho preservado");
+    await page
+      .getByRole("button", { name: "Publicar alterações", exact: true })
+      .click();
+    await expect(page.getByRole("alert")).toContainText("42702");
+    await expect(page.getByLabel("Nome", { exact: true })).toHaveValue(
+      "Rascunho preservado",
+    );
+    const account = await page.locator(".admin-account").boundingBox(),
+      toolbar = await page.locator(".admin-toolbar").boundingBox();
+    expect(account!.y + account!.height).toBeLessThanOrEqual(toolbar!.y + 1);
+    await expect(
+      page.getByRole("button", { name: "Sair da conta", exact: true }),
+    ).toBeVisible();
+    await expect(
+      page.getByRole("button", { name: "Copiar erro", exact: true }),
+    ).toBeVisible();
+  });
+}
+
+test("photo can be framed and uploaded before publishing without losing other edits", async ({
+  page,
+}) => {
+  await setup(page, true);
+  let uploads = 0;
+  await page.route("**/storage/v1/object/portfolio-media/**", (route) => {
+    if (route.request().method() === "POST") {
+      uploads++;
+      return route.fulfill({
+        json: {
+          Key: "portfolio-media/test.jpg",
+          Id: "00000000-0000-0000-0000-000000000001",
+        },
+      });
+    }
+    return route.fulfill({ status: 404 });
+  });
+  await page.goto("/");
+  await login(page);
+  await page
+    .getByLabel("Nome", { exact: true })
+    .fill("Kemi — retrato atualizado");
+  await page
+    .getByLabel("Enviar Foto de perfil", { exact: true })
+    .setInputFiles("public/assets/aistudio/IMG_1992_c0be0322.jpeg");
+  const crop = page.getByRole("dialog", {
+    name: "Enquadrar foto de perfil",
+    exact: true,
+  });
+  await expect(crop).toBeVisible();
+  await expect(
+    crop.getByRole("button", { name: "Usar enquadramento", exact: true }),
+  ).toBeEnabled();
+  const before = await crop
+    .locator("canvas")
+    .evaluate((c) => (c as HTMLCanvasElement).toDataURL());
+  await crop
+    .getByRole("slider", { name: "Zoom da imagem", exact: true })
+    .fill("1.6");
+  await crop
+    .getByRole("slider", { name: "Posição vertical da imagem", exact: true })
+    .fill("40");
+  await expect
+    .poll(() =>
+      crop
+        .locator("canvas")
+        .evaluate((c) => (c as HTMLCanvasElement).toDataURL()),
+    )
+    .not.toBe(before);
+  await crop
+    .getByRole("button", { name: "Usar enquadramento", exact: true })
+    .click();
+  await expect(crop).toHaveCount(0);
+  expect(uploads).toBe(1);
+  await expect(page.getByLabel("Foto de perfil", { exact: true })).toHaveValue(
+    /\/storage\/v1\/object\/public\/portfolio-media\/.+\.jpg$/,
+  );
+  await expect(page.getByLabel("Nome", { exact: true })).toHaveValue(
+    "Kemi — retrato atualizado",
+  );
+  await page
+    .getByRole("button", { name: "Publicar alterações", exact: true })
+    .click();
+  await expect(
+    page.getByText("Conteúdo publicado no site.", { exact: true }),
+  ).toBeVisible();
+  await page
+    .getByRole("button", { name: "Fechar área administrativa", exact: true })
+    .click();
+  await page.reload();
+  await expect(page.locator(".profile-portrait figcaption strong")).toHaveText(
+    "Kemi — retrato atualizado",
+  );
 });

@@ -34,25 +34,10 @@ export const Projects: React.FC<ProjectsProps> = ({
       : projects.filter((p) => p.category === activeCategory);
 
   return (
-    <section id="projetos" className="py-6 md:py-7">
+    <section aria-label="Projetos" id="projetos" className="py-6 md:py-7">
       <div className="w-full max-w-[1600px] mx-auto px-4 sm:px-8 lg:px-14 xl:px-20">
         {/* Section Header */}
         <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-6">
-          <div>
-            <div className="inline-flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-[var(--wine)] mb-2">
-              <span>Produção Intelectual & Entregas</span>
-              <span aria-hidden="true">·</span>
-              <span>Casos Reais & Artigos</span>
-            </div>
-            <h2 className="text-3xl sm:text-4xl font-bold tracking-tight text-[var(--ink)] text-balance">
-              Projetos
-            </h2>
-            <p className="text-sm text-[var(--muted)] mt-2 max-w-xl font-normal">
-              Clique em qualquer card para abrir o estudo de caso detalhado com
-              desafios, metodologia e dados de impacto.
-            </p>
-          </div>
-
           {/* Interactive Filter Pills/Buttons */}
           <div className="flex flex-wrap items-center gap-1.5 p-1.5 bg-[var(--surface-hover)]/70 dark:bg-[var(--paper-light)] rounded-2xl border border-[var(--rule)]">
             {categories.map((cat) => (
@@ -77,6 +62,15 @@ export const Projects: React.FC<ProjectsProps> = ({
             <div
               key={project.id}
               onClick={() => onSelectProject(project)}
+              role="button"
+              tabIndex={0}
+              aria-label={`Abrir projeto: ${project.title}`}
+              onKeyDown={(e) => {
+                if (e.key === "Enter" || e.key === " ") {
+                  e.preventDefault();
+                  onSelectProject(project);
+                }
+              }}
               className="group cursor-pointer surface-card rounded-2xl bg-[var(--paper-light)] border border-[var(--rule)] hover:border-[var(--wine)] dark:hover:border-[var(--wine)] transition-all overflow-hidden flex flex-col justify-between shadow-xs hover:shadow-lg hover:-translate-y-1"
             >
               {/* Media Thumbnail Container with Scrim & Zero-Broken-Image fallback */}

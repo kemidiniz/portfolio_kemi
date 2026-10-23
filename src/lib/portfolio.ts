@@ -187,8 +187,24 @@ export async function writePortfolio(content: PortfolioData, revision: number) {
       throw new Error(
         "Sua conta não tem permissão para publicar. Entre novamente ou peça acesso à administradora.",
       );
+    if (error.code === "22023")
+      throw new Error(
+        `O banco recusou o formato do conteúdo (22023): ${error.message}. O rascunho foi mantido.`,
+      );
+    if (error.code === "23505")
+      throw new Error(
+        "Há identificadores repetidos no banco (23505). Seu rascunho foi mantido.",
+      );
+    if (error.code === "PGRST202")
+      throw new Error(
+        "A função de publicação não está disponível no Supabase (PGRST202). Confira a migração do banco. Seu rascunho foi mantido.",
+      );
+    if (error.code === "PGRST301" || error.code === "PGRST302")
+      throw new Error(
+        "Sua sessão expirou. Exporte o rascunho, entre novamente e tente publicar.",
+      );
     throw new Error(
-      "Não foi possível publicar. Seu rascunho foi mantido; confira a conexão e tente novamente.",
+      `Não foi possível publicar${error.code ? ` (${error.code})` : ""}: ${error.message || "sem resposta do servidor"}. Seu rascunho foi mantido.`,
     );
   }
   return Number(data);

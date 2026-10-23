@@ -73,6 +73,15 @@ export function Hero({
             Conheça minha história <ArrowRight size={15} />
           </button>
         </div>
+        <div className="profile-metrics" aria-label="Destaques da trajetória">
+          {personal.metrics.map((metric, index) => (
+            <div className="metric-card" key={index}>
+              <strong>{metric.value}</strong>
+              <span>{metric.label}</span>
+              <small>{metric.detail}</small>
+            </div>
+          ))}
+        </div>
         <figure className="profile-portrait">
           <img
             src={personal.avatarUrl}
@@ -92,15 +101,6 @@ export function Hero({
             )}
           </figcaption>
         </figure>
-      </div>
-      <div className="profile-metrics" aria-label="Destaques da trajetória">
-        {personal.metrics.map((metric, index) => (
-          <div className="metric-card" key={index}>
-            <strong>{metric.value}</strong>
-            <span>{metric.label}</span>
-            <small>{metric.detail}</small>
-          </div>
-        ))}
       </div>
     </section>
   );
