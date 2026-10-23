@@ -5,7 +5,6 @@ import {
   FolderKanban,
   GraduationCap,
   LockKeyhole,
-  Mail,
   Menu,
   Moon,
   Sun,
@@ -18,8 +17,7 @@ export type TabType =
   | "experiencia"
   | "formacao-ia"
   | "projetos"
-  | "certificacoes"
-  | "contato";
+  | "certificacoes";
 interface Props {
   activeTab: TabType;
   onSelectTab: (tab: TabType) => void;
@@ -69,7 +67,6 @@ export function Header({
     { id: "formacao-ia", label: "Formação & IA", icon: GraduationCap },
     { id: "projetos", label: "Projetos", icon: FolderKanban },
     { id: "certificacoes", label: "Certificações", icon: Award },
-    { id: "contato", label: "Contato", icon: Mail },
   ] as const;
   return (
     <header className="site-header" ref={header}>

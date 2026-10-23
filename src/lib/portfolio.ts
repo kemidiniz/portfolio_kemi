@@ -1,6 +1,7 @@
 import { z } from "zod";
 import type { PortfolioData } from "../data/portfolioData";
 import { supabase } from "./supabase";
+import { applyPortfolioUpdates } from "../data/portfolioUpdates";
 import { contactLinks } from "./contactLinks";
 
 const text = z.string().max(20000);
@@ -177,7 +178,7 @@ export async function readPortfolio() {
     };
   }
   return {
-    data: content,
+    data: content ? applyPortfolioUpdates(content, Number(data.revision) <= 1) : null,
     revision: Number(data.revision),
   };
 }

@@ -1,11 +1,10 @@
 import { useLayoutEffect, useRef } from "react";
-import { ArrowUp, LockKeyhole, Linkedin, Mail, MessageCircle } from "lucide-react";
+import { ArrowUp, Linkedin, Mail, MessageCircle } from "lucide-react";
 import type { PortfolioData } from "../data/portfolioData";
 import { contactLinks } from "../lib/contactLinks";
 
-export function Footer({ personal, onOpenAdmin }: {
+export function Footer({ personal }: {
   personal: PortfolioData["personal"];
-  onOpenAdmin: () => void;
 }) {
   const footerRef = useRef<HTMLElement>(null);
   const links = contactLinks(personal);
@@ -29,7 +28,6 @@ export function Footer({ personal, onOpenAdmin }: {
           </a>
           <a href={links.linkedin} target="_blank" rel="noreferrer"><Linkedin size={16} />LinkedIn</a>
           <a href={links.whatsapp} target="_blank" rel="noreferrer"><MessageCircle size={16} />WhatsApp</a>
-          <button className="footer-admin" onClick={onOpenAdmin} aria-label="Área administrativa" title="Área administrativa"><LockKeyhole size={15} /></button>
           <button className="footer-top" aria-label="Voltar ao topo" onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}><ArrowUp size={16} /></button>
         </nav>
       </div>
