@@ -281,7 +281,8 @@ test("header navigation replaces content and biography opens on demand", async (
   await expect(
     page.getByRole("region", { name: "Biografia", exact: true }),
   ).toBeVisible();
-  await expect(page.getByRole("heading", { level: 1 })).toHaveClass(/sr-only/);
+  await expect(page.getByRole("dialog", { name: "Minha história" })).toBeVisible();
+  await expect(page.locator("main")).toHaveAttribute("inert", "");
   await page.getByRole("button", { name: "Voltar à apresentação" }).click();
   await expect(page.getByRole("heading", { level: 1 })).toBeVisible();
   const sections = [
@@ -322,7 +323,7 @@ test("night mode persists and applies to other sections and admin login", async 
   await expect(page.locator("html")).toHaveClass(/\bdark\b/);
   await expect(page.locator(".portfolio-site")).toHaveCSS(
     "background-color",
-    "rgb(20, 18, 22)",
+    "rgb(24, 1, 1)",
   );
   const dark = await page
     .locator(".portfolio-site")
@@ -354,7 +355,7 @@ test("hover feedback is visible and reduced motion removes transitions", async (
   await setup(page);
   await page.goto("/");
   await navigate(page, "Projetos");
-  const metric = page.locator(".project-card").first();
+  const metric = page.locator(".carousel-originals .project-card").first();
   await metric.hover();
   await expect
     .poll(() => metric.evaluate((el) => getComputedStyle(el).transform))
@@ -465,7 +466,7 @@ test("experience starts collapsed and page introductions do not repeat navigatio
     }),
   ).toBeVisible();
   await navigate(page, "Projetos");
-  await expect(page.locator("#projetos h2")).toHaveCount(1);
+  await expect(page.locator("#projetos h2")).toHaveCount(0);
   await expect(
     page.getByText("Clique em qualquer card", { exact: false }),
   ).toHaveCount(0);
@@ -653,7 +654,7 @@ test("mobile framing preview and controls have separate scrollable space", async
   );
 });
 
-test("compact overview stacks highlights beside portrait and keeps biography return discreet", async ({ page }) => {
+test("glass highlights share a desktop row beside portrait and biography retains its content", async ({ page }) => {
   await page.setViewportSize({ width: 1280, height: 800 });
   await setup(page);
   await page.goto("/");
@@ -666,10 +667,11 @@ test("compact overview stacks highlights beside portrait and keeps biography ret
   const cards = await page.locator(".metric-card").all();
   const portrait = (await page.locator(".profile-portrait").boundingBox())!;
   let bottom = 0;
+  const firstCard = (await cards[0].boundingBox())!;
   for (const card of cards) {
     const box = (await card.boundingBox())!;
     expect(box.x + box.width).toBeLessThan(portrait.x);
-    expect(box.y).toBeGreaterThanOrEqual(bottom);
+    expect(Math.abs(box.y - firstCard.y)).toBeLessThan(2);
     bottom = box.y + box.height;
   }
   expect(bottom).toBeLessThan(800);
@@ -677,7 +679,7 @@ test("compact overview stacks highlights beside portrait and keeps biography ret
   const intro = (await page.locator(".profile-copy").boundingBox())!;
   expect(Math.abs(metrics.x - intro.x)).toBeLessThan(2);
   expect(metrics.y).toBeGreaterThanOrEqual(intro.y + intro.height);
-  expect(Math.abs(bottom - (portrait.y + portrait.height))).toBeLessThan(2);
+  expect(bottom).toBeLessThanOrEqual(portrait.y + portrait.height + 2);
   await page.getByRole("button", { name: "Conheça minha história" }).click();
   await expect(page.locator("#sobre h2")).toHaveCount(0);
   await expect(page.getByText("Trajetória & Essência", { exact: true })).toHaveCount(0);
@@ -735,13 +737,14 @@ for (const width of [320, 1280]) {
         expect(lines).toBe(1);
       }
     }
-    await page.getByRole("button", { name: "Conheça minha história" }).click();
     await page.evaluate(() => window.scrollTo(0, document.body.scrollHeight));
     const box = (await footer.boundingBox())!;
     expect(Math.abs(box.y + box.height - 800)).toBeLessThan(2);
-    const back = (await page.getByRole("button", { name: "Voltar à apresentação" }).boundingBox())!;
-    expect(back.y + back.height).toBeLessThanOrEqual(box.y);
     expect(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth)).toBe(true);
+    await page.getByRole("button", { name: "Conheça minha história" }).click();
+    await expect(page.getByRole("dialog", { name: "Minha história" })).toBeVisible();
+    await page.getByRole("button", { name: "Fechar minha história" }).click();
+    await expect(page.getByRole("dialog")).toHaveCount(0);
     await navigate(page, "Projetos");
     await expect(footer).toBeVisible();
   });
@@ -768,9 +771,9 @@ test("compact projects, aligned skills and permanent contacts replace the contac
   await expect(page.locator("#certificacoes")).not.toContainText("Power BI");
   await navigate(page, "Projetos");
   const filters = (await page.locator(".projects-filters").boundingBox())!;
-  const grid = (await page.locator(".projects-grid").boundingBox())!;
+  const grid = (await page.locator(".carousel-viewport").boundingBox())!;
   expect(Math.abs(filters.width - grid.width)).toBeLessThan(2);
-  expect((await page.locator(".project-card").first().boundingBox())!.height).toBeLessThan(350);
+  expect((await page.locator(".carousel-originals .project-card").first().boundingBox())!.height).toBeLessThan(350);
   await page.getByRole("button", { name: "Agente Gi: inglês com IA", exact: true }).click();
   await expect(page.getByRole("link", { name: "Abrir Agente Gi no Gemini" })).toHaveAttribute("href", "https://gemini.google.com/gem/1LbceA06YOwXQ-_ZtgwmIqwKuNAQifuko?usp=sharing");
   await page.getByRole("button", { name: "Fechar projeto", exact: true }).click();

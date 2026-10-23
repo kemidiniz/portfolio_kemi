@@ -1,4 +1,6 @@
 import { useRef } from "react";
+import { motion } from "motion/react";
+import { useMediaQuery } from "../hooks/useMediaQuery";
 import { ArrowLeft, CheckCircle2, X } from "lucide-react";
 import { useDialogFocus } from "../hooks/useDialogFocus";
 import { ResponsiveImage } from "./ResponsiveImage";
@@ -21,18 +23,21 @@ export function ProjectModal({
   onClose: () => void;
 }) {
   const dialog = useRef<HTMLDivElement>(null);
+  const reduced = useMediaQuery("(prefers-reduced-motion: reduce)");
   useDialogFocus(dialog, !!project, onClose);
   if (!project) return null;
   return (
-    <div
+    <motion.div
       className="project-backdrop"
+      initial={{ opacity: reduced ? 1 : 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={{ duration: reduced ? 0 : 0.18 }}
       data-modal-layer
       onClick={(e) => {
         if (e.target === e.currentTarget) onClose();
       }}
     >
-      <div
+      <motion.div
         className="project-dialog"
+        initial={{ y: reduced ? 0 : 12 }} animate={{ y: 0 }} exit={{ y: reduced ? 0 : 8 }} transition={{ duration: reduced ? 0 : 0.2 }}
         role="dialog"
         aria-modal="true"
         aria-labelledby="project-modal-title"
@@ -112,7 +117,7 @@ export function ProjectModal({
             Voltar aos projetos
           </button>
         </footer>
-      </div>
-    </div>
+      </motion.div>
+    </motion.div>
   );
 }

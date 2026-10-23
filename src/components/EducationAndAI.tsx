@@ -71,7 +71,7 @@ export const EducationAndAI: React.FC<EducationAndAIProps> = ({
 
         {/* Spotlight: Reprograma AI Formation */}
         {aiCourse && (
-          <div className="mb-6 p-5 sm:p-6 rounded-2xl bg-gradient-to-r from-[var(--wine)]/15 via-[var(--wine)]/5 to-transparent border-2 border-[var(--wine)] relative overflow-hidden shadow-sm">
+          <div className="reprograma-card surface-card mb-6 p-5 sm:p-6 rounded-2xl bg-gradient-to-r from-[var(--wine)]/15 via-[var(--wine)]/5 to-transparent border-2 border-[var(--wine)] relative overflow-hidden shadow-sm">
             <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
               <div className="reprograma-content space-y-3 max-w-3xl min-w-0">
                 <div className="flex flex-wrap items-center gap-2 text-xs font-bold text-[var(--wine)]">

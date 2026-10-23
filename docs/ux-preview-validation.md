@@ -1,47 +1,45 @@
-# Prévia UX/UI editorial
+# Validação da prévia UX/UI
 
-Esta alteração evolui o site existente para revisão em uma prévia da Vercel. Não inclui publicação em produção nem mudanças nas tabelas do Supabase.
+Prévia no PR #8, para revisão antes do merge. A versão de produção e as tabelas do Supabase não foram alteradas.
 
-## Mudanças
+## Escopo final
 
-- Apresentação editorial com indicadores tipográficos, fotografia alinhada e contatos concentrados no rodapé.
-- Container, espaçamentos, raios e controles compartilhados em `src/styles/portfolio.css`.
-- Menu compacto com navegação por teclado, Escape e foco no conteúdo após selecionar uma seção.
-- Portfólio em destaque, catálogo compacto e filtros que preservam todos os projetos.
-- Mapa interativo do processo de construção no case do portfólio.
-- Diálogos com foco contido, fundo inerte e restauração do foco ao fechar.
-- Currículo com competências publicadas, retorno real da cópia e impressão sem o site ao fundo.
-- Imagens WebP responsivas, fontes locais e metadados de compartilhamento.
+- Paleta global `#180101`, `#c2141d` e `#f7fadb`, incluindo modo noturno, cabeçalho, rodapé, currículo e admin, conforme a confirmação da Kemily. Tons auxiliares usam misturas/transparências dessas cores.
+- Quatro indicadores da apresentação em cards de vidro: uma linha no desktop, grade 2 × 2 em tablet/mobile. Mesmos textos e números; mesma fotografia, ligeiramente menor no desktop.
+- Cards de experiência com entrada por interseção, opacidade e deslocamento de 20 px em 600 ms, com sequência de até 120 ms entre entradas iniciais. Ícone de carreira ao lado do título.
+- Projetos no carrossel horizontal, sem destaque para o portfólio. Filtros, conteúdos, imagens, links e modal de detalhes preservados.
+- Movimento de aproximadamente 18 px/s, loop com conjuntos visuais equivalentes. Cópias ficam fora da árvore acessível e da sequência Tab. Modal, foco, hover, toque, aba oculta e carrossel fora da tela suspendem o movimento. Há pausa explícita, preservada ao filtrar.
+- Navegação manual por setas, teclado e gesto nativo de deslizar. Com movimento reduzido, não há autoplay. Quando todos os projetos do filtro cabem na tela, o movimento e as setas ficam desativados.
+- História no modal, reutilizando todo o conteúdo original. Sobreposição, rolagem interna, Escape, clique fora, fechamento visível, contenção/restauração de foco e posição da página preservada.
+- Reprograma passa a usar o mesmo padrão `surface-card` dos cards equivalentes.
+- Nenhuma dependência adicionada. Biblioteca de animação `motion`, já instalada, reutilizada.
 
-## Validação executada
+## Evidências
 
-- TypeScript e build de produção: aprovados.
-- Playwright em Chromium: 48 testes aprovados, incluindo login e publicação simulada, conflitos, enquadramento de fotos, filtros, diálogos, impressão e teclado.
-- Larguras: 320, 375, 390, 430, 768, 1024 e 1440 px; orientação horizontal e viewport equivalente ao reflow de zoom de 200%.
-- Movimento reduzido: transições e retorno ao topo verificados.
-- Axe-core 4.14, regras WCAG A/AA até 2.2: nenhuma violação detectada em 34 estados (cinco seções em três larguras, claro/escuro; case e etapa Dados; currículo; biografia).
-- Inspeção visual das telas inicial, projetos e case em desktop e da apresentação mobile.
+- `npm run lint`: aprovado (TypeScript).
+- `npm run build`: aprovado.
+- 61 cenários Playwright aprovados, incluindo os testes de regressão atualizados para a história em modal, cards em linha e remoção do destaque.
+- Larguras: 320, 375, 390, 430, 768, 1024 e 1440 px. Sem overflow horizontal da página; sem corte dos indicadores ou conteúdo dos modais.
+- Teclado, toque sintetizado pelo Chromium, loop, hover, pausa explícita, pausa entre filtros, retorno de foco, rolagem e preferência por movimento reduzido verificados.
+- Regressões de login, edição/publicação simulada, conflitos e enquadramento de fotos verificadas.
+- Sem erros JavaScript nos cenários de responsividade das novas interações.
+- Axe-core 4.14, regras WCAG A/AA até 2.2: nenhuma violação detectada em 39 estados. Inclui cinco seções em três larguras e ambos os temas, os modais de história, currículo e projeto em claro/escuro, etapa Dados e entrada do admin em ambos os temas.
+- Inspeção visual da apresentação e do carrossel no desktop, apresentação mobile e história em ambos os temas.
 
-## Limites e pendências
+## Limites
 
-- Os testes usam dados controlados e respostas simuladas do Supabase; não publicam alterações no banco real.
-- Testes automatizados não representam uma certificação WCAG. Leitura com VoiceOver/NVDA e validação em Safari/iPhone físico continuam recomendadas.
-- O reflow equivalente ao zoom não substitui conferir o zoom nativo em navegadores e dispositivos reais.
-- O build mantém os avisos existentes do Vite sobre `__dirname` e o tamanho do bundle principal. Os diálogos agora carregam sob demanda; a divisão adicional do bundle pode ser avaliada com métricas reais.
-- Links diretos para cada seção e renderização de conteúdo para mecanismos de busca são evoluções separadas. O sitemap atual aponta apenas para a página pública real.
+- Testes de publicação/admin usam respostas controladas do Supabase; não escrevem no banco real.
+- Automação não certifica conformidade WCAG. Safari, iPhone físico e leitura com VoiceOver/NVDA não foram executados neste ambiente.
+- O reflow equivalente a zoom de 200% foi verificado; não substitui conferir o zoom nativo nos dispositivos reais.
+- Permanecem os avisos do Vite sobre configuração futura com `__dirname` e bundle principal maior que 500 kB. A biblioteca de animação existente aumenta o JavaScript da entrada; não houve instalação de novas bibliotecas.
+- Imagens existentes foram preservadas. A captura estática do projeto do portfólio continua representando a versão anterior; não é uma prévia sincronizada do layout atual.
 
-## Roteiro de revisão
+## Arquivos desta etapa
 
-1. Abrir a apresentação no celular e conferir os quatro indicadores, a foto e o rodapé.
-2. Usar o menu e alternar o modo noturno; confirmar que a seção selecionada fica clara.
-3. Abrir Projetos, explorar os filtros e entrar no case do portfólio; selecionar as cinco etapas do mapa.
-4. Abrir o currículo e testar copiar, imprimir e fechar por Escape.
-5. Confirmar o comportamento da área admin na prévia antes de autorizar o merge.
-
-## Refinamento após a revisão
-
-- A saudação pessoal passa a ser o título principal, com a área de atuação acima; a fotografia desktop ocupa a altura da apresentação e dos indicadores.
-- A imagem de “Meu portfólio” é uma captura real da versão atual, renderizada com os dados públicos publicados (revisão 2). É uma imagem estática: mudanças futuras de layout ou conteúdo exigem nova captura.
-- A Agente Gi tem ano 2026 e nova ilustração conceitual gerada para representar conversa e aprendizagem. A imagem não simula uma interface do Gemini.
-- Título de Trajetória Profissional padronizado com os rótulos das outras telas; feedback de hover discreto nos indicadores, cards e competências, respeitando movimento reduzido.
-- Atualizações dos projetos corrigem apenas valores originais conhecidos, preservando capas e títulos personalizados no admin.
+- `src/App.tsx`: abertura dos modais sem substituir a apresentação.
+- `src/components/BiographyModal.tsx`: novo modal reutilizando `About` e o controle de foco existente.
+- `src/components/{Hero,Experience,Projects,ProjectModal,EducationAndAI}.tsx`: cards, animações, carrossel e padronização de hover.
+- `src/components/{About,ResumeModal}.tsx`: aplicação da paleta a cores literais existentes.
+- `src/index.css`, `src/styles/portfolio.css`: paleta e remoção do tratamento especial de destaque.
+- `src/styles/interactions.css`, `src/main.tsx`: estilos responsivos das interações solicitadas.
+- `tests/{portfolio,ux-preview,interaction-refinements}.spec.ts`: regressões e cenários de aceitação.

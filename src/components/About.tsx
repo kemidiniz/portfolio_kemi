@@ -26,7 +26,7 @@ export const About: React.FC<AboutProps> = ({ data, onBack }) => {
             {/* High-Impact Motto Card */}
             <div className="purpose-card p-5 sm:p-6 rounded-2xl bg-gradient-to-r from-[var(--wine)]/10 via-transparent to-[var(--wine-hover)]/10 border-2 border-[var(--wine)]/30 shadow-xs">
               <div className="flex items-center gap-4">
-                <div className="p-3 rounded-xl bg-[var(--button-bg)] text-white shrink-0">
+                <div className="p-3 rounded-xl bg-[var(--button-bg)] text-[var(--palette-light)] shrink-0">
                   <Sparkles className="w-5 h-5" />
                 </div>
                 <div>

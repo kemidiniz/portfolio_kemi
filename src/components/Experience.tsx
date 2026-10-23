@@ -1,4 +1,6 @@
 import React, { useState } from "react";
+import { motion } from "motion/react";
+import { useMediaQuery } from "../hooks/useMediaQuery";
 import {
   Briefcase,
   ChevronDown,
@@ -21,6 +23,7 @@ export const Experience: React.FC<ExperienceProps> = ({
   onNavigateToTab,
 }) => {
   const [expandedId, setExpandedId] = useState<string | null>(null);
+  const reducedMotion = useMediaQuery("(prefers-reduced-motion: reduce)");
 
   const toggleExpand = (id: string) => {
     setExpandedId((prev) => (prev === id ? null : id));
@@ -30,7 +33,7 @@ export const Experience: React.FC<ExperienceProps> = ({
     <section id="experiencia" className="py-6 md:py-7">
       <div className="w-full max-w-[1600px] mx-auto px-4 sm:px-8 lg:px-14 xl:px-20">
         <div className="page-introduction">
-          <h2 className="section-label">Trajetória Profissional</h2>
+          <h2 className="section-label experience-title"><Briefcase size={16} aria-hidden="true" />Trajetória Profissional</h2>
           <p>
             Experiências, desafios e aprendizados que constroem meu percurso
             profissional.
@@ -44,9 +47,13 @@ export const Experience: React.FC<ExperienceProps> = ({
             const isFirst = index === 0;
 
             return (
-              <div
+              <motion.div
                 key={exp.id}
-                className={`rounded-2xl transition-all border-2 ${
+                initial={reducedMotion ? false : { opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true, amount: 0.12 }}
+                transition={{ duration: reducedMotion ? 0 : 0.6, delay: reducedMotion ? 0 : Math.min(index, 3) * 0.12, ease: "easeOut" }}
+                className={`experience-card rounded-2xl border-2 ${
                   isFirst
                     ? "bg-[var(--paper-light)] border-[var(--wine)] shadow-md"
                     : "bg-[var(--paper-light)] border-[var(--rule)] hover:border-[var(--wine)]/50"
@@ -142,7 +149,7 @@ export const Experience: React.FC<ExperienceProps> = ({
                     </div>
                   </div>
                 )}
-              </div>
+              </motion.div>
             );
           })}
         </div>

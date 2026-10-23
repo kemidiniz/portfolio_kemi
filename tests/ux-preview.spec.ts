@@ -66,21 +66,22 @@ test("personal introduction leads the desktop cover and project covers load with
   const heading = (await page.locator(".profile-heading").boundingBox())!;
   const portrait = (await page.locator(".profile-portrait").boundingBox())!;
   expect(Math.abs(heading.y - portrait.y)).toBeLessThan(2);
-  expect(portrait.height).toBeGreaterThanOrEqual(500);
+  expect(portrait.height).toBeGreaterThanOrEqual(420);
+  expect(portrait.width).toBeLessThanOrEqual(390);
   await navigate(page, "Experiência");
   const experienceFont = await page.getByRole("heading", { name: "Trajetória Profissional" }).evaluate(el => getComputedStyle(el).fontSize);
   await navigate(page, "Formação & IA");
   expect(await page.locator("h3").first().evaluate(el => getComputedStyle(el).fontSize)).toBe(experienceFont);
   await navigate(page, "Projetos");
-  await expect(page.locator(".featured-project h2")).toHaveText("Meu portfólio");
-  await expect(page.locator(".portfolio-preview img")).toHaveAttribute("src", "/assets/projects/portfolio-kemi.jpg");
-  const gi = page.locator('[data-project-id="agente-gi"]');
+  await expect(page.locator(".featured-project")).toHaveCount(0);
+  await expect(page.locator('.carousel-originals [data-project-id="portfolio-kemi"] img')).toHaveAttribute("src", "/assets/projects/portfolio-kemi.jpg");
+  const gi = page.locator('.carousel-originals [data-project-id="agente-gi"]');
   await expect(gi).toContainText("2026");
   await expect(gi.locator("img")).toHaveAttribute("src", "/assets/projects/agente-gi.webp");
   await gi.scrollIntoViewIfNeeded();
   await gi.locator("img").evaluate((img: HTMLImageElement) => img.decode());
-  await page.locator(".featured-project").scrollIntoViewIfNeeded();
-  await page.locator(".portfolio-preview img").evaluate((img: HTMLImageElement) => img.decode());
+  await page.locator('.carousel-originals [data-project-id="portfolio-kemi"]').scrollIntoViewIfNeeded();
+  await page.locator('.carousel-originals [data-project-id="portfolio-kemi"] img').evaluate((img: HTMLImageElement) => img.decode());
 });
 
 test("skip link focuses content below the sticky header", async ({ page }) => {
@@ -124,11 +125,12 @@ test("failed clipboard operation keeps the curriculum available and reports the 
   await expect(page.getByRole("dialog")).toBeVisible();
 });
 
-test("featured portfolio process explains decisions and catalogue filters keep all projects reachable", async ({ page }) => {
+test("balanced carousel preserves the portfolio process and all catalogue filters", async ({ page }) => {
   await open(page); await navigate(page, "Projetos");
-  await expect(page.locator(".featured-project")).toContainText("primeira experiência com vibe coding");
+  await expect(page.locator(".featured-project")).toHaveCount(0);
+  await expect(page.locator(".carousel-originals .project-card")).toHaveCount(7);
   await expect(page.getByRole("status")).toHaveText("7 projetos");
-  const opener = page.locator(".featured-project button");
+  const opener = page.getByRole("button", { name: "Meu portfólio", exact: true });
   await opener.click();
   const dialog = page.getByRole("dialog");
   await dialog.getByRole("button", { name: /Dados/ }).click();
@@ -139,7 +141,7 @@ test("featured portfolio process explains decisions and catalogue filters keep a
   await expect(opener).toBeFocused();
   await page.getByRole("button", { name: "Dados & IA", exact: true }).click();
   await expect(page.locator(".featured-project")).toHaveCount(0);
-  await expect(page.locator(".project-card")).toHaveCount(3);
+  await expect(page.locator(".carousel-originals .project-card")).toHaveCount(3);
   await expect(page.getByRole("status")).toHaveText("3 projetos");
   await page.getByRole("button", { name: "Agente Gi: inglês com IA", exact: true }).click();
   await expect(page.getByRole("link", { name: "Abrir Agente Gi no Gemini" })).toHaveAttribute("href", /gemini.google.com\/gem\//);
@@ -181,6 +183,6 @@ test("printing the curriculum excludes the site behind it and preserves readable
   await expect(page.locator("main")).toBeHidden();
   await expect(page.locator(".site-footer")).toBeHidden();
   await expect(page.locator(".print-page")).toBeVisible();
-  expect(await page.locator(".print-page").evaluate(el => getComputedStyle(el).color)).toBe("rgb(17, 24, 39)");
+  expect(await page.locator(".print-page").evaluate(el => getComputedStyle(el).color)).toBe("rgb(24, 1, 1)");
   await expect(page.locator(".print-page")).not.toContainText("Power BI");
 });

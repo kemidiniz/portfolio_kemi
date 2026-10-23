@@ -1,0 +1,91 @@
+/* Scoped interaction changes; shared palette tokens live in index.css. */
+.profile-grid { grid-template-columns: minmax(0, 1fr) minmax(0, 390px); }
+.profile-portrait { min-height: 420px; }
+.profile-metrics { grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 12px; align-self: start; }
+.profile-metrics .metric-card {
+  display: flex; flex-direction: column; justify-content: center; align-items: flex-start;
+  gap: 7px; aspect-ratio: 1; min-width: 0; padding: 16px;
+  border: 1px solid color-mix(in srgb, var(--ink) 17%, transparent);
+  border-radius: 18px; background: color-mix(in srgb, var(--paper-light) 72%, transparent);
+  background-image: linear-gradient(135deg, rgb(247 250 219 / 14%), rgb(194 20 29 / 4%));
+  backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
+  box-shadow: 0 5px 18px rgb(24 1 1 / 5%);
+  transition: transform 180ms ease, border-color 180ms ease, box-shadow 180ms ease;
+}
+.profile-metrics .metric-card strong { font-size: clamp(18px, 1.6vw, 23px); line-height: 1.25; letter-spacing: -.04em; }
+.profile-metrics .metric-card > span { font-size: 12px; line-height: 1.5; }
+.profile-metrics .metric-card small { font-size: 11px; line-height: 1.6; margin: 0; }
+.profile-metrics .metric-card > span { min-height: 3em; }
+.profile-metrics .metric-card small { min-height: 3.2em; }
+@media (hover: hover) and (pointer: fine) {
+  .profile-metrics .metric-card:hover { transform: translateY(-3px); border-color: var(--wine); box-shadow: 0 9px 24px rgb(24 1 1 / 10%); }
+}
+.experience-title { display: flex; align-items: center; gap: 8px; }
+.experience-title svg { color: var(--palette-accent); flex-shrink: 0; }
+.experience-card { transition: border-color 160ms, box-shadow 160ms; }
+
+/* The Reprograma wrapper joins the same surface-card hover as its peers. */
+.reprograma-card { background-color: var(--paper-light); }
+
+/* Native horizontal scrolling is confined to this viewport, never the page. */
+.project-carousel { min-width: 0; }
+.carousel-toolbar { display: flex; justify-content: space-between; align-items: center; gap: 16px; margin-bottom: 8px; }
+.carousel-toolbar > p { font-size: 12px; color: var(--muted); line-height: 1.6; }
+.carousel-controls { display: flex; gap: 6px; flex-shrink: 0; }
+.carousel-controls button { display: inline-flex; align-items: center; justify-content: center; gap: 7px; min-width: 44px; min-height: 44px; padding: 10px; border: 1px solid var(--rule); border-radius: 10px; color: var(--wine); background: var(--paper-light); transition: background 160ms, border-color 160ms; }
+.carousel-controls button:hover:not(:disabled) { background: var(--accent-soft); border-color: var(--wine); }
+.carousel-controls button:disabled { opacity: .65; }
+.carousel-controls span { font-size: 12px; }
+.carousel-viewport { overflow-x: auto; overflow-y: hidden; width: 100%; padding: 8px 0 20px; overscroll-behavior-x: contain; scrollbar-width: thin; scrollbar-color: var(--wine) transparent; scroll-behavior: auto; }
+.carousel-viewport:focus-visible { outline-offset: -2px; }
+.carousel-track { display: flex; width: max-content; }
+.carousel-set { display: flex; gap: 18px; padding-right: 18px; align-items: stretch; }
+.carousel-set .project-card { flex: 0 0 auto; width: 310px; cursor: pointer; }
+.project-open { text-align: left; font: inherit; color: inherit; }
+.project-open::after { content: ""; position: absolute; inset: 0; border-radius: inherit; }
+.project-open:focus-visible { outline: none; }
+.project-card:focus-within { outline: 3px solid var(--wine); }
+.carousel-set .project-card h3 { min-height: 3em; }
+.carousel-set .project-card-content > p { min-height: 3.4em; }
+.carousel-set .project-card:focus-within { outline-offset: -3px; }
+.carousel-set .project-thumbnail { height: 130px; }
+
+.biography-backdrop { position: fixed; inset: 0; z-index: 60; display: grid; place-items: center; padding: 24px; background: rgb(24 1 1 / 72%); backdrop-filter: blur(8px); }
+.biography-dialog { display: flex; flex-direction: column; width: min(100%, 1040px); max-height: calc(100dvh - 48px); min-height: 0; border-radius: 20px; background: var(--paper-light); border: 1px solid var(--rule); color: var(--ink); box-shadow: 0 24px 80px rgb(24 1 1 / 28%); }
+.biography-dialog-header { display: flex; align-items: center; justify-content: space-between; gap: 16px; padding: 14px 24px; border-bottom: 1px solid var(--rule); flex-shrink: 0; }
+.biography-dialog-header h2 { font-size: 16px; font-weight: 700; }
+.biography-dialog-header button { display: grid; place-items: center; width: 44px; height: 44px; border: 1px solid var(--rule); border-radius: 10px; color: var(--wine); }
+.biography-dialog-header button:hover { border-color: var(--wine); background: var(--accent-soft); }
+.biography-dialog-body { overflow-y: auto; overscroll-behavior: contain; padding: 0 24px 24px; min-height: 0; }
+.biography-dialog-body:focus-visible { outline-offset: -3px; }
+.biography-dialog .biography-section > div { padding-inline: 0; }
+.biography-dialog .purpose-card { background: var(--accent-soft); border: 1px solid var(--rule); border-left: 3px solid var(--wine); border-radius: 0 16px 16px 0; box-shadow: none; }
+.biography-dialog .biography-values > div { border: 0; border-bottom: 1px solid var(--rule); border-radius: 0; background: transparent; padding: 18px 0; box-shadow: none; }
+.biography-dialog .biography-values > div:first-child { padding-top: 0; }
+@media (max-width: 1279px) and (min-width: 761px) {
+  .profile-grid { grid-template-columns: minmax(0, 1fr) minmax(0, 34%); }
+  .profile-metrics { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .profile-metrics .metric-card { aspect-ratio: auto; min-height: 140px; }
+}
+@media (max-width: 760px) {
+  .profile-grid { grid-template-columns: minmax(0, 1fr); }
+  .profile-metrics { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .profile-metrics .metric-card { padding: 14px; min-height: 155px; }
+  .profile-portrait { min-height: 0; }
+  .carousel-toolbar { flex-wrap: wrap; gap: 10px; }
+  .carousel-controls { margin-left: auto; }
+  .carousel-set .project-card { width: min(310px, calc(100vw - 64px)); }
+  .biography-backdrop { padding: 12px; }
+  .biography-dialog { max-height: calc(100dvh - 48px); border-radius: 16px; }
+  .biography-dialog-header { padding: 10px 16px; }
+  .biography-dialog-body { padding: 0 16px 16px; }
+}
+@media (max-width: 360px) {
+  .profile-metrics { gap: 10px; }
+  .profile-metrics .metric-card { padding: 12px; min-height: 164px; aspect-ratio: auto; }
+  .profile-metrics .metric-card strong { font-size: 18px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .experience-card { opacity: 1 !important; transform: none !important; }
+  .profile-metrics .metric-card:hover { transform: none; }
+}

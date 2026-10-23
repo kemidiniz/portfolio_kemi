@@ -11,7 +11,8 @@ import {
 } from "./data/portfolioData";
 import { Header, sectionNames, TabType } from "./components/Header";
 import { Hero } from "./components/Hero";
-import { About } from "./components/About";
+import { BiographyModal } from "./components/BiographyModal";
+import { AnimatePresence } from "motion/react";
 import { Experience } from "./components/Experience";
 import { EducationAndAI } from "./components/EducationAndAI";
 import { Projects } from "./components/Projects";
@@ -168,30 +169,22 @@ export default function App() {
         </div>
       )}
       {/* Main Blocked View Container with expansive desktop width */}
-      <main ref={main} id="conteudo" className="site-main site-container" tabIndex={-1} aria-label={showBiography ? "Minha história" : sectionNames[activeTab]}>
-        {(activeTab !== "sobre" || showBiography) && <h1 className="sr-only">{showBiography ? "Minha história" : sectionNames[activeTab]}</h1>}
+      <main ref={main} id="conteudo" className="site-main site-container" tabIndex={-1} aria-label={sectionNames[activeTab]}>
+        {activeTab !== "sobre" && <h1 className="sr-only">{sectionNames[activeTab]}</h1>}
         {/* Block 1: Sobre mim (Hero + Quem Sou Eu) */}
         {activeTab === "sobre" && (
           <div
             className="section-view"
-            key={showBiography ? "biography" : "presentation"}
+            key="presentation"
           >
-            {showBiography ? (
-              <About data={data} onBack={() => {
-                setShowBiography(false);
-                focusContent();
-              }} />
-            ) : (
-              <Hero
-                data={data}
-                onOpenResume={() => setIsResumeOpen(true)}
-                onNavigateToTab={handleSelectTab}
-                onOpenAbout={() => {
-                  setShowBiography(true);
-                  focusContent();
-                }}
-              />
-            )}
+            <Hero
+              data={data}
+              onOpenResume={() => setIsResumeOpen(true)}
+              onNavigateToTab={handleSelectTab}
+              onOpenAbout={() => {
+                setShowBiography(true);
+              }}
+            />
           </div>
         )}
 
@@ -221,6 +214,7 @@ export default function App() {
           <div className="section-view">
             <Projects
               projects={data.projects}
+              modalOpen={!!selectedProject}
               onSelectProject={(project) => setSelectedProject(project)}
             />
 
@@ -259,9 +253,10 @@ export default function App() {
       {/* Clean Editorial Footer */}
       <Footer personal={data.personal} />
 
-      {selectedProject && <Suspense fallback={<div role="status" className="dialog-loading">Abrindo estudo de caso…</div>}>
-        <ProjectModal project={selectedProject} onClose={() => setSelectedProject(null)} />
-      </Suspense>}
+      <AnimatePresence>{showBiography && <BiographyModal key="biography" data={data} onClose={() => setShowBiography(false)} />}</AnimatePresence>
+      <Suspense fallback={<div role="status" className="dialog-loading">Abrindo estudo de caso…</div>}>
+        <AnimatePresence>{selectedProject && <ProjectModal key="project" project={selectedProject} onClose={() => setSelectedProject(null)} />}</AnimatePresence>
+      </Suspense>
       {isResumeOpen && <Suspense fallback={<div role="status" className="dialog-loading">Abrindo currículo…</div>}>
         <ResumeModal data={data} isOpen onClose={() => setIsResumeOpen(false)} />
       </Suspense>}

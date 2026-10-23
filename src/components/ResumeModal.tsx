@@ -98,7 +98,7 @@ ${skills.map(group => `${group.category}: ${group.items.map(item => item.name).j
   };
 
   return (
-    <div data-modal-layer className="resume-backdrop fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-6 bg-black/80 backdrop-blur-md overflow-y-auto">
+    <div data-modal-layer className="resume-backdrop fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-6 bg-[var(--palette-dark)]/80 backdrop-blur-md overflow-y-auto">
       {/* Outer Modal Container */}
       <div
         ref={dialog}
@@ -127,7 +127,7 @@ ${skills.map(group => `${group.category}: ${group.items.map(item => item.name).j
               title="Copiar texto simples para colar no LinkedIn ou ATS"
             >
               {copied ? (
-                <Check className="w-3.5 h-3.5 text-emerald-600" />
+                <Check className="w-3.5 h-3.5 text-[var(--wine)]" />
               ) : (
                 <Copy className="w-3.5 h-3.5" />
               )}
@@ -136,7 +136,7 @@ ${skills.map(group => `${group.category}: ${group.items.map(item => item.name).j
 
             <button
               onClick={handlePrint}
-              className="inline-flex items-center gap-1.5 px-4 py-1.5 text-xs font-bold rounded-xl bg-[var(--button-bg)] hover:bg-[var(--button-hover)] text-white transition-all shadow-xs cursor-pointer"
+              className="inline-flex items-center gap-1.5 px-4 py-1.5 text-xs font-bold rounded-xl bg-[var(--button-bg)] hover:bg-[var(--button-hover)] text-[var(--palette-light)] transition-all shadow-xs cursor-pointer"
               title="Salvar como arquivo PDF ou imprimir"
             >
               <Printer className="w-3.5 h-3.5" />
