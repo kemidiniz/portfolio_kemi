@@ -58,6 +58,31 @@ test("hamburger supports forward Tab, Escape and focus transfer after selection"
   await expect(toggle).toHaveAttribute("aria-expanded", "false");
 });
 
+test("personal introduction leads the desktop cover and project covers load without mockups", async ({ page }) => {
+  await page.setViewportSize({ width: 1440, height: 900 });
+  await open(page);
+  await expect(page.getByRole("heading", { level: 1 })).toHaveText(`Oie, sou a ${initialPortfolioData.personal.nickname}!`);
+  await expect(page.locator(".profile-greeting")).toHaveText(initialPortfolioData.personal.headline);
+  const heading = (await page.locator(".profile-heading").boundingBox())!;
+  const portrait = (await page.locator(".profile-portrait").boundingBox())!;
+  expect(Math.abs(heading.y - portrait.y)).toBeLessThan(2);
+  expect(portrait.height).toBeGreaterThanOrEqual(500);
+  await navigate(page, "Experiência");
+  const experienceFont = await page.getByRole("heading", { name: "Trajetória Profissional" }).evaluate(el => getComputedStyle(el).fontSize);
+  await navigate(page, "Formação & IA");
+  expect(await page.locator("h3").first().evaluate(el => getComputedStyle(el).fontSize)).toBe(experienceFont);
+  await navigate(page, "Projetos");
+  await expect(page.locator(".featured-project h2")).toHaveText("Meu portfólio");
+  await expect(page.locator(".portfolio-preview img")).toHaveAttribute("src", "/assets/projects/portfolio-kemi.jpg");
+  const gi = page.locator('[data-project-id="agente-gi"]');
+  await expect(gi).toContainText("2026");
+  await expect(gi.locator("img")).toHaveAttribute("src", "/assets/projects/agente-gi.webp");
+  await gi.scrollIntoViewIfNeeded();
+  await gi.locator("img").evaluate((img: HTMLImageElement) => img.decode());
+  await page.locator(".featured-project").scrollIntoViewIfNeeded();
+  await page.locator(".portfolio-preview img").evaluate((img: HTMLImageElement) => img.decode());
+});
+
 test("skip link focuses content below the sticky header", async ({ page }) => {
   await page.setViewportSize({ width: 375, height: 844 });
   await open(page);

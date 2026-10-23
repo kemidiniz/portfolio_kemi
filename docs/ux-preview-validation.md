@@ -16,7 +16,7 @@ Esta alteração evolui o site existente para revisão em uma prévia da Vercel.
 ## Validação executada
 
 - TypeScript e build de produção: aprovados.
-- Playwright em Chromium: 46 testes aprovados, incluindo login e publicação simulada, conflitos, enquadramento de fotos, filtros, diálogos, impressão e teclado.
+- Playwright em Chromium: 48 testes aprovados, incluindo login e publicação simulada, conflitos, enquadramento de fotos, filtros, diálogos, impressão e teclado.
 - Larguras: 320, 375, 390, 430, 768, 1024 e 1440 px; orientação horizontal e viewport equivalente ao reflow de zoom de 200%.
 - Movimento reduzido: transições e retorno ao topo verificados.
 - Axe-core 4.14, regras WCAG A/AA até 2.2: nenhuma violação detectada em 34 estados (cinco seções em três larguras, claro/escuro; case e etapa Dados; currículo; biografia).
@@ -37,3 +37,11 @@ Esta alteração evolui o site existente para revisão em uma prévia da Vercel.
 3. Abrir Projetos, explorar os filtros e entrar no case do portfólio; selecionar as cinco etapas do mapa.
 4. Abrir o currículo e testar copiar, imprimir e fechar por Escape.
 5. Confirmar o comportamento da área admin na prévia antes de autorizar o merge.
+
+## Refinamento após a revisão
+
+- A saudação pessoal passa a ser o título principal, com a área de atuação acima; a fotografia desktop ocupa a altura da apresentação e dos indicadores.
+- A imagem de “Meu portfólio” é uma captura real da versão atual, renderizada com os dados públicos publicados (revisão 2). É uma imagem estática: mudanças futuras de layout ou conteúdo exigem nova captura.
+- A Agente Gi tem ano 2026 e nova ilustração conceitual gerada para representar conversa e aprendizagem. A imagem não simula uma interface do Gemini.
+- Título de Trajetória Profissional padronizado com os rótulos das outras telas; feedback de hover discreto nos indicadores, cards e competências, respeitando movimento reduzido.
+- Atualizações dos projetos corrigem apenas valores originais conhecidos, preservando capas e títulos personalizados no admin.

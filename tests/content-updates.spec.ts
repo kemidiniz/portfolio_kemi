@@ -23,3 +23,21 @@ test("legacy content is corrected without replacing custom edits or reseeding de
   updated.personal.metrics[1] = { value: "3 formações", label: "Minha edição", detail: "Nova formação" };
   expect(applyPortfolioUpdates(updated).personal.metrics[1]).toEqual(updated.personal.metrics[1]);
 });
+
+test("project refresh upgrades original covers and title without replacing admin edits", () => {
+  const legacy = applyPortfolioUpdates(initialPortfolioData, true);
+  const portfolio = legacy.projects.find(project => project.id === "portfolio-kemi")!;
+  const gi = legacy.projects.find(project => project.id === "agente-gi")!;
+  portfolio.title = "Meu portfólio: primeira experiência com vibe coding";
+  portfolio.image = "/assets/projects/portfolio-kemi.svg";
+  gi.image = "/assets/projects/agente-gi.svg";
+  gi.year = "";
+  const refreshed = applyPortfolioUpdates(legacy);
+  expect(refreshed.projects.find(project => project.id === "portfolio-kemi")).toMatchObject({ title: "Meu portfólio", image: "/assets/projects/portfolio-kemi.jpg" });
+  expect(refreshed.projects.find(project => project.id === "agente-gi")).toMatchObject({ year: "2026", image: "/assets/projects/agente-gi.webp" });
+  portfolio.title = "Meu título editado";
+  portfolio.image = "https://example.com/minha-capa.jpg";
+  gi.image = "https://example.com/gi.jpg";
+  expect(applyPortfolioUpdates(legacy).projects.find(project => project.id === "portfolio-kemi")).toEqual(portfolio);
+  expect(applyPortfolioUpdates(legacy).projects.find(project => project.id === "agente-gi")?.image).toBe(gi.image);
+});

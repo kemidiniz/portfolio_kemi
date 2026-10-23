@@ -19,23 +19,13 @@ export function Hero({
   onOpenAbout: () => void;
 }) {
   const { personal } = data;
-  const highlight = personal.headline.lastIndexOf("Dados");
   const currentExperience = data.experiences[0];
   return (
     <section className="profile-hero" aria-label="Apresentação">
       <div className="profile-grid">
         <div className="profile-heading">
-          <p className="profile-greeting">Oie, sou a {personal.nickname}!</p>
-          <h1>
-            {highlight > 0 ? (
-              <>
-                {personal.headline.slice(0, highlight)}
-                <span>{personal.headline.slice(highlight)}</span>
-              </>
-            ) : (
-              personal.headline
-            )}
-          </h1>
+          <p className="profile-greeting">{personal.headline}</p>
+          <h1>Oie, sou a <span>{personal.nickname}!</span></h1>
           <p className="profile-description">{personal.subtitle}</p>
         </div>
         <div className="profile-copy">

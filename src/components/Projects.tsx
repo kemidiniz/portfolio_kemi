@@ -1,6 +1,6 @@
 import { useId, useState } from "react";
 import { ArrowUpRight, ArrowRight } from "lucide-react";
-import type { PortfolioData, ProjectItem } from "../data/portfolioData";
+import type { ProjectItem } from "../data/portfolioData";
 import { ResponsiveImage } from "./ResponsiveImage";
 
 function ProjectCard({ project, onOpen }: { project: ProjectItem; onOpen: () => void }) {
@@ -21,22 +21,8 @@ function ProjectCard({ project, onOpen }: { project: ProjectItem; onOpen: () => 
   );
 }
 
-function PortfolioPreview({ personal }: { personal: PortfolioData["personal"] }) {
-  return (
-    <div className="portfolio-preview" aria-hidden="true">
-      <div className="preview-browser"><i /><i /><i /><span>Um espaço para minhas conexões</span></div>
-      <div className="preview-page">
-        <div className="preview-name"><span>KD</span><strong>{personal.name}</strong><small>Estratégia e Comunicação</small></div>
-        <div className="preview-content"><div><small>Oie, sou a {personal.nickname}!</small><strong>{personal.headline}</strong><span className="preview-cta">Explorar projetos <ArrowUpRight size={12} /></span><div className="preview-rules"><i /><i /><i /></div></div><ResponsiveImage src={personal.avatarUrl} alt="" sizes="190px" loading="lazy" /></div>
-      </div>
-      <span className="preview-caption">Ideia · interface · dados · integrações</span>
-    </div>
-  );
-}
-
-export function Projects({ projects, personal, onSelectProject }: {
+export function Projects({ projects, onSelectProject }: {
   projects: ProjectItem[];
-  personal: PortfolioData["personal"];
   onSelectProject: (project: ProjectItem) => void;
 }) {
   const [activeCategory, setActiveCategory] = useState("todos");
@@ -61,7 +47,9 @@ export function Projects({ projects, personal, onSelectProject }: {
             <div className="featured-tools">{featured.tools.slice(0, 4).map(tool => <span key={tool}>{tool}</span>)}</div>
             <span className="featured-link" aria-hidden="true">Conheça as decisões por trás do projeto <ArrowRight size={17} /></span>
           </div>
-          {featured.id === "portfolio-kemi" ? <PortfolioPreview personal={personal} /> : <ResponsiveImage src={featured.image} alt="" sizes="(max-width: 760px) 90vw, 500px" loading="lazy" />}
+          <div className={featured.id === "portfolio-kemi" ? "portfolio-preview" : "featured-image"}>
+            <ResponsiveImage src={featured.image} alt={featured.id === "portfolio-kemi" ? "Captura real da página de apresentação do portfólio" : ""} sizes="(max-width: 760px) 90vw, 600px" loading="lazy" />
+          </div>
         </article>}
         <div className="catalogue-heading"><span className="eyebrow">{featured ? "Explore também" : "Projetos selecionados"}</span><p role="status" aria-live="polite" aria-atomic="true">{filtered.length} {filtered.length === 1 ? "projeto" : "projetos"}</p></div>
         <div className="projects-grid">

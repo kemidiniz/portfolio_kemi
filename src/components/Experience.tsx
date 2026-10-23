@@ -30,7 +30,7 @@ export const Experience: React.FC<ExperienceProps> = ({
     <section id="experiencia" className="py-6 md:py-7">
       <div className="w-full max-w-[1600px] mx-auto px-4 sm:px-8 lg:px-14 xl:px-20">
         <div className="page-introduction">
-          <h2>Trajetória Profissional</h2>
+          <h2 className="section-label">Trajetória Profissional</h2>
           <p>
             Experiências, desafios e aprendizados que constroem meu percurso
             profissional.

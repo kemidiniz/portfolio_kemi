@@ -221,7 +221,6 @@ export default function App() {
           <div className="section-view">
             <Projects
               projects={data.projects}
-              personal={data.personal}
               onSelectProject={(project) => setSelectedProject(project)}
             />
 

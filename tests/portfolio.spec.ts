@@ -86,7 +86,7 @@ test("public portfolio renders on mobile without overflow and requires login", a
   await page.setViewportSize({ width: 390, height: 844 });
   await page.goto("/");
   await expect(page.getByRole("heading", { level: 1 })).toContainText(
-    initialPortfolioData.personal.headline,
+    `Oie, sou a ${initialPortfolioData.personal.nickname}!`,
   );
   expect(
     await page.evaluate(
@@ -189,7 +189,7 @@ test("unavailable backend blocks publishing but leaves portfolio readable", asyn
     "Exibindo a versão de apresentação",
   );
   await expect(page.getByRole("heading", { level: 1 })).toContainText(
-    initialPortfolioData.personal.headline,
+    `Oie, sou a ${initialPortfolioData.personal.nickname}!`,
   );
 });
 
@@ -755,9 +755,9 @@ test("compact projects, aligned skills and permanent contacts replace the contac
   await expect(page.locator(".site-footer").getByRole("button", { name: "Área administrativa" })).toHaveCount(0);
   await expect(page.locator(".metric-card").nth(1)).toContainText("2 formações");
   await expect(page.locator(".metric-card").nth(1)).toContainText("RH & Marketing");
-  const copy = (await page.locator(".profile-copy").boundingBox())!;
+  const heading = (await page.locator(".profile-heading").boundingBox())!;
   const photo = (await page.locator(".profile-portrait").boundingBox())!;
-  expect(Math.abs(photo.y - copy.y)).toBeLessThan(2);
+  expect(Math.abs(photo.y - heading.y)).toBeLessThan(2);
   await navigate(page, "Certificações");
   await expect(page.locator(".skill-group")).toHaveCount(3);
   const rows = await page.locator(".skill-group").evaluateAll(groups => groups.map(group => [...group.querySelectorAll('.skill-row')].map(row => row.getBoundingClientRect().y)));
@@ -774,7 +774,7 @@ test("compact projects, aligned skills and permanent contacts replace the contac
   await page.getByRole("button", { name: "Agente Gi: inglês com IA", exact: true }).click();
   await expect(page.getByRole("link", { name: "Abrir Agente Gi no Gemini" })).toHaveAttribute("href", "https://gemini.google.com/gem/1LbceA06YOwXQ-_ZtgwmIqwKuNAQifuko?usp=sharing");
   await page.getByRole("button", { name: "Fechar projeto", exact: true }).click();
-  await page.getByRole("button", { name: "Meu portfólio: primeira experiência com vibe coding", exact: true }).click();
+  await page.getByRole("button", { name: "Meu portfólio", exact: true }).click();
   await expect(page.getByRole("dialog")).toContainText("Pensei o front-end, o back-end, o banco de dados e os conectores");
 });
 
