@@ -1,12 +1,13 @@
 import React from "react";
-import { Target, MessageCircle, Cpu, Sparkles } from "lucide-react";
+import { Target, MessageCircle, Cpu, Sparkles, ArrowLeft } from "lucide-react";
 import { PortfolioData } from "../data/portfolioData";
 
 interface AboutProps {
   data: PortfolioData;
+  onBack: () => void;
 }
 
-export const About: React.FC<AboutProps> = ({ data }) => {
+export const About: React.FC<AboutProps> = ({ data, onBack }) => {
   const { personal } = data;
 
   const valueIcons = [
@@ -22,21 +23,15 @@ export const About: React.FC<AboutProps> = ({ data }) => {
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-14 xl:gap-20 items-start">
           {/* Main Story Paragraphs */}
           <div className="lg:col-span-7 space-y-5 text-[var(--muted)] text-[15px] leading-relaxed font-normal">
-            {personal.bioParagraphs.map((para, index) => (
-              <p key={index} className="text-balance">
-                {para}
-              </p>
-            ))}
-
             {/* High-Impact Motto Card */}
-            <div className="p-5 sm:p-6 rounded-2xl bg-gradient-to-r from-[var(--wine)]/10 via-transparent to-[var(--wine-hover)]/10 border-2 border-[var(--wine)]/30 shadow-xs">
+            <div className="purpose-card p-5 sm:p-6 rounded-2xl bg-gradient-to-r from-[var(--wine)]/10 via-transparent to-[var(--wine-hover)]/10 border-2 border-[var(--wine)]/30 shadow-xs">
               <div className="flex items-center gap-4">
                 <div className="p-3 rounded-xl bg-[var(--button-bg)] text-white shrink-0">
                   <Sparkles className="w-5 h-5" />
                 </div>
                 <div>
                   <span className="text-xs uppercase tracking-wider font-bold text-[var(--wine)] block">
-                    Diretriz Pessoal & Profissional
+                    Propósito Pessoal & Profissional
                   </span>
                   <p className="text-lg sm:text-xl font-bold text-[var(--ink)] tracking-tight">
                     "{personal.motto}"
@@ -44,6 +39,14 @@ export const About: React.FC<AboutProps> = ({ data }) => {
                 </div>
               </div>
             </div>
+            {personal.bioParagraphs.map((para, index) => (
+              <p key={index} className="text-balance">
+                {para}
+              </p>
+            ))}
+            <button className="biography-return" aria-label="Voltar à apresentação" title="Voltar à apresentação" onClick={onBack}>
+              <ArrowLeft size={18} />
+            </button>
           </div>
 
           {/* Three Structural Pillars */}

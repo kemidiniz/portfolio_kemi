@@ -683,8 +683,15 @@ test("compact overview stacks highlights beside portrait and keeps biography ret
   await expect(back).toBeVisible();
   await expect(back).toHaveText("");
   const backBox = (await back.boundingBox())!;
-  const biography = (await page.locator("#sobre").boundingBox())!;
-  expect(biography.y - backBox.y - backBox.height).toBeLessThan(8);
+
+  const paragraphs = page.locator("#sobre p.text-balance");
+  const lastParagraph = (await paragraphs.last().boundingBox())!;
+  const purpose = (await page.locator(".purpose-card").boundingBox())!;
+  const firstParagraph = (await paragraphs.first().boundingBox())!;
+  expect(backBox.y).toBeGreaterThanOrEqual(lastParagraph.y + lastParagraph.height);
+  expect(purpose.y + purpose.height).toBeLessThanOrEqual(firstParagraph.y);
+  await expect(page.getByText("Propósito Pessoal & Profissional", { exact: true })).toBeVisible();
+  await expect(page.locator("#sobre")).not.toContainText("mas pode me chamar carinhosamente de Kemi!");
   await back.click();
   await expect(page.getByRole("heading", { level: 1 })).toBeVisible();
 });
@@ -708,3 +715,32 @@ test("contact cards use published phone to repair legacy sample WhatsApp links",
   await expect(page.locator(".contact-card").getByText("linkedin.com/in/kemilydiniz", { exact: true })).toBeVisible();
   await expect(page.getByText("Currículo Profissional Completo", { exact: true })).toHaveCount(0);
 });
+
+for (const width of [320, 1280]) {
+  test(`persistent contact footer stays visible without covering content at ${width}px`, async ({ page }) => {
+    await setup(page);
+    await page.setViewportSize({ width, height: 800 });
+    await page.goto("/");
+    const footer = page.getByRole("contentinfo", { name: "Contatos permanentes" });
+    await expect(footer.getByRole("link", { name: "LinkedIn", exact: true })).toHaveAttribute("href", "https://br.linkedin.com/in/kemilydiniz");
+    await expect(footer.getByRole("link", { name: "WhatsApp", exact: true })).toHaveAttribute("href", /wa.me\/5511950201858/);
+    if (width === 1280) {
+      for (const selector of [".profile-heading h1", ".profile-description"]) {
+        const lines = await page.locator(selector).evaluate(el => {
+          const range = document.createRange(); range.selectNodeContents(el);
+          return new Set([...range.getClientRects()].filter(r => r.width > 0).map(r => Math.round(r.y))).size;
+        });
+        expect(lines).toBe(1);
+      }
+    }
+    await page.getByRole("button", { name: "Conheça minha história" }).click();
+    await page.evaluate(() => window.scrollTo(0, document.body.scrollHeight));
+    const box = (await footer.boundingBox())!;
+    expect(Math.abs(box.y + box.height - 800)).toBeLessThan(2);
+    const back = (await page.getByRole("button", { name: "Voltar à apresentação" }).boundingBox())!;
+    expect(back.y + back.height).toBeLessThanOrEqual(box.y);
+    expect(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth)).toBe(true);
+    await navigate(page, "Contato");
+    await expect(footer).toBeVisible();
+  });
+}

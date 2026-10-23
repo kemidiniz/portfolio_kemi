@@ -25,7 +25,7 @@ const CmsDrawer = lazy(() =>
     default: module.CmsDrawer,
   })),
 );
-import { ArrowLeft, ArrowRight } from "lucide-react";
+import { ArrowRight } from "lucide-react";
 import { readPortfolio, writePortfolio } from "./lib/portfolio";
 import { useAdmin } from "./hooks/useAdmin";
 
@@ -172,20 +172,10 @@ export default function App() {
             key={showBiography ? "biography" : "presentation"}
           >
             {showBiography ? (
-              <>
-                <button
-                  className="back-to-profile"
-                  aria-label="Voltar à apresentação"
-                  title="Voltar à apresentação"
-                  onClick={() => {
-                    setShowBiography(false);
-                    window.scrollTo({ top: 0, behavior: "instant" });
-                  }}
-                >
-                  <ArrowLeft size={18} />
-                </button>
-                <About data={data} />
-              </>
+              <About data={data} onBack={() => {
+                setShowBiography(false);
+                window.scrollTo({ top: 0, behavior: "instant" });
+              }} />
             ) : (
               <Hero
                 data={data}

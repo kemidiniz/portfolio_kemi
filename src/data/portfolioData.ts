@@ -109,7 +109,7 @@ export const initialPortfolioData: PortfolioData = {
     statusBadge: "Disponível para Projetos & Conexões Estratégicas",
     motto: "Buscando sempre repertório e conexões.",
     bioParagraphs: [
-      "Aos 23 anos — mas pode me chamar carinhosamente de Kemi! —, construí minha trajetória profissional na convergência entre o entendimento genuíno de pessoas, a estruturação de dados analíticos e a comunicação clara como motor de transformação nos negócios.",
+      "Aos 23 anos, construí minha trajetória profissional na convergência entre o entendimento genuíno de pessoas, a estruturação de dados analíticos e a comunicação clara como motor de transformação nos negócios.",
       "Iniciei minha jornada em Gestão de Pessoas e Experiência do Cliente, desenvolvendo sensibilidade empática para identificar pontos de atrito e dores reais de usuários. Essa base impulsionou minha atuação em Endomarketing e Comunicação Estratégica na Unidade de Finanças do Banco Bradesco, traduzindo métricas e diretrizes analíticas em narrativas visuais engajadoras e alinhadas aos objetivos corporativos.",
       "Hoje, como Analista de Estratégia no Banco Bradesco e autora com 2 artigos acadêmicos publicados (sobre Metodologias Ágeis e Consumo Digital por Jovens), integro ferramentas analíticas como Power BI, inteligência artificial generativa e visão de negócios para transformar complexidade em clareza."
     ],
