@@ -10,7 +10,7 @@
     color-scheme: light;
     --palette-dark: #180101;
     --palette-accent: #c2141d;
-    --palette-light: #f7fadb;
+    --palette-light: #fffdfa;
     --paper: var(--palette-light);
     --paper-light: var(--palette-light);
     --surface-hover: color-mix(in srgb, var(--palette-accent) 7%, var(--palette-light));
