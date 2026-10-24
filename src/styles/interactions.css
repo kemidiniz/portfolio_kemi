@@ -21,7 +21,7 @@
   .profile-metrics .metric-card:hover { transform: translateY(-3px); border-color: var(--wine); box-shadow: 0 9px 24px rgb(24 1 1 / 10%); }
 }
 .experience-title { display: flex; align-items: center; gap: 8px; }
-.experience-title svg { color: var(--palette-accent); flex-shrink: 0; }
+.experience-title svg { color: var(--wine); flex-shrink: 0; }
 .experience-card { transition: border-color 160ms, box-shadow 160ms; }
 
 /* The Reprograma wrapper joins the same surface-card hover as its peers. */
