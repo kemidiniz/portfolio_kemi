@@ -33,7 +33,7 @@ for (const width of [320, 375, 390, 430, 768, 1024, 1440]) {
     expect(geometry.textWidth).toBeLessThanOrEqual(geometry.valueWidth + 1);
     await expect(page.locator(".profile-links")).toHaveCount(0);
     await expect(page.locator(".site-footer a")).toHaveCount(3);
-    for (const name of ["Sobre mim", "Experiência", "Formação & IA", "Projetos", "Certificações"]) {
+    for (const name of ["Sobre mim", "Experiência", "Formação & Eventos", "Projetos", "Certificações"]) {
       await navigate(page, name);
       expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
       if (width <= 760) {
@@ -75,7 +75,7 @@ test("personal introduction leads the desktop cover and project covers load with
   expect(portrait.width).toBeLessThanOrEqual(390);
   await navigate(page, "Experiência");
   const experienceFont = await page.getByRole("heading", { name: "Trajetória Profissional" }).evaluate(el => getComputedStyle(el).fontSize);
-  await navigate(page, "Formação & IA");
+  await navigate(page, "Formação & Eventos");
   expect(await page.locator("h3").first().evaluate(el => getComputedStyle(el).fontSize)).toBe(experienceFont);
   await navigate(page, "Projetos");
   await expect(page.locator(".featured-project")).toHaveCount(0);
@@ -105,6 +105,10 @@ test("curriculum is a focused dialog, copies current skills and restores focus",
   await opener.click();
   const dialog = page.getByRole("dialog");
   await expect(dialog).toHaveAttribute("aria-modal", "true");
+  const academic = (await dialog.locator(".resume-education > div").first().boundingBox())!;
+  const technology = (await dialog.locator(".resume-education > div").last().boundingBox())!;
+  expect(Math.abs(academic.x - technology.x)).toBeLessThan(1);
+  expect(technology.y).toBeGreaterThanOrEqual(academic.y + academic.height);
   await expect(page.getByRole("button", { name: "Copiar Texto", exact: true })).toBeFocused();
   await expect(page.locator("main")).toHaveJSProperty("inert", true);
   await page.keyboard.press("Shift+Tab");
@@ -155,7 +159,7 @@ test("balanced carousel preserves the portfolio process and all catalogue filter
 for (const viewport of [{ width: 320, height: 844 }, { width: 768, height: 320 }, { width: 720, height: 450 }]) {
   test(`narrow, landscape and 200% equivalent viewports preserve navigation at ${viewport.width}x${viewport.height}`, async ({ page }) => {
     await page.setViewportSize(viewport); await open(page);
-    for (const name of ["Formação & IA", "Projetos", "Certificações", "Sobre mim"]) {
+    for (const name of ["Formação & Eventos", "Projetos", "Certificações", "Sobre mim"]) {
       await navigate(page, name);
       expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
     }

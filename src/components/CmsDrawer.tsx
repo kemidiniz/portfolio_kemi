@@ -29,7 +29,7 @@ const labels: Record<string, string> = {
   personal: "Perfil e contatos",
   experiences: "Experiências",
   education: "Formação acadêmica",
-  techImmersions: "Cursos e imersões",
+  techImmersions: "Formação & Eventos",
   projects: "Projetos",
   certifications: "Certificações",
   skills: "Habilidades",

@@ -137,7 +137,7 @@ test("admin publishes personal info and can manage every content section", async
   for (const label of [
     "Experiências",
     "Formação acadêmica",
-    "Cursos e imersões",
+    "Formação & Eventos",
     "Projetos",
     "Certificações",
     "Habilidades",
@@ -288,7 +288,7 @@ test("header navigation replaces content and biography opens on demand", async (
   await expect(page.getByRole("heading", { level: 1 })).toBeVisible();
   const sections = [
     ["Experiência", "#experiencia"],
-    ["Formação & IA", "#formacao-ia"],
+    ["Formação & Eventos", "#formacao-ia"],
     ["Projetos", "#projetos"],
     ["Certificações", "#certificacoes"],
   ];
@@ -394,7 +394,7 @@ for (const width of [320, 390, 768, 1024]) {
     for (const label of [
       "Sobre mim",
       "Experiência",
-      "Formação & IA",
+      "Formação & Eventos",
       "Projetos",
       "Certificações",
     ]) {
@@ -476,7 +476,7 @@ test("experience starts collapsed and page introductions do not repeat navigatio
   ).toHaveCount(0);
   await navigate(page, "Experiência");
   expect(await toggles.count()).toBe(initialPortfolioData.experiences.length);
-  await navigate(page, "Formação & IA");
+  await navigate(page, "Formação & Eventos");
   await expect(page.locator("#formacao-ia h2")).toHaveCount(0);
   await navigate(page, "Certificações");
   await expect(page.locator("#certificacoes h2")).toHaveCount(0);
@@ -792,7 +792,7 @@ test("mobile photo fills its column and reprograma community labels do not overl
   const photo = (await page.locator(".profile-portrait").boundingBox())!;
   const grid = (await page.locator(".profile-grid").boundingBox())!;
   expect(Math.abs(photo.width - grid.width)).toBeLessThan(2);
-  await navigate(page, "Formação & IA");
+  await navigate(page, "Formação & Eventos");
   const labels = await page.locator(".reprograma-community > span").all();
   let bottom = 0;
   for (const label of labels) {

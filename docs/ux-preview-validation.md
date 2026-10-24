@@ -32,7 +32,7 @@ Entrega no PR #8, com publicação em produção solicitada e autorizada pela Ke
 - Automação não certifica conformidade WCAG. Safari, iPhone físico e leitura com VoiceOver/NVDA não foram executados neste ambiente.
 - O reflow equivalente a zoom de 200% foi verificado; não substitui conferir o zoom nativo nos dispositivos reais.
 - Permanecem os avisos do Vite sobre configuração futura com `__dirname` e bundle principal maior que 500 kB. A biblioteca de animação existente aumenta o JavaScript da entrada; não houve instalação de novas bibliotecas.
-- A captura do projeto do portfólio foi refeita com o layout atual e os dados públicos publicados. Continua sendo uma imagem estática, que exige nova captura após mudanças visuais futuras.
+- A capa do projeto do portfólio é um mockup gerado a partir de uma captura do site atual. Não é uma prévia sincronizada da interface e pode precisar de atualização após mudanças visuais futuras.
 
 ## Arquivos desta etapa
 
@@ -60,3 +60,10 @@ Entrega no PR #8, com publicação em produção solicitada e autorizada pela Ke
 - Tablet conserva o dropdown anterior; desktop conserva a navegação em linha.
 - Selecionar uma seção aguarda a saída do pop-up e a remoção do estado inerte antes de transferir o foco ao conteúdo.
 - Arquivos adicionais: `src/components/MobileNavigation.tsx` e `src/components/Header.tsx`.
+
+## Formação & Eventos e currículo
+
+- Nome público e atalhos alterados para “Formação & Eventos”; o admin usa o mesmo nome para a coleção de cursos, imersões e eventos. Identificadores e dados existentes foram preservados.
+- Formação acadêmica e formação em Tecnologia & IA empilhadas no currículo, tanto na tela quanto na impressão.
+- Nova capa em mockup para o projeto do portfólio, gerada a partir da interface atual, otimizada em JPEG (1279 × 720). A fotografia de perfil permanece inalterada.
+- 64 testes passaram na execução completa, incluindo navegação, admin, impressão e a disposição vertical das formações. TypeScript e build aprovados.

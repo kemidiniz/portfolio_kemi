@@ -61,7 +61,7 @@ test("tablet keeps the dropdown and near-white palette reaches all page surfaces
 
 test("every page enters smoothly and project labels stay off the visual layout", async ({ page }) => {
   await open(page);
-  for (const name of ["Sobre mim", "Experiência", "Formação & IA", "Projetos", "Certificações"]) {
+  for (const name of ["Sobre mim", "Experiência", "Formação & Eventos", "Projetos", "Certificações"]) {
     await navigate(page, name);
     const view = page.locator(".section-view");
     await expect(view).toHaveCSS("animation-name", "section-appear");
@@ -196,7 +196,7 @@ test("experience cards reveal once on intersection and are immediately readable 
 });
 
 test("Reprograma shares the elevation, border and transition of equivalent cards", async ({ page }) => {
-  await open(page); await navigate(page, "Formação & IA");
+  await open(page); await navigate(page, "Formação & Eventos");
   const peer = page.locator("#formacao-ia .surface-card").first();
   const reprograma = page.locator(".reprograma-card");
   const styles = async (selector: typeof peer) => selector.evaluate(el => { const css = getComputedStyle(el); return { transform: css.transform, border: css.borderTopColor, shadow: css.boxShadow, duration: css.transitionDuration }; });
