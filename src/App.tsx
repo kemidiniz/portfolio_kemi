@@ -224,7 +224,7 @@ export default function App() {
                 onClick={() => handleSelectTab("formacao-ia")}
                 className="text-xs font-bold text-[var(--muted)] hover:text-[var(--wine)] transition-colors cursor-pointer"
               >
-                ← Voltar para Formação & IA
+                ← Voltar para Formação & Eventos
               </button>
               <button
                 onClick={() => handleSelectTab("certificacoes")}

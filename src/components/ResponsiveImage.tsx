@@ -1,7 +1,7 @@
 import { useState, type ImgHTMLAttributes } from "react";
 
 const images: Record<string, { name?: string; width: number; height: number }> = {
-  "/assets/projects/portfolio-kemi.jpg": { width: 1440, height: 900 },
+  "/assets/projects/portfolio-kemi.jpg": { width: 1279, height: 720 },
   "/assets/projects/agente-gi.webp": { width: 1279, height: 720 },
   "/assets/aistudio/IMG_1992_c0be0322.jpeg": { name: "portrait", width: 900, height: 1200 },
   "/assets/projects/agile_research_cover_1792537283675.jpg": { name: "agile", width: 1376, height: 768 },

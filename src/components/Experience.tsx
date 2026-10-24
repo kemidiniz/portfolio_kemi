@@ -167,7 +167,7 @@ export const Experience: React.FC<ExperienceProps> = ({
               onClick={() => onNavigateToTab("formacao-ia")}
               className="inline-flex items-center gap-1.5 text-xs font-bold text-[var(--wine)] hover:underline cursor-pointer"
             >
-              <span>Avançar para Formação & IA</span>
+              <span>Avançar para Formação & Eventos</span>
               <ArrowRight className="w-3.5 h-3.5" />
             </button>
           </div>

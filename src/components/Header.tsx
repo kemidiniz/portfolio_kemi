@@ -8,7 +8,7 @@ import { MobileNavigation } from "./MobileNavigation";
 
 export type TabType = "sobre" | "experiencia" | "formacao-ia" | "projetos" | "certificacoes";
 export const sectionNames: Record<TabType, string> = {
-  sobre: "Sobre mim", experiencia: "Experiência", "formacao-ia": "Formação & IA", projetos: "Projetos", certificacoes: "Certificações",
+  sobre: "Sobre mim", experiencia: "Experiência", "formacao-ia": "Formação & Eventos", projetos: "Projetos", certificacoes: "Certificações",
 };
 interface Props {
   activeTab: TabType; onSelectTab: (tab: TabType) => void; isDarkMode: boolean;

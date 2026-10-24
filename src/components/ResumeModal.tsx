@@ -252,7 +252,7 @@ ${skills.map(group => `${group.category}: ${group.items.map(item => item.name).j
           </div>
 
           {/* Section: Formação Acadêmica & IA */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+          <div className="resume-education grid grid-cols-1 gap-6 mb-6">
             <div>
               <h2 className="text-xs font-black uppercase tracking-wider text-[var(--wine)] border-b border-[var(--rule)] pb-1 mb-2.5">
                 Formação Acadêmica
