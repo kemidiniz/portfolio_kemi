@@ -32,7 +32,7 @@
     --paper-light: color-mix(in srgb, var(--palette-light) 5%, var(--palette-dark));
     --surface-hover: color-mix(in srgb, var(--palette-light) 9%, var(--palette-dark));
     --ink: var(--palette-light);
-    --muted: color-mix(in srgb, var(--palette-light) 78%, var(--palette-dark));
+    --muted: color-mix(in srgb, var(--palette-light) 94%, var(--palette-dark));
     --wine: color-mix(in srgb, var(--palette-light) 70%, var(--palette-accent));
     --wine-hover: var(--palette-light);
     --button-bg: var(--palette-accent);
