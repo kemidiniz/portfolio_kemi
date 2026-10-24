@@ -1,5 +1,5 @@
 import { useEffect, useId, useLayoutEffect, useMemo, useRef, useState } from "react";
-import { ArrowUpRight, ChevronLeft, ChevronRight, Pause, Play } from "lucide-react";
+import { ArrowUpRight, ChevronDown, ChevronLeft, ChevronRight, Pause, Play } from "lucide-react";
 import type { ProjectItem } from "../data/portfolioData";
 import { ResponsiveImage } from "./ResponsiveImage";
 import { useMediaQuery } from "../hooks/useMediaQuery";
@@ -124,6 +124,8 @@ function ProjectCarousel({ projects, onSelectProject, modalOpen, paused, onToggl
 }
 
 export function Projects({ projects, onSelectProject, modalOpen }: { projects: ProjectItem[]; onSelectProject: (project: ProjectItem) => void; modalOpen: boolean }) {
+  const mobile = useMediaQuery("(max-width: 760px)");
+  const filterId = useId();
   const [activeCategory, setActiveCategory] = useState("todos");
   const [paused, setPaused] = useState(false);
   const categories = [
@@ -134,9 +136,14 @@ export function Projects({ projects, onSelectProject, modalOpen }: { projects: P
   return (
     <section aria-label="Projetos" id="projetos" className="py-6 md:py-7">
       <div className="w-full max-w-[1600px] mx-auto px-4 sm:px-8 lg:px-14 xl:px-20">
-        <div className="projects-filters" role="group" aria-label="Filtrar projetos">
+        {mobile ? <div className="projects-filter-select">
+          <label htmlFor={filterId}>Filtrar projetos</label>
+          <div><select id={filterId} value={activeCategory} onChange={event => setActiveCategory(event.target.value)}>
+            {categories.map(category => <option key={category.id} value={category.id}>{category.label}</option>)}
+          </select><ChevronDown size={18} aria-hidden="true" /></div>
+        </div> : <div className="projects-filters" role="group" aria-label="Filtrar projetos">
           {categories.map(category => <button key={category.id} onClick={() => setActiveCategory(category.id)} aria-pressed={activeCategory === category.id}>{category.label}</button>)}
-        </div>
+        </div>}
         <p className="sr-only" role="status" aria-live="polite" aria-atomic="true">{filtered.length} {filtered.length === 1 ? "projeto" : "projetos"}</p>
         {filtered.length > 0 ? <ProjectCarousel key={activeCategory} projects={filtered} onSelectProject={onSelectProject} modalOpen={modalOpen} paused={paused} onTogglePause={() => setPaused(value => !value)} /> : <p className="py-6 text-sm text-[var(--muted)]">Novos projetos em breve.</p>}
       </div>

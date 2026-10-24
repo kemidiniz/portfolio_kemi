@@ -59,6 +59,31 @@ test("tablet keeps the dropdown and near-white palette reaches all page surfaces
   await expect(page.getByRole("dialog")).toHaveCount(0);
 });
 
+test("phone project selector filters every category and preserves selection on desktop", async ({ page }) => {
+  await page.setViewportSize({ width: 390, height: 844 }); await open(page); await navigate(page, "Projetos");
+  const select = page.getByRole("combobox", { name: "Filtrar projetos", exact: true });
+  await expect(select).toHaveValue("todos");
+  await expect(page.locator(".projects-filters")).toHaveCount(0);
+  const categories = ["pesquisa", "estrategia", "comunicacao", "dados-ia", "todos"];
+  for (const category of categories) {
+    await select.selectOption(category);
+    const expected = initialPortfolioData.projects.filter(project => category === "todos" || project.category === category);
+    await expect(page.locator(".carousel-originals .project-card")).toHaveCount(expected.length);
+    expect(await page.locator(".carousel-originals .project-card").evaluateAll(elements => elements.map(el => el.getAttribute("data-project-id")))).toEqual(expected.map(project => project.id));
+  }
+  await select.selectOption("dados-ia");
+  await page.getByRole("button", { name: "Meu portfólio", exact: true }).click();
+  await expect(page.getByRole("dialog")).toBeVisible(); await page.keyboard.press("Escape"); await expect(page.getByRole("dialog")).toHaveCount(0);
+  await page.setViewportSize({ width: 1440, height: 900 });
+  await expect(page.getByRole("combobox", { name: "Filtrar projetos", exact: true })).toHaveCount(0);
+  await expect(page.getByRole("button", { name: "Dados & IA", exact: true })).toHaveAttribute("aria-pressed", "true");
+  for (const width of [320, 375, 390, 430]) {
+    await page.setViewportSize({ width, height: 844 });
+    await expect(select).toHaveValue("dados-ia");
+    expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
+  }
+});
+
 test("every page enters smoothly and project labels stay off the visual layout", async ({ page }) => {
   await open(page);
   for (const name of ["Sobre mim", "Experiência", "Formação & Eventos", "Projetos", "Certificações"]) {
@@ -143,6 +168,8 @@ test("autoplay is slow, pauses on hover, focus, explicit pause and modal, and wr
   await page.locator("main").focus(); await page.mouse.move(0, 0);
   await expect.poll(async () => viewport.evaluate(el => el.scrollLeft < el.querySelector(".carousel-originals")!.getBoundingClientRect().width * 1.1)).toBe(true);
   await page.getByRole("button", { name: "Meu portfólio", exact: true }).click();
+  await expect(page.getByRole("dialog")).toBeVisible();
+  await expect(page.getByRole("button", { name: "Fechar projeto", exact: true })).toBeFocused();
   const inModal = await position(); await page.waitForTimeout(250); expect(await position()).toBe(inModal);
   await page.keyboard.press("Escape"); await expect(page.getByRole("button", { name: "Meu portfólio", exact: true })).toBeFocused();
 });

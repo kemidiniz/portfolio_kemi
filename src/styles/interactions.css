@@ -29,6 +29,12 @@
 
 /* Native horizontal scrolling is confined to this viewport, never the page. */
 .project-carousel { min-width: 0; }
+.projects-filter-select { margin-bottom: 20px; }
+.projects-filter-select > label { display: block; margin-bottom: 8px; color: var(--muted); font-size: 12px; font-weight: 600; }
+.projects-filter-select > div { position: relative; }
+.projects-filter-select select { display: block; appearance: none; width: 100%; min-width: 0; min-height: 48px; padding: 12px 44px 12px 14px; border: 1px solid var(--rule); border-radius: var(--radius-control); background: var(--paper-light); color: var(--ink); font: inherit; font-size: 16px; font-weight: 600; cursor: pointer; }
+.projects-filter-select select:hover { border-color: var(--wine); }
+.projects-filter-select svg { position: absolute; right: 14px; top: 50%; transform: translateY(-50%); color: var(--wine); pointer-events: none; }
 .carousel-controls { display: flex; justify-content: flex-end; gap: 6px; margin-top: 8px; }
 .carousel-controls button { display: inline-flex; align-items: center; justify-content: center; gap: 7px; min-width: 44px; min-height: 44px; padding: 10px; border: 1px solid var(--rule); border-radius: 10px; color: var(--wine); background: var(--paper-light); transition: background 160ms, border-color 160ms; }
 .carousel-controls button:hover:not(:disabled) { background: var(--accent-soft); border-color: var(--wine); }
