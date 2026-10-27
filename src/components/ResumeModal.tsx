@@ -7,7 +7,6 @@ import {
   Download,
   Mail,
   Linkedin,
-  Phone,
   MapPin,
 } from "lucide-react";
 import { useDialogFocus } from "../hooks/useDialogFocus";

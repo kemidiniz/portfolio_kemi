@@ -215,6 +215,8 @@ test("admin adds, reorders and removes projects before publishing", async ({
   await added
     .getByLabel("Descrição curta", { exact: true })
     .fill("Projeto criado pelo painel.");
+  await added.getByLabel("Categoria", { exact: true }).fill("automacoes");
+  await added.getByLabel("Nome da categoria", { exact: true }).fill("Automações");
   await page.getByRole("button", { name: "Mover item 6 para cima" }).click();
   page.once("dialog", (dialog) => dialog.accept());
   await page
@@ -234,6 +236,7 @@ test("admin adds, reorders and removes projects before publishing", async ({
   await expect(
     page.getByRole("heading", { name: "Novo projeto editorial", exact: true }),
   ).toBeVisible();
+  await expect(page.getByRole("button", { name: "Automações", exact: true })).toBeVisible();
   await expect(
     page.getByRole("heading", {
       name: initialPortfolioData.projects[0].title,
@@ -705,19 +708,19 @@ test("glass highlights share a desktop row beside portrait and biography retains
   await expect(page.getByRole("heading", { level: 1 })).toBeVisible();
 });
 
-test("contact cards use published phone to repair legacy sample WhatsApp links", async ({ page }) => {
+test("public contacts exclude WhatsApp even when legacy data contains a number", async ({ page }) => {
   await setup(page);
   const content = structuredClone(initialPortfolioData);
   content.personal.whatsapp = "https://wa.me/5511999999999?text=Oi%20Kemi";
-  content.personal.whatsappDisplay = "+55 (11) 95020-1858";
+  content.personal.whatsappDisplay = "+55 (00) 00000-0000";
   content.personal.linkedin = "https://www.linkedin.com/in/kemily-diniz/";
   content.personal.linkedinDisplay = "linkedin.com/in/kemily-diniz";
   await page.route("**/rest/v1/rpc/read_portfolio", route => route.fulfill({ json: { content, revision: 1 } }));
   await page.goto("/");
   await expect(page.locator(".profile-links")).toHaveCount(0);
   const contacts = page.getByRole("navigation", { name: "Contatos do rodapé" });
-  await expect(contacts.getByRole("link")).toHaveCount(3);
-  await expect(contacts.getByRole("link", { name: "WhatsApp", exact: true })).toHaveAttribute("href", "https://wa.me/5511950201858?text=Oi%20Kemi");
+  await expect(contacts.getByRole("link")).toHaveCount(2);
+  await expect(contacts.getByRole("link", { name: "WhatsApp", exact: true })).toHaveCount(0);
   await expect(contacts.getByRole("link", { name: `E-mail: ${content.personal.email}`, exact: true })).toHaveAttribute("href", `mailto:${content.personal.email}`);
   await expect(contacts.getByRole("link", { name: "LinkedIn", exact: true })).toHaveAttribute("href", "https://br.linkedin.com/in/kemilydiniz");
 
@@ -731,7 +734,7 @@ for (const width of [320, 1280]) {
     await page.goto("/");
     const footer = page.getByRole("contentinfo", { name: "Contatos permanentes" });
     await expect(footer.getByRole("link", { name: "LinkedIn", exact: true })).toHaveAttribute("href", "https://br.linkedin.com/in/kemilydiniz");
-    await expect(footer.getByRole("link", { name: "WhatsApp", exact: true })).toHaveAttribute("href", /wa.me\/5511950201858/);
+    await expect(footer.getByRole("link", { name: "WhatsApp", exact: true })).toHaveCount(0);
     if (width === 1280) {
       for (const selector of [".profile-heading h1", ".profile-description"]) {
         const lines = await page.locator(selector).evaluate(el => {

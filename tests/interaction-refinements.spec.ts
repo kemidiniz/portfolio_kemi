@@ -5,6 +5,7 @@ async function open(page: Page) {
   await page.route("https://exlthhgqgbxlngpnxrqs.supabase.co/**", route => route.fulfill({ json: route.request().url().endsWith("/read_portfolio") ? { content: initialPortfolioData, revision: 2 } : false }));
   await page.goto("/");
   await page.evaluate(() => document.fonts.ready);
+  await page.getByRole("heading", { level: 1 }).waitFor();
 }
 async function navigate(page: Page, name: string) {
   const menu = page.getByRole("button", { name: "Abrir navegação", exact: true });
@@ -62,11 +63,11 @@ test("tablet keeps the dropdown and near-white palette reaches all page surfaces
 test("phone project selector filters every category and preserves selection on desktop", async ({ page }) => {
   await page.setViewportSize({ width: 390, height: 844 }); await open(page); await navigate(page, "Projetos");
   const select = page.getByRole("combobox", { name: "Filtrar projetos", exact: true });
-  await expect(select).toHaveValue("todos");
+  await expect(select).toHaveValue("");
   await expect(page.locator(".projects-filters")).toHaveCount(0);
   const categories = ["pesquisa", "estrategia", "comunicacao", "dados-ia", "todos"];
   for (const category of categories) {
-    await select.selectOption(category);
+    await select.selectOption(category === "todos" ? "" : category);
     const expected = initialPortfolioData.projects.filter(project => category === "todos" || project.category === category);
     await expect(page.locator(".carousel-originals .project-card")).toHaveCount(expected.length);
     expect(await page.locator(".carousel-originals .project-card").evaluateAll(elements => elements.map(el => el.getAttribute("data-project-id")))).toEqual(expected.map(project => project.id));

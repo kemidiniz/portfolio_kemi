@@ -87,8 +87,7 @@ html {
 .responsive-picture { display: block; width: 100%; height: 100%; }
 .responsive-picture img { display: block; width: 100%; height: 100%; object-fit: cover; }
 .profile-portrait > picture { position: absolute; inset: 0; }
-.profile-portrait img { object-position: center 26%; transition: transform 350ms ease; }
-.profile-portrait:hover img { transform: scale(1.025); }
+.profile-portrait img { object-position: center 26%; }
 .profile-portrait::after { content: ""; position: absolute; inset: 30% 0 0; background: linear-gradient(transparent, rgb(24 1 1 / 87%)); pointer-events: none; }
 .profile-portrait figcaption { position: absolute; inset: auto 24px 24px; display: flex; flex-direction: column; align-items: flex-start; gap: 6px; color: var(--palette-light); z-index: 1; }
 .profile-portrait figcaption strong { font-size: 22px; font-weight: 650; letter-spacing: -.04em; }

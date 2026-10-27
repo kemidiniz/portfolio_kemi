@@ -3,6 +3,7 @@ import { ArrowUpRight, ChevronDown, ChevronLeft, ChevronRight, Pause, Play } fro
 import type { ProjectItem } from "../data/portfolioData";
 import { ResponsiveImage } from "./ResponsiveImage";
 import { useMediaQuery } from "../hooks/useMediaQuery";
+import { projectCategories } from "../lib/projectCategories";
 
 function ProjectCard({ project, onOpen, duplicate = false }: { project: ProjectItem; onOpen: () => void; duplicate?: boolean }) {
   const id = useId();
@@ -126,26 +127,26 @@ function ProjectCarousel({ projects, onSelectProject, modalOpen, paused, onToggl
 export function Projects({ projects, onSelectProject, modalOpen }: { projects: ProjectItem[]; onSelectProject: (project: ProjectItem) => void; modalOpen: boolean }) {
   const mobile = useMediaQuery("(max-width: 760px)");
   const filterId = useId();
-  const [activeCategory, setActiveCategory] = useState("todos");
+  const [activeCategory, setActiveCategory] = useState<string | null>(null);
   const [paused, setPaused] = useState(false);
-  const categories = [
-    { id: "todos", label: "Todos os Projetos" }, { id: "pesquisa", label: "Artigos Publicados" },
-    { id: "estrategia", label: "Estratégia & CX" }, { id: "comunicacao", label: "Comunicação & Design" }, { id: "dados-ia", label: "Dados & IA" },
-  ];
-  const filtered = useMemo(() => activeCategory === "todos" ? projects : projects.filter(project => project.category === activeCategory), [projects, activeCategory]);
+  const categories = useMemo(() => projectCategories(projects), [projects]);
+  const selected = activeCategory !== null && categories.some(category => category.id === activeCategory) ? activeCategory : null;
+  const filtered = useMemo(() => selected === null ? projects : projects.filter(project => project.category === selected), [projects, selected]);
   return (
     <section aria-label="Projetos" id="projetos" className="py-6 md:py-7">
       <div className="w-full max-w-[1600px] mx-auto px-4 sm:px-8 lg:px-14 xl:px-20">
         {mobile ? <div className="projects-filter-select">
           <label htmlFor={filterId}>Filtrar projetos</label>
-          <div><select id={filterId} value={activeCategory} onChange={event => setActiveCategory(event.target.value)}>
+          <div><select id={filterId} value={selected ?? ""} onChange={event => setActiveCategory(event.target.value || null)}>
+            <option value="">Todos os Projetos</option>
             {categories.map(category => <option key={category.id} value={category.id}>{category.label}</option>)}
           </select><ChevronDown size={18} aria-hidden="true" /></div>
         </div> : <div className="projects-filters" role="group" aria-label="Filtrar projetos">
-          {categories.map(category => <button key={category.id} onClick={() => setActiveCategory(category.id)} aria-pressed={activeCategory === category.id}>{category.label}</button>)}
+          <button onClick={() => setActiveCategory(null)} aria-pressed={selected === null}>Todos os Projetos</button>
+          {categories.map(category => <button key={category.id} onClick={() => setActiveCategory(category.id)} aria-pressed={selected === category.id}>{category.label}</button>)}
         </div>}
         <p className="sr-only" role="status" aria-live="polite" aria-atomic="true">{filtered.length} {filtered.length === 1 ? "projeto" : "projetos"}</p>
-        {filtered.length > 0 ? <ProjectCarousel key={activeCategory} projects={filtered} onSelectProject={onSelectProject} modalOpen={modalOpen} paused={paused} onTogglePause={() => setPaused(value => !value)} /> : <p className="py-6 text-sm text-[var(--muted)]">Novos projetos em breve.</p>}
+        {filtered.length > 0 ? <ProjectCarousel key={selected === null ? "all" : `category:${selected}`} projects={filtered} onSelectProject={onSelectProject} modalOpen={modalOpen} paused={paused} onTogglePause={() => setPaused(value => !value)} /> : <p className="py-6 text-sm text-[var(--muted)]">Novos projetos em breve.</p>}
       </div>
     </section>
   );

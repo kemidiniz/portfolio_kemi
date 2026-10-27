@@ -35,7 +35,7 @@ export interface TechImmersionItem {
 export interface ProjectItem {
   id: string;
   title: string;
-  category: 'pesquisa' | 'estrategia' | 'comunicacao' | 'dados-ia';
+  category: string;
   categoryLabel: string;
   year: string;
   tagline: string;
@@ -105,8 +105,8 @@ const originalPortfolioData: PortfolioData = {
     email: "kemilydiniz@gmail.com",
     linkedin: "https://br.linkedin.com/in/kemilydiniz",
     linkedinDisplay: "linkedin.com/in/kemilydiniz",
-    whatsapp: "https://wa.me/5511950201858?text=Olá%20Kemi,%20vi%20seu%20portfólio%20e%20gostaria%20de%20conversar!",
-    whatsappDisplay: "+55 (11) 95020-1858",
+    whatsapp: "",
+    whatsappDisplay: "",
     avatarUrl: "/assets/aistudio/IMG_1992_c0be0322.jpeg",
     statusBadge: "Disponível para Projetos & Conexões Estratégicas",
     motto: "Buscando sempre repertório e conexões.",

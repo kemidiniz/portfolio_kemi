@@ -87,12 +87,7 @@ export const portfolioSchema = z
         z.object({
           id: itemId,
           title: text,
-          category: z.enum([
-            "pesquisa",
-            "estrategia",
-            "comunicacao",
-            "dados-ia",
-          ]),
+          category: z.string().min(1).max(200).refine(value => value.trim().length > 0, "Informe a categoria do projeto."),
           categoryLabel: text,
           year: text,
           tagline: text,
@@ -169,16 +164,17 @@ export async function readPortfolio() {
       "Não foi possível carregar o conteúdo publicado. Verifique a conexão e a configuração do Supabase.",
     );
   const content = data.content ? validatePortfolio(data.content) : null;
-  if (content) {
-    const { linkedin, linkedinDisplay, whatsapp } = contactLinks(content.personal);
+  const legacyPublication = Number(data.revision) <= 1;
+  if (content && legacyPublication) {
+    const { linkedin, linkedinDisplay } = contactLinks(content.personal);
     content.personal = {
-      ...content.personal, linkedin, linkedinDisplay, whatsapp,
+      ...content.personal, linkedin, linkedinDisplay,
       bioParagraphs: content.personal.bioParagraphs.map(paragraph =>
         paragraph.replace(" — mas pode me chamar carinhosamente de Kemi! —", "")),
     };
   }
   return {
-    data: content ? applyPortfolioUpdates(content, Number(data.revision) <= 1) : null,
+    data: content ? (legacyPublication ? applyPortfolioUpdates(content, true) : content) : null,
     revision: Number(data.revision),
   };
 }

@@ -24,6 +24,7 @@ import { ImageFraming } from "./ImageFraming";
 
 const UploadActivity = React.createContext<(active: boolean) => void>(() => {});
 import { validatePortfolio } from "../lib/portfolio";
+import { projectCategoryLabels } from "../lib/projectCategories";
 
 const labels: Record<string, string> = {
   personal: "Perfil e contatos",
@@ -281,7 +282,7 @@ function Editor({
           ...value,
           ...("company" in value && !("badge" in value) ? { badge: "" } : {}),
         })
-          .filter(([key]) => key !== "id")
+          .filter(([key]) => !["id", "whatsapp", "whatsappDisplay"].includes(key))
           .map(([key, v]) => (
             <div
               className={
@@ -319,13 +320,8 @@ function Editor({
           ))}
       </div>
     );
-  const options =
-    field === "category" &&
-    path.startsWith("projects-") &&
-    typeof value === "string" &&
-    ["pesquisa", "estrategia", "comunicacao", "dados-ia"].includes(value)
-      ? ["pesquisa", "estrategia", "comunicacao", "dados-ia"]
-      : choices[field];
+  const projectCategory = field === "category" && path.startsWith("projects-");
+  const options = choices[field];
   const image = ["image", "avatarUrl"].includes(field);
   const long = [
     "subtitle",
@@ -423,6 +419,8 @@ function Editor({
       ) : (
         <input
           id={id}
+          list={projectCategory ? `${id}-categories` : undefined}
+          aria-describedby={projectCategory ? `${id}-help` : undefined}
           type={
             typeof value === "number"
               ? "number"
@@ -440,6 +438,10 @@ function Editor({
           }
         />
       )}
+      {projectCategory && <>
+        <datalist id={`${id}-categories`}>{Object.keys(projectCategoryLabels).map(category => <option key={category} value={category}>{projectCategoryLabels[category]}</option>)}</datalist>
+        <small id={`${id}-help`}>Escolha uma categoria existente ou digite uma nova. Use o mesmo identificador para agrupar projetos; o campo “Nome da categoria” define o título de um novo filtro.</small>
+      </>}
       {image && (
         <>
           <label className="admin-upload">
@@ -528,6 +530,7 @@ export function CmsDrawer({
   const [error, setError] = useState("");
   const [saved, setSaved] = useState(false);
   const dialog = useRef<HTMLDivElement>(null);
+  const draftInitialized = useRef(false);
   const dirty = JSON.stringify(draft) !== JSON.stringify(data);
   const close = () => {
     if (
@@ -541,10 +544,17 @@ export function CmsDrawer({
   useEffect(() => {
     if (isOpen) {
       setDraft(structuredClone(data));
+      draftInitialized.current = canPublish;
       setError("");
       setSaved(false);
     }
   }, [isOpen]);
+  useEffect(() => {
+    if (isOpen && canPublish && !draftInitialized.current) {
+      setDraft(structuredClone(data));
+      draftInitialized.current = true;
+    }
+  }, [isOpen, canPublish, data]);
   useEffect(() => {
     if (!isAdmin) setPassword("");
   }, [isAdmin]);

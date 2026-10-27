@@ -9,6 +9,7 @@ async function open(page: Page) {
   });
   await page.goto("/");
   await page.evaluate(() => document.fonts.ready);
+  await page.getByRole("heading", { level: 1 }).waitFor();
 }
 async function navigate(page: Page, name: string) {
   const menu = page.getByRole("button", { name: "Abrir navegação", exact: true });
@@ -32,7 +33,7 @@ for (const width of [320, 375, 390, 430, 768, 1024, 1440]) {
     expect(geometry.difference).toBeLessThan(1);
     expect(geometry.textWidth).toBeLessThanOrEqual(geometry.valueWidth + 1);
     await expect(page.locator(".profile-links")).toHaveCount(0);
-    await expect(page.locator(".site-footer a")).toHaveCount(3);
+    await expect(page.locator(".site-footer a")).toHaveCount(2);
     for (const name of ["Sobre mim", "Experiência", "Formação & Eventos", "Projetos", "Certificações"]) {
       await navigate(page, name);
       expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);

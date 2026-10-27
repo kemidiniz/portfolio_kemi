@@ -52,6 +52,8 @@ export default function App() {
   const [data, setData] = useState<PortfolioData>(initialPortfolioData);
   const [revision, setRevision] = useState(0);
   const [contentLoaded, setContentLoaded] = useState(false);
+  const [contentSettled, setContentSettled] = useState(false);
+  const [fontsReady, setFontsReady] = useState(false);
   const [contentError, setContentError] = useState("");
   const admin = useAdmin();
   useEffect(() => {
@@ -67,10 +69,16 @@ export default function App() {
       })
       .catch((error) => {
         if (active) setContentError(error.message);
-      });
+      })
+      .finally(() => { if (active) setContentSettled(true); });
     return () => {
       active = false;
     };
+  }, []);
+  useEffect(() => {
+    let active = true;
+    document.fonts.ready.then(() => { if (active) setFontsReady(true); });
+    return () => { active = false; };
   }, []);
   useEffect(() => {
     const personal = data.personal;
@@ -162,7 +170,7 @@ export default function App() {
         isAdmin={admin.isAdmin}
       />
 
-      {contentError && (
+      {contentError && contentSettled && fontsReady && (
         <div role="status" className="site-content-notice">
           O conteúdo atualizado está indisponível no momento. Exibindo a versão
           de apresentação.
@@ -170,6 +178,7 @@ export default function App() {
       )}
       {/* Main Blocked View Container with expansive desktop width */}
       <main ref={main} id="conteudo" className="site-main site-container" tabIndex={-1} aria-label={sectionNames[activeTab]}>
+        {(!contentSettled || !fontsReady) ? <div className="portfolio-loading" role="status" aria-live="polite"><span>Carregando portfólio…</span><div aria-hidden="true" /></div> : <>
         {activeTab !== "sobre" && <h1 className="sr-only">{sectionNames[activeTab]}</h1>}
         {/* Block 1: Sobre mim (Hero + Quem Sou Eu) */}
         {activeTab === "sobre" && (
@@ -248,6 +257,7 @@ export default function App() {
           </div>
         )}
 
+      </>}
       </main>
 
       {/* Clean Editorial Footer */}
