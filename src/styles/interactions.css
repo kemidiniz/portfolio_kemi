@@ -1,4 +1,6 @@
 /* Scoped interaction changes; shared palette tokens live in index.css. */
+.portfolio-loading { display: grid; gap: 20px; padding-block: 28px; min-height: 520px; color: var(--muted); font-size: 14px; }
+.portfolio-loading > div { width: 100%; min-height: 380px; border: 1px solid var(--rule); border-radius: var(--radius-card); background: var(--paper-light); }
 .profile-grid { grid-template-columns: minmax(0, 1fr) minmax(0, 390px); }
 .profile-portrait { min-height: 420px; }
 .profile-metrics { grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 12px; align-self: start; }
