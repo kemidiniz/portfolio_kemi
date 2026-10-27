@@ -9,4 +9,4 @@ for attempt in {1..30}; do
   if docker exec "$container" pg_isready -h 127.0.0.1 -U postgres >/dev/null 2>&1; then break; fi
   sleep 1
 done
-{ cat tests/supabase-bootstrap.sql; for migration in supabase/migrations/*.sql; do cat "$migration"; done; cat supabase/migrations/202610230002_safe_publication_delete.sql; node_modules/.bin/tsx tests/database-fixture.ts; cat tests/database.sql; } | docker exec -i "$container" psql -U postgres -v ON_ERROR_STOP=1
+{ cat tests/supabase-bootstrap.sql; for migration in supabase/migrations/*.sql; do cat "$migration"; done; cat supabase/migrations/202610230002_safe_publication_delete.sql; node_modules/.bin/tsx tests/database-fixture.ts; cat supabase/migrations/202610270001_public_privacy_categories.sql; cat tests/database.sql; cat tests/database-privacy.sql; } | docker exec -i "$container" psql -U postgres -v ON_ERROR_STOP=1
